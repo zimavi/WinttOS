@@ -30,7 +30,8 @@ namespace WinttOS.Base
             this.commands.Add(new SystemInfoCommand("sysinfo"));
             this.commands.Add(new WriteFileCommand("wrfile"));
             this.commands.Add(new mivCommand("miv"));
-
+            //this.commands.Add(new loadUiCommand("load_ui"));
+            this.commands.Add(new installCommand("install"));
         }
 
         public string processInputExample(string input)

@@ -18,8 +18,18 @@
         <Description>Use VMware Player or Workstation to deploy and debug.</Description>
         <PxeInterface>192.168.0.8</PxeInterface>
         <DebugEnabled>False</DebugEnabled>
-        <VMWareEdition>Player</VMWareEdition>
+        <VMWareEdition>Workstation</VMWareEdition>
     </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="Base\resources\cur.bmp" />
+      <None Remove="Base\resources\os_install_bg.bmp" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Base\resources\cur.bmp" />
+      <EmbeddedResource Include="Base\resources\os_install_bg.bmp" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Cosmos.Build" Version="0-*" NoWarn="NU1604" />
@@ -29,7 +39,6 @@
 
     <ItemGroup>
       <Folder Include="Base\Programs\Manuals\" />
-      <Folder Include="Base\Utils\" />
     </ItemGroup>
 
 </Project>
