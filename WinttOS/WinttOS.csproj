@@ -17,24 +17,31 @@
         <Profile>VMware</Profile>
         <Description>Use VMware Player or Workstation to deploy and debug.</Description>
         <PxeInterface>192.168.0.8</PxeInterface>
-        <DebugEnabled>False</DebugEnabled>
-        <VMWareEdition>Workstation</VMWareEdition>
+        <DebugEnabled>True</DebugEnabled>
+        <VMWareEdition>Player</VMWareEdition>
+        <TraceMode>User</TraceMode>
+        <Timeout></Timeout>
+        <BinFormat>Elf</BinFormat>
+        <ExtractMapFile>False</ExtractMapFile>
     </PropertyGroup>
 
     <ItemGroup>
       <None Remove="Base\resources\cur.bmp" />
       <None Remove="Base\resources\os_install_bg.bmp" />
+      <None Remove="Base\resources\os_next_inst_img.bmp" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Include="Base\resources\cur.bmp" />
       <EmbeddedResource Include="Base\resources\os_install_bg.bmp" />
+      <EmbeddedResource Include="Base\resources\os_next_inst_img.bmp" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Cosmos.Build" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="Cosmos.Debug.Kernel" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="Cosmos.System2" Version="0-*" NoWarn="NU1604" />
+        <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     </ItemGroup>
 
     <ItemGroup>
