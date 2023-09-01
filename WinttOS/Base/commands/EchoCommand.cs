@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Base.Utils.Commands;
 
 namespace WinttOS.Base.commands
 {
@@ -10,7 +11,7 @@ namespace WinttOS.Base.commands
     {
         public EchoCommand(String name) : base(name)
         {
-
+            HelpCommandManager.addCommandUageStrToManager(@"echo <message> - repeats message");
         }
 
         public override string execute(string[] arguments)

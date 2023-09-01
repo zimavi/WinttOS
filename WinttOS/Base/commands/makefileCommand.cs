@@ -4,12 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Base.Utils.Commands;
 
 namespace WinttOS.Base.commands
 {
     public class makefileCommand : Command
     {
-        public makefileCommand(string name) : base(name) { }
+        public makefileCommand(string name) : base(name) 
+        {
+            HelpCommandManager.addCommandUageStrToManager(@"mkfile <new.file> - creates new file");
+        }
 
         public override string execute(string[] arguments)
         {

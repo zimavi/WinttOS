@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Base.Utils.Programs;
 
-namespace WinttOS.Base.MIV
+namespace WinttOS.Base.Programs
 {
-    public class MIV
+    public class MIV : IWinttProgram
     {
 
-        public static String stringCopy(String value)
+        public static string stringCopy(string value)
         {
-            String newString = String.Empty;
+            string newString = string.Empty;
 
             for (int i = 0; i < value.Length - 1; i++)
             {
@@ -22,7 +23,7 @@ namespace WinttOS.Base.MIV
             return newString;
         }
 
-        public static void printMIVScreen(char[] chars, int pos, String infoBar, Boolean editMode)
+        public static void printMIVScreen(char[] chars, int pos, string infoBar, bool editMode)
         {
             int countNewLine = 0;
             int countChars = 0;
@@ -77,14 +78,14 @@ namespace WinttOS.Base.MIV
 
         }
 
-        public static String miv(String start)
+        public static string miv(string start)
         {
-            Boolean editMode = false;
+            bool editMode = false;
             int pos = 0;
             char[] chars = new char[2000];
-            String infoBar = String.Empty;
+            string infoBar = string.Empty;
 
-            
+
             pos = start.Length;
 
             for (int i = 0; i < start.Length; i++)
@@ -112,7 +113,7 @@ namespace WinttOS.Base.MIV
                         {
                             if (infoBar == ":wq")
                             {
-                                String returnString = String.Empty;
+                                string returnString = string.Empty;
                                 for (int i = 0; i < pos; i++)
                                 {
                                     returnString += chars[i];
@@ -182,7 +183,7 @@ namespace WinttOS.Base.MIV
                 else if (keyInfo.Key == ConsoleKey.Escape)
                 {
                     editMode = false;
-                    infoBar = String.Empty;
+                    infoBar = string.Empty;
                     printMIVScreen(chars, pos, infoBar, editMode);
                     continue;
                 }
@@ -239,27 +240,28 @@ namespace WinttOS.Base.MIV
             GlobalData.fileToEdit = file;
             try
             {
-                if (File.Exists(@"0:\" + GlobalData.currDir + @"\" + GlobalData.fileToEdit))
+                if (File.Exists(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit))
                 {
                     Console.WriteLine("Found file!");
                 }
-                else if (!File.Exists(@"0:\" + GlobalData.currDir + @"\" + GlobalData.fileToEdit))
+                else if (!File.Exists(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit))
                 {
                     Console.WriteLine("Creating file!");
-                    File.Create(@"0:\" + GlobalData.currDir + @"\" + GlobalData.fileToEdit);
+                    File.Create(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit);
                 }
-                Console.Clear();
+                //Console.Clear();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
 
-            String text = String.Empty;
+            string text = string.Empty;
             Console.WriteLine("Do you want to open " + GlobalData.fileToEdit + " content? (Yes/No)");
-            if (Console.ReadLine().ToLower() == "yes" || Console.ReadLine().ToLower() == "y")
+            string input = Console.ReadLine().ToLower();
+            if (input == "yes" || input == "y")
             {
-                text = miv(File.ReadAllText(@"0:\" + GlobalData.currDir + @"\" + GlobalData.fileToEdit));
+                text = miv(File.ReadAllText(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit));
             }
             else
             {
@@ -272,7 +274,7 @@ namespace WinttOS.Base.MIV
             {
                 File.WriteAllText(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit, text);
                 Console.Clear();
-                Console.WriteLine(@"Content has been saved to 0:\" + GlobalData.currDir + @"\" + GlobalData.fileToEdit);
+                Console.WriteLine(@"Content has been saved to 0:\" + GlobalData.currDir + GlobalData.fileToEdit);
             }
         }
     }

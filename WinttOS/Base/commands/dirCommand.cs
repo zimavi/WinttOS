@@ -5,12 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Cosmos.System.FileSystem.Listing;
+using WinttOS.Base.Utils.Commands;
 
 namespace WinttOS.Base.commands
 {
     public class dirCommand : Command
     {
-        public dirCommand(string name) : base(name) { }
+        public dirCommand(string name) : base(name) 
+        {
+            HelpCommandManager.addCommandUageStrToManager(@"dir - get list of all directories and files");
+        }
 
         public override string execute(string[] arguments)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Base.Utils.Commands;
 
 namespace WinttOS.Base.commands
 {
@@ -11,7 +12,7 @@ namespace WinttOS.Base.commands
 
         public ShutdownCommand(String name) : base(name)
         {
-
+            HelpCommandManager.addCommandUageStrToManager(@"shutdown [-r, -s] - power off pc or reboot it");
         }
 
         public override string execute(string[] arguments)

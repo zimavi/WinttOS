@@ -3,12 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Base.Utils.Commands;
 
 namespace WinttOS.Base.commands
 {
     public class makedirCommand : Command
     {
-        public makedirCommand(string name) : base(name) { }
+        public makedirCommand(string name) : base(name) 
+        {
+            HelpCommandManager.addCommandUageStrToManager(@"mkdir <dir> - creates new directory in current one");
+        }
 
         public override string execute(string[] arguments)
         {

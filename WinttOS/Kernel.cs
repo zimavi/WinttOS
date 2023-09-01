@@ -4,6 +4,8 @@ using System.Text;
 using WinttOS.Base;
 using Sys = Cosmos.System;
 using System.Linq;
+using WinttOS.Base.Utils.Commands;
+using WinttOS.Base.Programs.RunCommands;
 
 namespace WinttOS
 {
@@ -19,9 +21,16 @@ namespace WinttOS
 
             manager = new CommandManager();
 
+            foreach(Cosmos.HAL.NetworkDevice device in Cosmos.HAL.NetworkDevice.Devices)
+                device?.Enable();
+
             Console.Clear();
 
             Console.WriteLine("WinttOS loaded successfully!");
+
+
+            manager.registerCommand(new mivCommand("miv"));
+
         }
 
         private CommandManager manager;
@@ -33,6 +42,7 @@ namespace WinttOS
             string[] split = input.Split(' ');
 
             string response = this.manager.processInputExample(input);
+            Console.WriteLine(response);
         }
 
         protected override void AfterRun()
