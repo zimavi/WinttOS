@@ -31,7 +31,6 @@ namespace WinttOS.Base
                 new changeDirectoryCommand("cd"),
                 new dirCommand("dir"),
                 new SystemInfoCommand("sysinfo"),
-                new CatUtilCommand("cat"),
                 new installCommand("install"),
                 new HelpCommand("help")
             };
