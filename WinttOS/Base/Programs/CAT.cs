@@ -4,21 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WinttOS.Base.Utils.Commands;
+using WinttOS.Base.Utils.Programs;
 
-namespace WinttOS.Base.commands
+namespace WinttOS.Base.Programs
 {
-    //
-    // CAT VERISON 0.1.0
-    //
-    public class CatUtilCommand : Command
+    public class CAT : IWinttCommandProgram
     {
-        public CatUtilCommand(string name) : base(name)
-        {
-            HelpCommandManager.addCommandUageStrToManager(@"cat <path\to\file> - reads all text from file (use 'man cat' for more info)");
-        }
-
-        public override string execute(string[] arguments)
+        public string Execute(string[] arguments)
         {
             string text = "";
             if (arguments.Length == 0)
@@ -29,7 +21,7 @@ namespace WinttOS.Base.commands
             {
                 if (arguments[0] == "-n")
                 {
-                    for(int i = 0; i < arguments.Length; i++)
+                    for (int i = 0; i < arguments.Length; i++)
                     {
                         text += $"\t{i + 1} {File.ReadAllText(@"0:\" + GlobalData.currDir + arguments[i])}";
                     }
@@ -38,7 +30,7 @@ namespace WinttOS.Base.commands
                 {
                     text = Console.ReadLine();
                     File.WriteAllText(@"0:\" + GlobalData.currDir + arguments[1], text);
-                    return String.Empty;
+                    return string.Empty;
                 }
                 else if (arguments[1] == ">")
                 {
@@ -66,7 +58,7 @@ namespace WinttOS.Base.commands
                 }
                 else
                 {
-                    foreach(string str in arguments)
+                    foreach (string str in arguments)
                     {
                         text += File.ReadAllText(@"0:\" + GlobalData.currDir + str);
                     }

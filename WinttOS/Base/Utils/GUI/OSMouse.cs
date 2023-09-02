@@ -30,7 +30,7 @@ namespace WinttOS.Base.Utils.GUI
             int X = (int)Sys.MouseManager.X;
             int Y = (int)Sys.MouseManager.Y;
 
-            _canvas.DrawImageAlpha(_cursor, X, Y); 
+            _canvas.DrawImageAlpha(_cursor, X, Y);
         }
 
     }

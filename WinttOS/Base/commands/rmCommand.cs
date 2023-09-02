@@ -9,9 +9,9 @@ namespace WinttOS.Base.commands
 {
     public class rmCommand : Command
     {
-        public rmCommand(string name) : base(name) 
+        public rmCommand(string name) : base(name, false) 
         {
-            HelpCommandManager.addCommandUageStrToManager(@"rm <path\to\dir\or\file> - deletes directory or file");
+            HelpCommandManager.addCommandUsageStrToManager(@"rm <path\to\dir\or\file> - deletes directory or file");
         }
         public override string execute(string[] arguments)
         {

@@ -9,9 +9,9 @@ namespace WinttOS.Base.commands
 {
     internal class changeDirectoryCommand : Command
     {
-        public changeDirectoryCommand(string name) : base(name) 
+        public changeDirectoryCommand(string name) : base(name, false) 
         {
-            HelpCommandManager.addCommandUageStrToManager(@"cd <path\to\folder> - change directory");
+            HelpCommandManager.addCommandUsageStrToManager(@"cd <path\to\folder> - change directory");
         }
 
         public override string execute(string[] arguments)

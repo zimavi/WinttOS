@@ -11,9 +11,18 @@ namespace WinttOS.Base.commands
 {
     public class dirCommand : Command
     {
-        public dirCommand(string name) : base(name) 
+        public dirCommand(string name) : base(name, false) 
         {
-            HelpCommandManager.addCommandUageStrToManager(@"dir - get list of all directories and files");
+            HelpCommandManager.addCommandUsageStrToManager(@"dir - get list of all directories and files");
+            manual = new List<string>()
+            {
+                "Dir command is used for checking what is in current directory.",
+                "When you run this command, you will see some lines.",
+                "First is going to be '<DIR> 0:\\whatever\\folder' what means",
+                "that we are looking files and folders in '0:\\whatever\\folder'",
+                "Then we can see both '<FILE> whatever.name   size in MB' and",
+                "'<DIR> whatever_name' which shows us is that a file or folder."
+            };
         }
 
         public override string execute(string[] arguments)
@@ -22,7 +31,7 @@ namespace WinttOS.Base.commands
             {
                 var dir_files = GlobalData.fs.GetDirectoryListing(@"0:\" + GlobalData.currDir);
 
-                Console.WriteLine($"<DIR>  0:\\{GlobalData.currDir} ({(int)GlobalData.currDir[0]})");
+                Console.WriteLine($"<DIR>  0:\\{GlobalData.currDir}");
 
                 foreach (var file in dir_files)
                 {

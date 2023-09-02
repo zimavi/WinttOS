@@ -12,7 +12,7 @@ namespace WinttOS.Base.Utils.Commands
     {
         private static List<string> helpList = new List<string>();
 
-        public static void addCommandUageStrToManager(string usage)
+        public static void addCommandUsageStrToManager(string usage)
         {
             helpList.Add(usage);
         }

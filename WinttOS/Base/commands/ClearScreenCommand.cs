@@ -9,9 +9,9 @@ namespace WinttOS.Base.commands
 {
     public class ClearScreenCommand : Command
     {
-        public ClearScreenCommand(string name) : base(name)
+        public ClearScreenCommand(string name) : base(name, false)
         {
-            HelpCommandManager.addCommandUageStrToManager(@"clear - clears screen");
+            HelpCommandManager.addCommandUsageStrToManager(@"clear - clears screen");
         }
         public override string execute(string[] arguments)
         {

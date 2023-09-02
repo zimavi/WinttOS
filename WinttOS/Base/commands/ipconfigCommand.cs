@@ -10,9 +10,9 @@ namespace WinttOS.Base.commands
     public class ipconfigCommand : Command
     {
 
-        public ipconfigCommand(string name) : base(name)
+        public ipconfigCommand(string name) : base(name, false)
         {
-            HelpCommandManager.addCommandUageStrToManager(@"ipconfig - gets list of network devices");
+            HelpCommandManager.addCommandUsageStrToManager(@"ipconfig - gets list of network devices");
         }
 
         public override string execute(string[] arguments)

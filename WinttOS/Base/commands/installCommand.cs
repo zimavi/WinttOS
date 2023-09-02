@@ -2,6 +2,7 @@
 using IL2CPU.API.Attribs;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -24,13 +25,22 @@ namespace WinttOS.Base.commands
         [ManifestResourceStream(ResourceName = "WinttOS.Base.resources.os_next_inst_img.bmp")]
         private static byte[] button1_img;
 
-        public installCommand(string name) : base(name) 
+        public installCommand(string name) : base(name, true) 
         {
-            HelpCommandManager.addCommandUageStrToManager(@"install - show install gui (WIP)");
+            HelpCommandManager.addCommandUsageStrToManager(@"install - show install gui (WIP)");
+            manual = new List<string>()
+            {
+                "This command runs install gui, but",
+                "it still in development. So it's only test.",
+                "If you run this command, to power pc off, use",
+                "'Next' button in menu"
+            };
         }
 
         public override string execute(string[] arguments)
         {
+            if (!DevModeCommand.isInDebugMode)
+                return null;
             //try
             //{
                 GlobalData.ui = new UI();
@@ -40,10 +50,8 @@ namespace WinttOS.Base.commands
                 bg = new Bitmap(bgBytes);
                 button1 = new InstallNextButton(1207, 795, bitmap);
 
-                //Thread th = new Thread(ScreenUpdateWorker);
-                //th.Start();
-
                 ScreenUpdateWorker();
+
             //} catch (Exception ex)
             //{
             //    Console.WriteLine(ex.Message);

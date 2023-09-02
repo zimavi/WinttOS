@@ -32,7 +32,8 @@ namespace WinttOS.Base
                 new dirCommand("dir"),
                 new SystemInfoCommand("sysinfo"),
                 new installCommand("install"),
-                new HelpCommand("help")
+                new HelpCommand("help"),
+                new ManCommand("man")
             };
         }
 
@@ -54,7 +55,7 @@ namespace WinttOS.Base
             }
         }
 
-        public string processInputExample(string input)
+        public string processInput(string input)
         {
             string[] split = input.Split(' ');
 
@@ -86,9 +87,12 @@ namespace WinttOS.Base
             List<String> commands = new List<string>();
             foreach(Command command in this.commands)
             {
-                commands.Add(command.name);
+                if(!command.isHidden)
+                    commands.Add(command.name);
             }
             return commands;
         }
+
+        public List<Command> getCommandsListInstances() => commands;
     }
 }

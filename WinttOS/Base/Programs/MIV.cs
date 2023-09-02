@@ -8,7 +8,7 @@ using WinttOS.Base.Utils.Programs;
 
 namespace WinttOS.Base.Programs
 {
-    public class MIV : IWinttProgram
+    public class MIV : IWinttCommandProgram
     {
 
         public static string stringCopy(string value)
@@ -276,6 +276,12 @@ namespace WinttOS.Base.Programs
                 Console.Clear();
                 Console.WriteLine(@"Content has been saved to 0:\" + GlobalData.currDir + GlobalData.fileToEdit);
             }
+        }
+
+        public string Execute(string[] args)
+        {
+            StartMIV(args[0]);
+            return null;
         }
     }
 }

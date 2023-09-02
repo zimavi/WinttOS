@@ -9,9 +9,9 @@ namespace WinttOS.Base.commands
 {
     public class SystemInfoCommand : Command
     {
-        public SystemInfoCommand(string name) : base(name) 
+        public SystemInfoCommand(string name) : base(name, false) 
         {
-            HelpCommandManager.addCommandUageStrToManager(@"sysinfo - shows PC info");
+            HelpCommandManager.addCommandUsageStrToManager(@"sysinfo - shows PC info");
         }
 
         public override string execute(string[] arguments)

@@ -9,9 +9,15 @@ namespace WinttOS.Base.commands
 {
     public class EchoCommand : Command
     {
-        public EchoCommand(String name) : base(name)
+        public EchoCommand(String name) : base(name, false)
         {
-            HelpCommandManager.addCommandUageStrToManager(@"echo <message> - repeats message");
+            HelpCommandManager.addCommandUsageStrToManager(@"echo <message> - repeats message");
+            manual = new List<string>()
+            {
+                "Echo command return all text that was gave after 'echo'",
+                "For example:",
+                "Console input 'echo Hello World!' will return 'Hello World!' message"
+            };
         }
 
         public override string execute(string[] arguments)

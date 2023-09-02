@@ -9,14 +9,18 @@ namespace WinttOS.Base.commands
 {
     public class VerisonCommand : Command
     {
-        public VerisonCommand(string name) : base(name) 
+        public VerisonCommand(string name) : base(name, false) 
         {
-            HelpCommandManager.addCommandUageStrToManager(@"version - shows OS version");
+            HelpCommandManager.addCommandUsageStrToManager(@"version - shows OS version");
+            manual = new List<string>()
+            {
+                "Version command will return version of OS"
+            };
         }
 
         public override string execute(string[] args)
         {
-            return $"WinttOS v.0.0.1\nMade with Cosmos Kernel";
+            return $"WinttOS v.0.1.0-dev build 387\nPowered by Cosmos Kernel";
         }
     }
 }

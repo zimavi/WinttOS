@@ -9,9 +9,9 @@ namespace WinttOS.Base.commands
 {
     public class makedirCommand : Command
     {
-        public makedirCommand(string name) : base(name) 
+        public makedirCommand(string name) : base(name, false) 
         {
-            HelpCommandManager.addCommandUageStrToManager(@"mkdir <dir> - creates new directory in current one");
+            HelpCommandManager.addCommandUsageStrToManager(@"mkdir <dir> - creates new directory in current one");
         }
 
         public override string execute(string[] arguments)
@@ -24,7 +24,8 @@ namespace WinttOS.Base.commands
             {
                 Console.Write("Enter new dir name: ");
                 string dir = Console.ReadLine();
-                GlobalData.fs.CreateDirectory(@"0:\" + GlobalData.currDir + dir);
+                // Added replacment of spaces in names into _ for preventing unopenable folders
+                GlobalData.fs.CreateDirectory(@"0:\" + GlobalData.currDir + string.Join('_', dir.Split(' ')));
             }
             return "Created directory!";
         }

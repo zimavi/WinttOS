@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace WinttOS.Base.Utils.Programs
 {
-    public interface IWinttProgram // interfaces aren't used for now
+    public interface IWinttCommandProgram // interfaces aren't used for now
     {
-        public string Run();
-
-        public void Abort();
+        public string Execute(string[] args);
     }
 }

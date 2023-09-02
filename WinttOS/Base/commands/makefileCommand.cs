@@ -10,9 +10,9 @@ namespace WinttOS.Base.commands
 {
     public class makefileCommand : Command
     {
-        public makefileCommand(string name) : base(name) 
+        public makefileCommand(string name) : base(name, false) 
         {
-            HelpCommandManager.addCommandUageStrToManager(@"mkfile <new.file> - creates new file");
+            HelpCommandManager.addCommandUsageStrToManager(@"mkfile <new.file> - creates new file");
         }
 
         public override string execute(string[] arguments)
@@ -25,8 +25,8 @@ namespace WinttOS.Base.commands
             {
                 Console.Write("Enter file name: ");
                 string file = Console.ReadLine();
-
-                var file_stream = File.Create(@"0:\" + GlobalData.currDir + @"\" + file);
+                // Added replacment of spaces in names into _ for preventing unopenable files
+                var file_stream = File.Create(@"0:\" + GlobalData.currDir + @"\" + string.Join('\n', file.Split(' ')));
             }
 
             return "Created file!";

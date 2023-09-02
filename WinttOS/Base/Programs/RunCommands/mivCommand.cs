@@ -9,9 +9,9 @@ namespace WinttOS.Base.Programs.RunCommands
 {
     public class mivCommand : Command
     {
-        public mivCommand(string name) : base(name) 
+        public mivCommand(string name) : base(name, false) 
         {
-            HelpCommandManager.addCommandUageStrToManager(@"miv <path\to\file> - edit file");
+            HelpCommandManager.addCommandUsageStrToManager(@"miv <path\to\file> - edit file");
         }
 
         public override string execute(string[] arguments)

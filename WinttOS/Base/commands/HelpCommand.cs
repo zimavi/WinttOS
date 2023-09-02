@@ -9,7 +9,7 @@ namespace WinttOS.Base.commands
 {
     public class HelpCommand : Command
     {
-        public HelpCommand(string name) : base(name) 
+        public HelpCommand(string name) : base(name, false) 
         {
         }
 
