@@ -45,7 +45,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Base\Programs\Manuals\" />
+      <Folder Include="Base\Programs\ProgramsExecutables\" />
     </ItemGroup>
 
 </Project>

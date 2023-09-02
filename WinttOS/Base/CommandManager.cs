@@ -11,30 +11,51 @@ using WinttOS.Base.Programs.RunCommands;
 
 namespace WinttOS.Base
 {
+
     public class CommandManager
     {
         private List<Command> commands;
+
         public CommandManager()
         {
-            this.commands = new List<Command>(1);
-            this.commands.Add(new ClearScreenCommand("clear"));
-            this.commands.Add(new EchoCommand("echo"));
-            this.commands.Add(new VerisonCommand("version"));
-            this.commands.Add(new ShutdownCommand("shutdown"));
-            this.commands.Add(new ipconfigCommand("ipconfig"));
-            this.commands.Add(new makefileCommand("mkfile"));
-            this.commands.Add(new makedirCommand("mkdir"));
-            this.commands.Add(new rmCommand("rm"));
-            this.commands.Add(new changeDirectoryCommand("cd"));
-            this.commands.Add(new dirCommand("dir"));
-            this.commands.Add(new SystemInfoCommand("sysinfo"));
-            this.commands.Add(new WriteFileCommand("wrfile"));
-            this.commands.Add(new mivCommand("miv"));
-            //this.commands.Add(new loadUiCommand("load_ui"));
-            this.commands.Add(new installCommand("install"));
+            this.commands = new List<Command>
+            {
+                new ClearScreenCommand("clear"),
+                new EchoCommand("echo"),
+                new VerisonCommand("version"),
+                new ShutdownCommand("shutdown"),
+                new ipconfigCommand("ipconfig"),
+                new makefileCommand("mkfile"),
+                new makedirCommand("mkdir"),
+                new rmCommand("rm"),
+                new changeDirectoryCommand("cd"),
+                new dirCommand("dir"),
+                new SystemInfoCommand("sysinfo"),
+                new installCommand("install"),
+                new HelpCommand("help"),
+                new ManCommand("man")
+            };
         }
 
-        public string processInputExample(string input)
+        /// <summary>
+        /// Adds command to command list
+        /// </summary>
+        /// <param name="command">Command's class that implements <see cref="Command"/> abstract class</param>
+        /// <returns>true if successfull</returns>
+        public bool registerCommand(Command command)
+        {
+            try
+            {
+                this.commands.Add(command);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public string processInput(string input)
         {
             string[] split = input.Split(' ');
 
@@ -58,7 +79,20 @@ namespace WinttOS.Base
                 }
             }
 
-            return "Command '" + label + "' not exist, please type man <command> or help <command> or more details.";
+            return "Command '" + label + "' not exist, please type man <command> or help or more details.";
         }
+
+        public List<String> getCommandsList()
+        {
+            List<String> commands = new List<string>();
+            foreach(Command command in this.commands)
+            {
+                if(!command.isHidden)
+                    commands.Add(command.name);
+            }
+            return commands;
+        }
+
+        public List<Command> getCommandsListInstances() => commands;
     }
 }

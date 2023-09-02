@@ -10,7 +10,7 @@ namespace WinttOS.Base
 {
     public class GlobalData
     {
-        public static string currDir = null;
+        public static string currDir = "";
         public static Cosmos.System.FileSystem.CosmosVFS fs;
         public static string fileToEdit;
         public static UI ui;

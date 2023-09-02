@@ -7,16 +7,15 @@ using WinttOS.Base.Utils.Commands;
 
 namespace WinttOS.Base.commands
 {
-    public class ClearScreenCommand : Command
+    public class HelpCommand : Command
     {
-        public ClearScreenCommand(string name) : base(name, false)
+        public HelpCommand(string name) : base(name, false) 
         {
-            HelpCommandManager.addCommandUsageStrToManager(@"clear - clears screen");
         }
+
         public override string execute(string[] arguments)
         {
-            Console.Clear();
-            return string.Empty;
+            return HelpCommandManager.getCommandsUsageStringsAsString();
         }
     }
 }

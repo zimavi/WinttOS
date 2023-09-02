@@ -3,15 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Base.Utils.Commands;
 
 namespace WinttOS.Base.commands
 {
     public class ShutdownCommand : Command
     {
 
-        public ShutdownCommand(String name) : base(name)
+        public ShutdownCommand(String name) : base(name, false)
         {
-
+            HelpCommandManager.addCommandUsageStrToManager(@"shutdown [-r, -s] - power off pc or reboot it");
+            manual = new List<string>()
+            {
+                "Shutdown command is used for managing power in your PC",
+                "It has to have one of two arguments '-s' or '-r'",
+                "'-s' argument shuts PC down, and '-r' reboots it"
+            };
         }
 
         public override string execute(string[] arguments)

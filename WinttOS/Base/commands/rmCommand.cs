@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Base.Utils.Commands;
 
 namespace WinttOS.Base.commands
 {
     public class rmCommand : Command
     {
-        public rmCommand(string name) : base(name) { }
+        public rmCommand(string name) : base(name, false) 
+        {
+            HelpCommandManager.addCommandUsageStrToManager(@"rm <path\to\dir\or\file> - deletes directory or file");
+        }
         public override string execute(string[] arguments)
         {
             if(arguments.Length >= 1)
             {
                 try
                 {
-                    Cosmos.System.FileSystem.VFS.VFSManager.DeleteFile(@"0:\" + GlobalData.currDir + arguments[0]);
+                    Cosmos.System.FileSystem.VFS.VFSManager.DeleteFile(@"0:\" + GlobalData.currDir + String.Join(' ', arguments));
                 }
                 catch(Exception ex)
                 {

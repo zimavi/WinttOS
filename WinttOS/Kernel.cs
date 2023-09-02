@@ -4,12 +4,13 @@ using System.Text;
 using WinttOS.Base;
 using Sys = Cosmos.System;
 using System.Linq;
+using WinttOS.Base.Programs.RunCommands;
+using WinttOS.Base.commands;
 
 namespace WinttOS
 {
     public class Kernel : Sys.Kernel
     {
-        
 
         protected override void BeforeRun()
         {
@@ -19,20 +20,32 @@ namespace WinttOS
 
             manager = new CommandManager();
 
+            foreach(Cosmos.HAL.NetworkDevice device in Cosmos.HAL.NetworkDevice.Devices)
+                device?.Enable();
+
             Console.Clear();
 
             Console.WriteLine("WinttOS loaded successfully!");
+
+
+            manager.registerCommand(new mivCommand("miv"));
+            manager.registerCommand(new CatUtilCommand("cat"));
+            manager.registerCommand(new DevModeCommand("dev-mode"));
         }
 
-        private CommandManager manager;
+        public static CommandManager manager { get; private set; }
 
         protected override void Run()
         {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
             Console.Write(@$"0\{GlobalData.currDir}> ");
+            Console.ForegroundColor = ConsoleColor.White;
             string input = Console.ReadLine();
             string[] split = input.Split(' ');
 
-            string response = this.manager.processInputExample(input);
+            Console.ForegroundColor = ConsoleColor.Gray;
+            string response = manager.processInput(input);
+            Console.WriteLine(response);
         }
 
         protected override void AfterRun()
