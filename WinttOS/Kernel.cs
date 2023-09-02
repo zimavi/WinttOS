@@ -30,7 +30,7 @@ namespace WinttOS
 
 
             manager.registerCommand(new mivCommand("miv"));
-
+            manager.registerCommand(new CatUtilCommand("cat"));
         }
 
         private CommandManager manager;
