@@ -7,8 +7,10 @@ using Bitmap = Cosmos.System.Graphics.Bitmap;
 
 namespace WinttOS.Base.Utils.GUI
 {
+
     public abstract class OSButton
     {
+
         public readonly uint x;
         public readonly uint y;
         public readonly uint width;
@@ -16,6 +18,7 @@ namespace WinttOS.Base.Utils.GUI
         public readonly Color color;
         public readonly Bitmap image;
         private readonly bool usingImage;
+        public readonly bool imageHasAlpha;
 
         public OSButton(uint x, uint y, uint width, uint height, Color color)
         {
@@ -25,9 +28,10 @@ namespace WinttOS.Base.Utils.GUI
             this.height = height;
             this.color = color;
             usingImage = false;
+            imageHasAlpha = false;
         }
 
-        public OSButton(uint x, uint y, Bitmap image)
+        public OSButton(uint x, uint y, Bitmap image, bool hasAlpha)
         {
             this.x = x;
             this.y = y;
@@ -35,25 +39,40 @@ namespace WinttOS.Base.Utils.GUI
             this.height = image.Height;
             this.width = image.Width;
             usingImage = true;
+            imageHasAlpha = hasAlpha;
         }
 
-        public bool isMouseOver(Canvas canvas)
+        public void ProcessButtonInputAndScreenUpdate(Canvas canvas)
         {
 
-            uint mouseX = Cosmos.System.MouseManager.X;
-            uint mouseY = Cosmos.System.MouseManager.Y;
+            uint mouseX = MouseManager.X;
+            uint mouseY = MouseManager.Y;
 
             if (usingImage)
             {
-                //canvas.DrawImageAlpha(image, (int)x, (int)y);
-                return mouseX >= x && mouseX <= x + image.Width && mouseY >= y && mouseY <= y + image.Height;
+                if (imageHasAlpha)
+                    canvas.DrawImageAlpha(image, (int)x, (int)y);
+                else
+                    canvas.DrawImage(image, (int)x, (int)y);
+                if(mouseX >= x && mouseX <= x + image.Width && mouseY >= y && mouseY <= y + image.Height)
+                {
+                    onMouseHover();
+                    if (MouseManager.MouseState == MouseState.Left)
+                        onButtonPressed();
+                }
             }
             else
             {
-                //canvas.DrawFilledRectangle(color, (int)x, (int)y, (int)width, (int)height);
-                return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+                canvas.DrawFilledRectangle(color, (int)x, (int)y, (int)width, (int)height);
+                if(mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height)
+                {
+                    onMouseHover();
+                    if (MouseManager.MouseState == MouseState.Left)
+                        onButtonPressed();
+                }
             }
         }
         public virtual void onButtonPressed() { }
+        public virtual void onMouseHover() { }
     }
 }

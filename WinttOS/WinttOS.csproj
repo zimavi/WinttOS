@@ -26,9 +26,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Base\resources\button_power_off.bmp" />
       <None Remove="Base\resources\cur.bmp" />
       <None Remove="Base\resources\os_install_bg.bmp" />
       <None Remove="Base\resources\os_next_inst_img.bmp" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Base\resources\button_power_off.bmp" />
     </ItemGroup>
 
     <ItemGroup>
