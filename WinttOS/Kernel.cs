@@ -11,7 +11,7 @@ namespace WinttOS
 {
     public class Kernel : Sys.Kernel
     {
-
+        public static readonly string Version = "WinttOS v0.1.0-dev, build 449";
         protected override void BeforeRun()
         {
             GlobalData.fs = new Sys.FileSystem.CosmosVFS();

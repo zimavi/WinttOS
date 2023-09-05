@@ -11,20 +11,8 @@ namespace WinttOS.Base.GUI
     {
 
         public InstallNextButton(uint x, uint y, Bitmap image) :
-            base(x, y, image)
+            base(x, y, image, false)
         { }
 
-        public override void onButtonPressed()
-        {
-            uint mouseX = Cosmos.System.MouseManager.X;
-            uint mouseY = Cosmos.System.MouseManager.Y;
-
-            if (mouseX >= x && mouseX <= x + image.Width &&
-                mouseY >= y && mouseY <= y + image.Height && 
-                Sys.MouseManager.MouseState == Sys.MouseState.Left)
-            {
-                Sys.Power.Shutdown();
-            }
-        }
     }
 }
