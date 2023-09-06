@@ -33,7 +33,9 @@ namespace WinttOS.Base
                 new SystemInfoCommand("sysinfo"),
                 new installCommand("install"),
                 new HelpCommand("help"),
-                new ManCommand("man")
+                new ManCommand("man"),
+                new TimeCommand("time"),
+                new DateCommand("date"),
             };
         }
 

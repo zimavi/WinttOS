@@ -1,4 +1,5 @@
-﻿using Cosmos.System.Graphics;
+﻿using Cosmos.System.Coroutines;
+using Cosmos.System.Graphics;
 using IL2CPU.API.Attribs;
 using System;
 using System.Collections.Generic;
@@ -52,12 +53,15 @@ namespace WinttOS.Base.commands
             Buttons.Add(new PowerOffButton(1773, 936));
 
 
-            ScreenUpdateWorker();
+            var coroutine = new Coroutine(ScreenUpdateWorker());
+            coroutine.Start();
+
+            CoroutinePool.Main.StartPool();
 
             return String.Empty;
         }
 
-        private static void ScreenUpdateWorker()
+        private IEnumerator<CoroutineControlPoint> ScreenUpdateWorker()
         {
             while(true)
             {
@@ -67,7 +71,7 @@ namespace WinttOS.Base.commands
                 // Buttons tick
                 Buttons.ForEach((button) =>
                 {
-                    button.ProcessButtonInputAndScreenUpdate(GlobalData.ui._canvas);
+                    button.ButtonScreenUpdate(GlobalData.ui._canvas);
                 });
 
                 // Draw mouse cursor
@@ -75,6 +79,10 @@ namespace WinttOS.Base.commands
 
                 // Finish frame
                 GlobalData.ui._canvas.Display();
+
+                // Return that Update frame finished
+                yield return null;
+
                 // Start new frame
                 GlobalData.ui._canvas.Clear();
             }
