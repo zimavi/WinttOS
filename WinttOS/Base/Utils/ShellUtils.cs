@@ -1,4 +1,4 @@
-﻿using Cosmos.HAL;
+using Cosmos.HAL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace WinttOS.Base.Utils
         {
             Console.SetCursorPosition(0, Console.CursorTop - 1);
             ClearCurrentConsoleLine();
-            Console.Write($"{task}\t[");
+            Console.Write($"[");
             if (isSuccessful == ShellTaskResult.OK)  // I wanted to make it using swich case, but I'm too lazy to rewrite it 2 times :)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -47,11 +47,11 @@ namespace WinttOS.Base.Utils
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.Write(" WARN ");
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine($"] - {detailes}\n");
+                Console.WriteLine($"] {task} - {detailes}\n");
                 return;
             }
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("]\n");
+            Console.WriteLine("] {task}\n");
         }
     }
 
