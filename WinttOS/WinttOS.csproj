@@ -47,6 +47,7 @@
         <PackageReference Include="Cosmos.Debug.Kernel" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="Cosmos.System2" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+		<PackageReference Include="Cosmos.Plugs" Version="0-*" NoWarn="NU1604" />
     </ItemGroup>
 
     <ItemGroup>
