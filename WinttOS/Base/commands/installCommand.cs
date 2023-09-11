@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using WinttOS.Base.GUI;
 using WinttOS.Base.Utils;
 using WinttOS.Base.Utils.Commands;
+using WinttOS.Base.Utils.Debugging;
 using WinttOS.Base.Utils.GUI;
 
 namespace WinttOS.Base.commands
@@ -42,28 +43,39 @@ namespace WinttOS.Base.commands
 
         public override string execute(string[] arguments)
         {
-            if (!DevModeCommand.isInDebugMode)
-                return null;
+            try
+            {
+                //WinttDebugger.Critical("Executed not implemented command!", true, this);
 
-            GlobalData.ui = new UI();
-            GlobalData.ui.InitializeUI(new Mode(1920, 1080, ColorDepth.ColorDepth32));
-            Bitmap bitmap = new Bitmap(button1_img);
-            bg = new Bitmap(bgBytes);
-            Buttons.Add(new InstallNextButton(1207, 795, bitmap));
-            Buttons.Add(new PowerOffButton(1773, 936));
+                if (!DevModeCommand.isInDebugMode)
+                    return null;
+
+                GlobalData.ui = new UI();
+                GlobalData.ui.InitializeUI(new Mode(1920, 1080, ColorDepth.ColorDepth32));
+                Bitmap bitmap = new Bitmap(button1_img);
+                bg = new Bitmap(bgBytes);
+                Buttons.Add(new InstallNextButton(1207, 795, bitmap));
+                Buttons.Add(new PowerOffButton(1773, 936));
 
 
-            var coroutine = new Coroutine(ScreenUpdateWorker());
-            coroutine.Start();
+                var coroutine = new Coroutine(ScreenUpdateWorker());
+                coroutine.Start();
 
-            CoroutinePool.Main.StartPool();
+                CoroutinePool.Main.StartPool();
 
-            return String.Empty;
+                return String.Empty;
+            }
+            catch
+            {
+                GlobalData.ui._canvas.Disable();
+                GlobalData.ui._mouse._canvas.Disable();
+                throw;
+            }
         }
 
         private IEnumerator<CoroutineControlPoint> ScreenUpdateWorker()
         {
-            while(true)
+            while (true)
             {
                 // Show background
                 GlobalData.ui._canvas.DrawImage(bg, 0, 0);
@@ -72,6 +84,7 @@ namespace WinttOS.Base.commands
                 Buttons.ForEach((button) =>
                 {
                     button.ButtonScreenUpdate(GlobalData.ui._canvas);
+                    button.ProcessInput();
                 });
 
                 // Draw mouse cursor

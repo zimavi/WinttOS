@@ -19,13 +19,21 @@ namespace WinttOS.Base.commands
             {
                 try
                 {
+                    if (Kernel.ReadonlyFiles.Contains(@"0:\" + GlobalData.currDir + String.Join(' ', arguments)))
+                    {
+                        return "Unable to delete readonly file!";
+                    }    
                     Cosmos.System.FileSystem.VFS.VFSManager.DeleteFile(@"0:\" + GlobalData.currDir + String.Join(' ', arguments));
                 }
                 catch(Exception ex)
                 {
                     try
                     {
-                        Cosmos.System.FileSystem.VFS.VFSManager.DeleteDirectory(@"0:\" + GlobalData.currDir + arguments[0], true);
+                        if(Kernel.ReadonlyDirectories.Contains(@"0:\" + GlobalData.currDir + String.Join(' ', arguments)))
+                        {
+                            return "Unable to delete readonly directory!";
+                        }
+                        Cosmos.System.FileSystem.VFS.VFSManager.DeleteDirectory(@"0:\" + GlobalData.currDir + String.Join(' ', arguments), true);
                     }
                     catch (Exception ex2)
                     {

@@ -30,6 +30,7 @@
       <None Remove="Base\resources\cur.bmp" />
       <None Remove="Base\resources\os_install_bg.bmp" />
       <None Remove="Base\resources\os_next_inst_img.bmp" />
+      <None Remove="Base\resources\zap-ext-light18.psf" />
     </ItemGroup>
 
     <ItemGroup>
@@ -40,6 +41,7 @@
       <EmbeddedResource Include="Base\resources\cur.bmp" />
       <EmbeddedResource Include="Base\resources\os_install_bg.bmp" />
       <EmbeddedResource Include="Base\resources\os_next_inst_img.bmp" />
+      <EmbeddedResource Include="Base\resources\zap-ext-light18.psf" />
     </ItemGroup>
 
     <ItemGroup>
@@ -48,6 +50,7 @@
         <PackageReference Include="Cosmos.Debug.Kernel" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="Cosmos.System2" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
+		<PackageReference Include="Cosmos.Plugs" Version="0-*" NoWarn="NU1604" />
     </ItemGroup>
 
     <ItemGroup>

@@ -4,18 +4,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Base.Programs;
+using WinttOS.Base.Utils.Debugging;
 
 namespace WinttOS.Base.Utils
 {
     public class ShellUtils
     {
-        public static void ClearCurrentConsoleLine()
+        private static List<string> recentInput = new();
+        private static string currentInput = "";
+        private static string inputToDisplay = "";
+        private static int currentRecentPos = 0;
+        private static ShellUtils instance => new ShellUtils();
+        public static void ClearCurrentConsoleLine(int startPos = 0)
         {
             int currLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(0, Console.CursorTop);
-            //Console.Write(new string(' ', Console.WindowWidth));
-            Console.Write("\r" + new string(' ', Console.WindowWidth - 1) + "\r");
-            Console.SetCursorPosition(0, currLineCursor);
+            Console.SetCursorPosition(startPos, Console.CursorTop);
+            Console.Write(new string(' ', Console.WindowWidth - startPos));
+            //Console.Write("\r" + new string(' ', Console.WindowWidth - 1 - startPos) + "\r");
+            Console.SetCursorPosition(startPos, currLineCursor);
         }
 
         public static void MoveCursorUp(int steps = 1) => Console.SetCursorPosition(0, Console.CursorTop - steps);
@@ -29,7 +36,7 @@ namespace WinttOS.Base.Utils
         {
             Console.SetCursorPosition(0, Console.CursorTop - 1);
             ClearCurrentConsoleLine();
-            Console.Write($"[");
+            Console.Write("[");
             if (isSuccessful == ShellTaskResult.OK)  // I wanted to make it using swich case, but I'm too lazy to rewrite it 2 times :)
             {
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -51,7 +58,72 @@ namespace WinttOS.Base.Utils
                 return;
             }
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("] {task}\n");
+            Console.WriteLine($"] {task}\n");
+        }
+
+        [Obsolete("This method contains not working code! Please use Console.Readline()!", true)]
+        public static string ProcessExtendedShellInput()
+        {
+            inputToDisplay = "";
+            while (true)
+            {
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                if(key.Key == ConsoleKey.Enter)
+                {
+                    recentInput.Add(inputToDisplay);
+                    if (recentInput.Count > 10)
+                        recentInput.RemoveAt(0);
+                    ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
+                    Console.WriteLine(inputToDisplay);
+                    return inputToDisplay;
+                }
+                else if(key.Key == ConsoleKey.Backspace)
+                {
+                    if(inputToDisplay.Length > 0)
+                        inputToDisplay = inputToDisplay.Substring(0, inputToDisplay.Length - 1);
+                    ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
+                    Console.Write(inputToDisplay);
+                }
+                else if(key.Key == ConsoleKey.UpArrow)
+                {
+                    if(currentRecentPos < recentInput.Count - 1)
+                    {
+                        if (string.IsNullOrEmpty(currentInput))
+                            currentInput = inputToDisplay;
+                        currentRecentPos++;
+                        WinttDebugger.Trace(currentRecentPos.ToString(), instance);
+                        inputToDisplay = recentInput[currentRecentPos];
+                        ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
+                        Console.Write(inputToDisplay);
+
+                    }
+                }
+                else if(key.Key == ConsoleKey.DownArrow)
+                {
+                    if(currentRecentPos > 0)
+                    {
+                        currentRecentPos--;
+                        WinttDebugger.Trace(currentRecentPos.ToString(), instance);
+                        if (currentRecentPos == 0)
+                        {
+                            inputToDisplay = currentInput;
+                            currentInput = "";
+                        }
+                        else
+                        {
+                            inputToDisplay = recentInput[currentRecentPos];
+                            ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
+                            Console.Write(inputToDisplay);
+                        }    
+                    }
+                }
+                else if (!MIV.isForbiddenKey(key.Key))
+                {
+                    inputToDisplay += key.KeyChar;
+                    ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
+                    Console.Write(inputToDisplay);
+                }
+            }
         }
     }
 

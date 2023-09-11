@@ -38,7 +38,11 @@ namespace WinttOS.Base.commands
                     if (file.mEntryType == DirectoryEntryTypeEnum.File)
                         Console.WriteLine($"<FILE>\t{file.mName}\t{file.mSize}");
                     else if (file.mEntryType == DirectoryEntryTypeEnum.Directory)
+                    {
+                        if (file.mName.StartsWith('.'))
+                            continue;
                         Console.WriteLine($"<DIR>\t{file.mName}");
+                    }
                 }
             } catch (Exception e)
             {

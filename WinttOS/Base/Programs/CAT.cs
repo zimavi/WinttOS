@@ -41,7 +41,11 @@ namespace WinttOS.Base.Programs
                     else
                         return "File " + @"0:\" + GlobalData.currDir + arguments[0] + " does not exists!";
                     if (File.Exists(@"0:\" + GlobalData.currDir + arguments[2]))
+                    {
+                        if (Kernel.ReadonlyFiles.Contains(@"0:\" + GlobalData.currDir + arguments[2]))
+                            return "File is readonly!";
                         File.WriteAllText(@"0:\" + GlobalData.currDir + arguments[2], text);
+                    }
                     text = "The content will be copied in destination file";
                 }
                 else if (arguments[1] == ">>")
@@ -53,7 +57,11 @@ namespace WinttOS.Base.Programs
                     else
                         return "File " + @"0:\" + GlobalData.currDir + arguments[0] + " does not exists!";
                     if (File.Exists(@"0:\" + GlobalData.currDir + arguments[2]))
+                    {
+                        if (Kernel.ReadonlyFiles.Contains(@"0:\" + GlobalData.currDir + arguments[2]))
+                            return "File is readonly!";
                         File.AppendAllText(@"0:\" + GlobalData.currDir + arguments[2], text);
+                    }
                     text = "The content will be copied in destination file";
                 }
                 else

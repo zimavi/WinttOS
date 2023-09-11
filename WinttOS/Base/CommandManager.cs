@@ -36,6 +36,7 @@ namespace WinttOS.Base
                 new ManCommand("man"),
                 new TimeCommand("time"),
                 new DateCommand("date"),
+                new TouchCommand("touch"),
             };
         }
 

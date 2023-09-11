@@ -272,9 +272,15 @@ namespace WinttOS.Base.Programs
 
             if (text != null)
             {
-                File.WriteAllText(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit, text);
-                Console.Clear();
-                Console.WriteLine(@"Content has been saved to 0:\" + GlobalData.currDir + GlobalData.fileToEdit);
+                if (!Kernel.ReadonlyFiles.Contains(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit))
+                {
+                    File.WriteAllText(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit, text);
+                    Console.WriteLine(@"Content has been saved to 0:\" + GlobalData.currDir + GlobalData.fileToEdit);
+                }
+                else
+                {
+                    Console.WriteLine("Unable to save. File is readonly!");
+                }
             }
         }
 

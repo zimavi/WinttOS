@@ -18,6 +18,18 @@ namespace WinttOS.Base.commands
         public ipconfigCommand(string name) : base(name, false)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"ipconfig - gets list of network devices");
+            manual = new()
+            {
+                "Usage:",
+                "ipconfig                   - get network information",
+                "ipconfig [--release | -rl] - make current IP avaliable",
+                "ipconfig [--ask]           - ask DHCP for new IP",
+                "ipconfig [--list]          - get shorten info of network devices",
+                "ipconfig [--set] <device> <IPv4/CIDR> [gateway]",
+                "                           - set current IP manually",
+                "ipconfig [--nameserver|-ns] <--add|--remove|-rm> <IPv4>",
+                "                           - add or remove nameserver from config",
+            };
         }
 
         /*
@@ -164,6 +176,7 @@ namespace WinttOS.Base.commands
                     if (ip != null && subnet != null && gw != null)
                     {
                         IPConfig.Enable(nic, ip, subnet, gw);
+
                         return "Config OK!";
                     }
                     else if (ip != null && subnet != null)

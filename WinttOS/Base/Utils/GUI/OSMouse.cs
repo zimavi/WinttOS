@@ -11,7 +11,7 @@ namespace WinttOS.Base.Utils.GUI
 {
     public class OSMouse
     {
-        private readonly Canvas _canvas;
+        public readonly Canvas _canvas;
         private Bitmap _cursor;
         [ManifestResourceStream(ResourceName = "WinttOS.Base.resources.cur.bmp")]
         static byte[] cursorbytes;
