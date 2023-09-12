@@ -8,12 +8,12 @@ namespace WinttOS.Base.commands
 {
     internal class ExampleCrashCommand : Command
     {
-        public ExampleCrashCommand(string name) : base(name, true)
+        public ExampleCrashCommand(string name) : base(name, true, Users.User.AccessLevel.Administrator)
         { }
 
         public override string execute(string[] arguments)
         {
-            exampleStackTraceLogging();
+            exampleStackTraceLogging(); // Call stack not working :((
             return base.execute(arguments);
         }
 

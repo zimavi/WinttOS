@@ -24,7 +24,7 @@ namespace WinttOS.Base.commands
         //private static PowerOffButton button2;
         private static List<OSButton> Buttons = new List<OSButton>();
 
-        public installCommand(string name) : base(name, true) 
+        public installCommand(string name) : base(name, true, Users.User.AccessLevel.Administrator) 
         {
             HelpCommandManager.addCommandUsageStrToManager(@"install - show install gui (WIP)");
             manual = new List<string>()

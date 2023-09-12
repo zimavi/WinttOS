@@ -9,7 +9,7 @@ namespace WinttOS.Base.commands
 {
     public class TimeCommand : Command
     {
-        public TimeCommand(string name) : base(name, false)
+        public TimeCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager("time - get current time");
         }
@@ -22,7 +22,7 @@ namespace WinttOS.Base.commands
 
     public class DateCommand : Command
     {
-        public DateCommand(string name) : base(name, false)
+        public DateCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager("date [-f --full] - get current date");
         }

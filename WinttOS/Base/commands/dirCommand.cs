@@ -11,7 +11,7 @@ namespace WinttOS.Base.commands
 {
     public class dirCommand : Command
     {
-        public dirCommand(string name) : base(name, false) 
+        public dirCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
         {
             HelpCommandManager.addCommandUsageStrToManager(@"dir - get list of all directories and files");
             manual = new List<string>()

@@ -10,7 +10,7 @@ namespace WinttOS.Base.commands
 {
     public class TouchCommand : Command
     {
-        public TouchCommand(string name) : base(name, false)
+        public TouchCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager("touch <file_name> - creates new empty file");
         }

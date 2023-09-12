@@ -9,7 +9,7 @@ namespace WinttOS.Base.commands
 {
     public class EchoCommand : Command
     {
-        public EchoCommand(String name) : base(name, false)
+        public EchoCommand(String name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"echo <message> - repeats message");
             manual = new List<string>()

@@ -15,7 +15,7 @@ namespace WinttOS.Base.commands
     public class ipconfigCommand : Command
     {
 
-        public ipconfigCommand(string name) : base(name, false)
+        public ipconfigCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"ipconfig - gets list of network devices");
             manual = new()

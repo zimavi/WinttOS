@@ -9,7 +9,7 @@ namespace WinttOS.Base.commands
 {
     public class makedirCommand : Command
     {
-        public makedirCommand(string name) : base(name, false) 
+        public makedirCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
         {
             HelpCommandManager.addCommandUsageStrToManager(@"mkdir <dir> - creates new directory in current one");
         }

@@ -10,7 +10,7 @@ namespace WinttOS.Base.commands
 {
     public class WgetCommand : Command
     {
-        public WgetCommand(string name) : base(name, false)
+        public WgetCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager("wget <url/IPv4>");
         }

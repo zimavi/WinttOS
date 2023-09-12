@@ -9,7 +9,7 @@ namespace WinttOS.Base.commands
 {
     public class ClearScreenCommand : Command
     {
-        public ClearScreenCommand(string name) : base(name, false)
+        public ClearScreenCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"clear - clears screen");
         }

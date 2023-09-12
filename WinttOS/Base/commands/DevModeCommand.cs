@@ -9,7 +9,7 @@ namespace WinttOS.Base.commands
     public class DevModeCommand : Command
     {
         public static bool isInDebugMode { get; private set; }
-        public DevModeCommand(string name) : base(name, false)
+        public DevModeCommand(string name) : base(name, Users.User.AccessLevel.Administrator)
         {
             manual = new List<string>()
             {

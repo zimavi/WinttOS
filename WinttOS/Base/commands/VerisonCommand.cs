@@ -9,7 +9,7 @@ namespace WinttOS.Base.commands
 {
     public class VerisonCommand : Command
     {
-        public VerisonCommand(string name) : base(name, false) 
+        public VerisonCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
         {
             HelpCommandManager.addCommandUsageStrToManager(@"version - shows OS version");
         }

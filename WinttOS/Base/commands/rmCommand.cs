@@ -9,7 +9,7 @@ namespace WinttOS.Base.commands
 {
     public class rmCommand : Command
     {
-        public rmCommand(string name) : base(name, false) 
+        public rmCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
         {
             HelpCommandManager.addCommandUsageStrToManager(@"rm <path\to\dir\or\file> - deletes directory or file");
         }

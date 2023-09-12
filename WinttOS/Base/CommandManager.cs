@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using WinttOS.Base.commands;
 using WinttOS.Base.Programs.RunCommands;
+using WinttOS.Base.Users;
 
 namespace WinttOS.Base
 {
@@ -37,6 +38,8 @@ namespace WinttOS.Base
                 new TimeCommand("time"),
                 new DateCommand("date"),
                 new TouchCommand("touch"),
+                new SudoCommand("sudo"),
+                new WhoAmICommand("whoami"),
             };
         }
 
@@ -78,7 +81,43 @@ namespace WinttOS.Base
             {
                 if (cmd.name == label)
                 {
-                    return cmd.execute(args.ToArray());
+                    if(cmd.RequiredAccessLevel <= Kernel.UsersManager.currentUser.UserAccess)
+                    {
+                        return cmd.execute(args.ToArray());
+                    }
+                    return "You do not have permission to run this command!";
+                }
+            }
+
+            return "Command '" + label + "' not exist, please type man <command> or help or more details.";
+        }
+
+        public string processInput(ref TempUser user, string input)
+        {
+            string[] split = input.Split(' ');
+
+            string label = split[0];
+            List<String> args = new List<string>();
+
+            int ctr = 0;
+
+            foreach (String i in split)
+            {
+
+                if (ctr != 0) args.Add(i);
+                ++ctr;
+            }
+
+            foreach (Command cmd in this.commands)
+            {
+                if (cmd.name == label)
+                {
+                    if (cmd.RequiredAccessLevel <= user.UserAccess)
+                    {
+                        user = null;
+                        return cmd.execute(args.ToArray());
+                    }
+                    return "You do not have permission to run this command!";
                 }
             }
 

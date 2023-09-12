@@ -9,7 +9,7 @@ namespace WinttOS.Base.commands
 {
     public class SystemInfoCommand : Command
     {
-        public SystemInfoCommand(string name) : base(name, false) 
+        public SystemInfoCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
         {
             HelpCommandManager.addCommandUsageStrToManager(@"sysinfo - shows PC info");
         }

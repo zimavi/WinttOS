@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using WinttOS.Base.Users;
+
 namespace WinttOS.Base
 {
     public abstract class Command
@@ -13,8 +15,32 @@ namespace WinttOS.Base
 
         public readonly bool isHidden;
 
+        public readonly User.AccessLevel RequiredAccessLevel;
+
+        public Command(string name)
+        {
+            this.name = name;
+            manual = new();
+            isHidden = false;
+            RequiredAccessLevel = User.AccessLevel.Default;
+        }
+        public Command(string name, User.AccessLevel requiredAccessLevel)
+        {
+            this.RequiredAccessLevel = requiredAccessLevel;
+            this.name = name;
+            manual = new();
+            isHidden = false;
+        }
         public Command(string name, bool hidden)
         {
+            RequiredAccessLevel = User.AccessLevel.Default;
+            this.name = name;
+            manual = new List<string>();
+            isHidden = hidden;
+        }
+        public Command(string name, bool hidden, User.AccessLevel requiredAccessLevel)
+        {
+            RequiredAccessLevel = requiredAccessLevel;
             this.name = name;
             manual = new List<string>();
             isHidden = hidden;

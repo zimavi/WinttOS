@@ -27,21 +27,11 @@ namespace WinttOS
 {
     public class Kernel : Sys.Kernel
     {
-        public static readonly string Version = "WinttOS v0.1.0-dev, build 476";
+        public static readonly string Version = "WinttOS v0.1.0-dev, build 786";
         public static StringCollection ReadonlyFiles { get; internal set; }
         public static StringCollection ReadonlyDirectories { get; internal set; }
 
         public static UsersManager UsersManager { get; internal set; } = new(null);
-
-        /*
-        public static AudioMixer Mixer = new();
-        private static AC97 driver = AC97.Initialize(bufferSize: 4096);
-        private static AudioManager audioManager = new()
-        {
-            Stream = Mixer,
-            Output = driver
-        };
-        */
 
         protected override void BeforeRun()
         {
@@ -58,14 +48,6 @@ namespace WinttOS
                     @"0:\WinttOS",
                     @"0:\WinttOS\System32"
                 };
-
-                //ShellUtils.PrintTaskResult("Initialize drivers", ShellTaskResult.DOING);
-
-                //Mixer.Streams.Add(MemoryAudioStream.FromWave(Files.RawStartupSound));
-                //audioManager.Enable();
-
-                //ShellUtils.MoveCursorUp();
-                //ShellUtils.PrintTaskResult("Initialize drivers", ShellTaskResult.OK);
                 
 
                 ShellUtils.PrintTaskResult("Registration File System", ShellTaskResult.DOING);
@@ -87,8 +69,6 @@ namespace WinttOS
                 ShellUtils.PrintTaskResult("Registrating commands", ShellTaskResult.OK);
 
 
-
-                //Encoding.RegisterProvider(CosmosEncodingProvider.Instance);
 
                 Console.WriteLine("NOTE! If you have more then one network apadters, please remove all except one!\n");
 
@@ -116,8 +96,6 @@ namespace WinttOS
                 }
                 else
                     ShellUtils.PrintTaskResult("Discovering IP address", ShellTaskResult.FAILED);
-                
-                //DNSConfig.Add(new(8, 8, 8, 8));
 
                 Console.WriteLine("System initialization complete!");
 
@@ -134,36 +112,6 @@ namespace WinttOS
                 manager.registerCommand(new WgetCommand("wget"));
 
                 ShellUtils.PrintTaskResult("Registaring registry", ShellTaskResult.DOING);
-
-
-                //WinttRegistry.Registry = new();
-                //WinttRegistry.Registry.Registries[0].RegistryEntries.Add(new()
-                //{
-                //    Key = "OsVerison",
-                //    Value = Version
-                //});
-
-                //ShellUtils.MoveCursorUp();
-                //ShellUtils.PrintTaskResult("Registaring registry", ShellTaskResult.OK);
-
-
-                //CoroutinePool.Main.OnCoroutineCycle += TestMain;
-                //CoroutinePool.Main.StartPool();
-
-
-                //List<User> users = new() {
-                //    User.CreateAdminAccount("root", "root"),
-                //    User.CreateGuestAccount(),
-                //    new User.UserBuilder().SetUserName("Test")
-                //                          .SetPassword("qwerty")
-                //                          .Build()
-                //};
-
-                //var serializer = new WinttUserSerializer();
-                //string list = serializer.SerializeList(users);
-                //File.WriteAllBytes("0:\\users.dat", Encoding.UTF8.GetBytes(list));
-
-                //Console.ReadKey(true);
 
                 if(!UsersManager.LoadUsersData())
                 {
@@ -244,7 +192,6 @@ namespace WinttOS
                 Console.ForegroundColor = ConsoleColor.White;
                 string input = Console.ReadLine();
                 string[] split = input.Split(' ');
-
                 Console.ForegroundColor = ConsoleColor.Gray;
                 string response = manager.processInput(input);
                 Console.WriteLine(response);
@@ -267,5 +214,6 @@ namespace WinttOS
             Sys.Power.Shutdown();
             base.AfterRun();
         }
+
     }
 }

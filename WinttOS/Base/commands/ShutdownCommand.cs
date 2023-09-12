@@ -10,7 +10,7 @@ namespace WinttOS.Base.commands
     public class ShutdownCommand : Command
     {
 
-        public ShutdownCommand(String name) : base(name, false)
+        public ShutdownCommand(String name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"shutdown [-r, -s] - power off pc or reboot it");
             manual = new List<string>()

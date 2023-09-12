@@ -9,7 +9,7 @@ namespace WinttOS.Base.commands
 {
     internal class changeDirectoryCommand : Command
     {
-        public changeDirectoryCommand(string name) : base(name, false) 
+        public changeDirectoryCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
         {
             HelpCommandManager.addCommandUsageStrToManager(@"cd <path\to\folder> - change directory");
         }

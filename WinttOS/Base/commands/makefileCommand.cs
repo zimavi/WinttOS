@@ -10,7 +10,7 @@ namespace WinttOS.Base.commands
 {
     public class makefileCommand : Command
     {
-        public makefileCommand(string name) : base(name, false) 
+        public makefileCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
         {
             HelpCommandManager.addCommandUsageStrToManager(@"mkfile <new.file> - creates new file");
         }

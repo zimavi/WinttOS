@@ -9,7 +9,7 @@ namespace WinttOS.Base.commands
 {
     public class ManCommand : Command
     {
-        public ManCommand(string name) : base(name, false)
+        public ManCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager("man [command name] - shows list of manuals or command manual");
         }
