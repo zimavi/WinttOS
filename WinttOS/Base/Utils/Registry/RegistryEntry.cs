@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WinttOS.Base.Utils.Registry
 {
-    public class RegistryKey<T>
+    public class RegistryEntry<T>
     {
         public string Key { get; set; }
 

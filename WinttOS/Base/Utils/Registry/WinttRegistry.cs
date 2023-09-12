@@ -8,26 +8,33 @@ namespace WinttOS.Base.Utils.Registry
 {
     public class WinttRegistry
     {
-        public static WinttRegistry Registry { get; private set; }
+        public static WinttRegistry Registry { get; internal set; }
 
-        public List<RegistryKey<object>> RegistryKeys { get; set; }
+        public List<RegistryFolder> Registries { get; private set; } 
 
         #region Constructors
         public WinttRegistry()
         {
-        }
-        public WinttRegistry(params RegistryKey<object>[] registryKeys)
-        {
-            foreach(var key in registryKeys)
+            Registries = new()
             {
-                RegistryKeys.Add(key);
-            }
-        }
-        public WinttRegistry(List<RegistryKey<object>> registryKeys)
-        {
-            RegistryKeys = registryKeys;
+                new("HKEY_LOCAL_MACHINE"),
+                new("HKEY_CURRENT_USER")
+            };
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            string toReturn = "";
+            foreach (RegistryFolder folder in Registries)
+            {
+                foreach(RegistryEntry<object> entry in folder.RegistryEntries)
+                {
+                    toReturn += $" : {folder.Name}/{entry.Key}\n";
+                }
+            }
+            return toReturn;
+        }
     }
 }

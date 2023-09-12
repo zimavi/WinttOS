@@ -19,15 +19,10 @@ namespace WinttOS.Base.commands
     public class installCommand : Command
     {
         private static Bitmap bg;
-        [ManifestResourceStream(ResourceName = "WinttOS.Base.resources.os_install_bg.bmp")]
-        private static byte[] bgBytes;
 
         //private static InstallNextButton button1;
         //private static PowerOffButton button2;
         private static List<OSButton> Buttons = new List<OSButton>();
-
-        [ManifestResourceStream(ResourceName = "WinttOS.Base.resources.os_next_inst_img.bmp")]
-        private static byte[] button1_img;
 
         public installCommand(string name) : base(name, true) 
         {
@@ -52,8 +47,8 @@ namespace WinttOS.Base.commands
 
                 GlobalData.ui = new UI();
                 GlobalData.ui.InitializeUI(new Mode(1920, 1080, ColorDepth.ColorDepth32));
-                Bitmap bitmap = new Bitmap(button1_img);
-                bg = new Bitmap(bgBytes);
+                Bitmap bitmap = new Bitmap(Files.Installer.RawInstallerNextButtonImage);
+                bg = new Bitmap(Files.Installer.RawInstallerBackgroundImage);
                 Buttons.Add(new InstallNextButton(1207, 795, bitmap));
                 Buttons.Add(new PowerOffButton(1773, 936));
 

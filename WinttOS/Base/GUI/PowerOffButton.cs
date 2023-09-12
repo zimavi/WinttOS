@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Base.Utils;
 using WinttOS.Base.Utils.GUI;
 using Sys = Cosmos.System;
 
@@ -12,9 +13,7 @@ namespace WinttOS.Base.GUI
 {
     public class PowerOffButton : OSButton
     {
-        [ManifestResourceStream(ResourceName = "WinttOS.Base.resources.button_power_off.bmp")]
-        private static byte[] imageInBytes;
-        public PowerOffButton(uint x, uint y) : base(x, y, new Bitmap(imageInBytes), true)
+        public PowerOffButton(uint x, uint y) : base(x, y, new Bitmap(Files.RawPowerOffButtonImageAlpha), true)
         { 
             
         }
