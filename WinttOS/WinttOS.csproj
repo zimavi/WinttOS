@@ -27,37 +27,38 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="Base\resources\button_power_off.bmp" />
-      <None Remove="Base\resources\cur.bmp" />
-      <None Remove="Base\resources\os_install_bg.bmp" />
-      <None Remove="Base\resources\os_next_inst_img.bmp" />
-      <None Remove="Base\resources\win7-startup.wav" />
-      <None Remove="Base\resources\zap-ext-light18.psf" />
+      <None Remove="Core\resources\button_power_off.bmp" />
+      <None Remove="Core\resources\cur.bmp" />
+      <None Remove="Core\resources\os_install_bg.bmp" />
+      <None Remove="Core\resources\os_next_inst_img.bmp" />
+      <None Remove="Core\resources\win7-startup.wav" />
+      <None Remove="Core\resources\zap-ext-light18.psf" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Base\resources\button_power_off.bmp" />
+      <EmbeddedResource Include="Core\resources\button_power_off.bmp" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Include="Base\resources\cur.bmp" />
-      <EmbeddedResource Include="Base\resources\os_install_bg.bmp" />
-      <EmbeddedResource Include="Base\resources\os_next_inst_img.bmp" />
-      <EmbeddedResource Include="Base\resources\win7-startup.wav" />
-      <EmbeddedResource Include="Base\resources\zap-ext-light18.psf" />
+      <EmbeddedResource Include="Core\resources\cur.bmp" />
+      <EmbeddedResource Include="Core\resources\os_install_bg.bmp" />
+      <EmbeddedResource Include="Core\resources\os_next_inst_img.bmp" />
+      <EmbeddedResource Include="Core\resources\win7-startup.wav" />
+      <EmbeddedResource Include="Core\resources\zap-ext-light18.psf" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Cosmos.Build" Version="0-*" NoWarn="NU1604" />
-        <PackageReference Include="Cosmos.Coroutines" Version="1.0.0" />
+        <PackageReference Include="Cosmos.Coroutines" Version="1.0.1" />
         <PackageReference Include="Cosmos.Debug.Kernel" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="Cosmos.System2" Version="0-*" NoWarn="NU1604" />
+        <PackageReference Include="Spectre.Console" Version="0.47.0" />
         <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 		<PackageReference Include="Cosmos.Plugs" Version="0-*" NoWarn="NU1604" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Base\Programs\ProgramsExecutables\" />
+      <Folder Include="Core\Programs\ProgramsExecutables\" />
     </ItemGroup>
 
 </Project>
