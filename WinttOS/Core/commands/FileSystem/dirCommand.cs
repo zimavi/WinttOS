@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 using Cosmos.System.FileSystem.Listing;
 using WinttOS.Core.Utils.Commands;
 
-namespace WinttOS.Core.commands
+namespace WinttOS.Core.commands.FileSystem
 {
     public class dirCommand : Command
     {
-        public dirCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
+        public dirCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"dir - get list of all directories and files");
             manual = new List<string>()
@@ -44,13 +44,14 @@ namespace WinttOS.Core.commands
                         Console.WriteLine($"<DIR>\t{file.mName}");
                     }
                 }
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e.ToString() + "\n" + e.Message);
                 Console.WriteLine("No files in directory");
             }
 
-            return String.Empty;
+            return string.Empty;
         }
     }
 }

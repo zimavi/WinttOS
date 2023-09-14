@@ -6,11 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.Commands;
 
-namespace WinttOS.Core.commands
+namespace WinttOS.Core.commands.FileSystem
 {
     public class makefileCommand : Command
     {
-        public makefileCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
+        public makefileCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"mkfile <new.file> - creates new file");
         }
@@ -19,7 +19,7 @@ namespace WinttOS.Core.commands
         {
             if (arguments.Length >= 1)
             {
-                var file_stream = File.Create(@"0:\" + GlobalData.currDir + @"\" + String.Join(' ', arguments));
+                var file_stream = File.Create(@"0:\" + GlobalData.currDir + @"\" + string.Join(' ', arguments));
             }
             else
             {

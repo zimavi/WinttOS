@@ -5,7 +5,6 @@ using WinttOS.Core.Programs.RunCommands;
 using WinttOS.Core.commands;
 using Cosmos.System.Network.IPv4.UDP.DHCP;
 using Cosmos.HAL;
-using WinttOS.Core.Utils;
 using WinttOS.Core.Utils.Debugging;
 using Cosmos.Core.Memory;
 using WinttOS.Core.Users;
@@ -14,6 +13,9 @@ using Cosmos.System.Coroutines;
 using System.Collections.Generic;
 using WinttOS.Core.Services;
 using System.Linq;
+using WinttOS.Core.commands.Misc;
+using WinttOS.Core.Utils.System;
+using WinttOS.Core.Utils.Processing;
 
 namespace WinttOS
 {
@@ -164,8 +166,14 @@ namespace WinttOS
 
                 WinttDebugger.Trace("Cleanned " + Heap.Collect() + " objects", this);
 
-                CoroutinePool.Main.AddCoroutine(new(serviceHandler()));
+                CoroutinePool.Main.AddCoroutine(new(ProcessManager.UpdateProcesses()));
                 CoroutinePool.Main.OnCoroutineCycle.Add(ThreadCycleFinish);
+
+                ServiceProvider.AddService(new TestService());
+
+                ProcessManager.RegisterProcess(ServiceProvider);
+                ProcessManager.StartProcess(0);
+
                 CoroutinePool.Main.StartPool();
 
             } catch (Exception ex)
@@ -175,6 +183,9 @@ namespace WinttOS
         }
 
         public static CommandManager manager { get; private set; }
+        public static ProcessManager ProcessManager { get; private set; } = new();
+
+        public static WinttKernelServiceProvider ServiceProvider { get; private set; } = new();
 
         public static bool FinishingKernel { get; private set; } = false;
         private static bool isRebooting = false;
@@ -203,6 +214,8 @@ namespace WinttOS
         {
             try
             {
+                if (FinishingKernel)
+                    return;
                 if (didRunCycle)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -241,9 +254,13 @@ namespace WinttOS
         {
             while (true)
             {
-                if (CoroutinePool.Main.RunningCoroutines.Count() == 1)
-                    break;
+                WinttDebugger.Trace($"CoroutinePool.Main.RunningCoroutines.Count() => {CoroutinePool.Main.RunningCoroutines.Count()}", this);
                 yield return WaitFor.Seconds(3);
+                foreach (var coroutine in CoroutinePool.Main.RunningCoroutines)
+                {
+                    coroutine.Stop();
+                }
+                break;
             }
             if (isRebooting)
                 Sys.Power.Reboot();

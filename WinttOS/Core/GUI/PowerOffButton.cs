@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WinttOS.Core.Utils;
 using WinttOS.Core.Utils.GUI;
+using WinttOS.Core.Utils.System;
 using Sys = Cosmos.System;
 
 namespace WinttOS.Core.GUI

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinttOS.Core.commands
+namespace WinttOS.Core.commands.Misc
 {
     public class DevModeCommand : Command
     {
@@ -22,7 +22,7 @@ namespace WinttOS.Core.commands
 
         public override string execute(string[] arguments)
         {
-            if(arguments.Length > 0 && (arguments[0] == "-i" || arguments[0] == "--info"))
+            if (arguments.Length > 0 && (arguments[0] == "-i" || arguments[0] == "--info"))
             {
                 return isInDebugMode ? "In debug mode" : "Not in debug mode";
             }

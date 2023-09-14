@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.Commands;
 
-namespace WinttOS.Core.commands
+namespace WinttOS.Core.commands.Screen
 {
     public class ClearScreenCommand : Command
     {

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Programs;
 
-namespace WinttOS.Core.Utils
+namespace WinttOS.Core.Utils.System
 {
     // 
     // 
@@ -52,7 +52,7 @@ namespace WinttOS.Core.Utils
         {
             string returnStr = "";
 
-            while(true)
+            while (true)
             {
                 ConsoleKeyInfo info = Console.ReadKey(true);
                 if (info.Key == ConsoleKey.Backspace)

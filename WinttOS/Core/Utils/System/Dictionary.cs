@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinttOS.Core.Utils
+namespace WinttOS.Core.Utils.System
 {
     public class Dictionary<TKey, TValue>
     {

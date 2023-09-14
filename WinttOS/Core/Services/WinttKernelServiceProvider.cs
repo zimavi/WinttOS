@@ -4,16 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Core.Utils.Processing;
 
 namespace WinttOS.Core.Services
 {
-    public class WinttKernelServiceProvider : IServiceProvider
+    public class WinttKernelServiceProvider : Process, IServiceProvider
     {
         #region Interface implemetation
 
         #region Fields / Variables
 
         private List<IService> _services = new();
+
+        public WinttKernelServiceProvider() : base("SrvProvider", ProcessType.KernelComponent)
+        { }
 
         public List<IService> Services => _services;
 
@@ -34,6 +38,32 @@ namespace WinttOS.Core.Services
                 if(service.IsRunning)
                     service.onServiceTick();
             });
+        }
+
+        public override void Update()
+        {
+            DoServiceProviderTick();
+        }
+        public override void Start()
+        {
+            base.Start();
+
+            foreach(var service in _services)
+            {
+                if(!service.IsRunning)
+                    service.onServiceStart();
+            }
+        }
+
+        public override void Stop()
+        {
+            base.Stop();
+
+            foreach (var service in _services)
+            {
+                if (service.IsRunning)
+                    service.onServiceFinish();
+            }
         }
 
         public void FinishService(string serviceName)

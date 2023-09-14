@@ -5,35 +5,35 @@ using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.Commands;
 
-namespace WinttOS.Core.commands
+namespace WinttOS.Core.commands.FileSystem
 {
     public class rmCommand : Command
     {
-        public rmCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
+        public rmCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"rm <path\to\dir\or\file> - deletes directory or file");
         }
         public override string execute(string[] arguments)
         {
-            if(arguments.Length >= 1)
+            if (arguments.Length >= 1)
             {
                 try
                 {
-                    if (Kernel.ReadonlyFiles.Contains(@"0:\" + GlobalData.currDir + String.Join(' ', arguments)))
+                    if (Kernel.ReadonlyFiles.Contains(@"0:\" + GlobalData.currDir + string.Join(' ', arguments)))
                     {
                         return "Unable to delete readonly file!";
-                    }    
-                    Cosmos.System.FileSystem.VFS.VFSManager.DeleteFile(@"0:\" + GlobalData.currDir + String.Join(' ', arguments));
+                    }
+                    Cosmos.System.FileSystem.VFS.VFSManager.DeleteFile(@"0:\" + GlobalData.currDir + string.Join(' ', arguments));
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     try
                     {
-                        if(Kernel.ReadonlyDirectories.Contains(@"0:\" + GlobalData.currDir + String.Join(' ', arguments)))
+                        if (Kernel.ReadonlyDirectories.Contains(@"0:\" + GlobalData.currDir + string.Join(' ', arguments)))
                         {
                             return "Unable to delete readonly directory!";
                         }
-                        Cosmos.System.FileSystem.VFS.VFSManager.DeleteDirectory(@"0:\" + GlobalData.currDir + String.Join(' ', arguments), true);
+                        Cosmos.System.FileSystem.VFS.VFSManager.DeleteDirectory(@"0:\" + GlobalData.currDir + string.Join(' ', arguments), true);
                     }
                     catch (Exception ex2)
                     {

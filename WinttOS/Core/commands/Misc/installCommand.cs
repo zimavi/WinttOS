@@ -13,8 +13,9 @@ using WinttOS.Core.Utils;
 using WinttOS.Core.Utils.Commands;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.GUI;
+using WinttOS.Core.Utils.System;
 
-namespace WinttOS.Core.commands
+namespace WinttOS.Core.commands.Misc
 {
     public class installCommand : Command
     {
@@ -24,7 +25,7 @@ namespace WinttOS.Core.commands
         //private static PowerOffButton button2;
         private static List<OSButton> Buttons = new List<OSButton>();
 
-        public installCommand(string name) : base(name, true, Users.User.AccessLevel.Administrator) 
+        public installCommand(string name) : base(name, true, Users.User.AccessLevel.Administrator)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"install - show install gui (WIP)");
             manual = new List<string>()
@@ -58,7 +59,7 @@ namespace WinttOS.Core.commands
 
                 CoroutinePool.Main.StartPool();
 
-                return String.Empty;
+                return string.Empty;
             }
             catch
             {

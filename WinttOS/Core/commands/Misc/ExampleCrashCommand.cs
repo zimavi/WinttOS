@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinttOS.Core.commands
+namespace WinttOS.Core.commands.Misc
 {
     internal class ExampleCrashCommand : Command
     {

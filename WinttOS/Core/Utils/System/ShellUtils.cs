@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using WinttOS.Core.Programs;
 using WinttOS.Core.Utils.Debugging;
 
-namespace WinttOS.Core.Utils
+namespace WinttOS.Core.Utils.System
 {
     public class ShellUtils
     {
@@ -71,10 +71,10 @@ namespace WinttOS.Core.Utils
         //[Obsolete("This method contains not working code! Please use Console.Readline()!", true)]
         public static bool ProcessExtendedShellInput(ref string input)
         {
-            if(Console.KeyAvailable)
-            { 
+            if (Console.KeyAvailable)
+            {
                 ConsoleKeyInfo key = Console.ReadKey(true);
-                if(key.Key == ConsoleKey.Enter)
+                if (key.Key == ConsoleKey.Enter)
                 {
                     recentInput.Insert(0, inputToDisplay);
                     if (recentInput.Count > 10)
@@ -86,16 +86,16 @@ namespace WinttOS.Core.Utils
                     currentInput = null;
                     return true;
                 }
-                else if(key.Key == ConsoleKey.Backspace)
+                else if (key.Key == ConsoleKey.Backspace)
                 {
-                    if(inputToDisplay.Length > 0)
+                    if (inputToDisplay.Length > 0)
                         inputToDisplay = inputToDisplay.Substring(0, inputToDisplay.Length - 1);
                     ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
                     Console.Write(inputToDisplay);
                 }
-                else if(key.Key == ConsoleKey.UpArrow)
+                else if (key.Key == ConsoleKey.UpArrow)
                 {
-                    if(currentRecentPos < recentInput.Count - 1)
+                    if (currentRecentPos < recentInput.Count - 1)
                     {
                         if (currentInput == null)
                             currentInput = inputToDisplay;
@@ -110,9 +110,9 @@ namespace WinttOS.Core.Utils
 
                     }
                 }
-                else if(key.Key == ConsoleKey.DownArrow)
+                else if (key.Key == ConsoleKey.DownArrow)
                 {
-                    if(currentRecentPos >= 0)
+                    if (currentRecentPos >= 0)
                     {
                         currentRecentPos--;
                         WinttDebugger.Trace(currentRecentPos.ToString(), instance);
@@ -128,7 +128,7 @@ namespace WinttOS.Core.Utils
                             inputToDisplay = recentInput[currentRecentPos];
                             ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
                             Console.Write(inputToDisplay);
-                        }    
+                        }
                     }
                 }
                 else if (!MIV.isForbiddenKey(key.Key))
@@ -146,8 +146,8 @@ namespace WinttOS.Core.Utils
 
         #endregion
 
-        
-        
+
+
     }
 
     public enum ShellTaskResult

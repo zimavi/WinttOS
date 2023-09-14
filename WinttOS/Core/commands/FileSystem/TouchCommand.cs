@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.Commands;
 
-namespace WinttOS.Core.commands
+namespace WinttOS.Core.commands.FileSystem
 {
     public class TouchCommand : Command
     {

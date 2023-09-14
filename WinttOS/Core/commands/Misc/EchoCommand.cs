@@ -5,11 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.Commands;
 
-namespace WinttOS.Core.commands
+namespace WinttOS.Core.commands.Misc
 {
     public class EchoCommand : Command
     {
-        public EchoCommand(String name) : base(name, Users.User.AccessLevel.Guest)
+        public EchoCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"echo <message> - repeats message");
             manual = new List<string>()
@@ -47,12 +47,12 @@ namespace WinttOS.Core.commands
                 }
                 if (str.Contains("$"))
                 {
-                    String St = str;
+                    string St = str;
 
                     int pFrom = St.IndexOf("$") + "$".Length;
                     int pTo = St.LastIndexOf(" ");
 
-                    String result = St.Substring(pFrom, pTo - pFrom);
+                    string result = St.Substring(pFrom, pTo - pFrom);
                     DateTime dateTime = new DateTime(DateTime.Now.Year, 8, 8);
                     DateTime CurrentDateTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 

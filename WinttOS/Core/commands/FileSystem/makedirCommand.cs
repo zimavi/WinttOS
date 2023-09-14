@@ -5,18 +5,18 @@ using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.Commands;
 
-namespace WinttOS.Core.commands
+namespace WinttOS.Core.commands.FileSystem
 {
     public class makedirCommand : Command
     {
-        public makedirCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
+        public makedirCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"mkdir <dir> - creates new directory in current one");
         }
 
         public override string execute(string[] arguments)
         {
-            if(arguments.Length >= 1)
+            if (arguments.Length >= 1)
             {
                 GlobalData.fs.CreateDirectory(@"0:\" + GlobalData.currDir + arguments[0]);
             }

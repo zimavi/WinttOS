@@ -7,6 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WinttOS.Core.commands;
+using WinttOS.Core.commands.FileSystem;
+using WinttOS.Core.commands.Misc;
+using WinttOS.Core.commands.Screen;
 using WinttOS.Core.Programs.RunCommands;
 using WinttOS.Core.Users;
 
