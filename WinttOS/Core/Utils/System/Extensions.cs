@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WinttOS.Core.Programs;
+using WinttOS.System.wosh.Programs;
 
 namespace WinttOS.Core.Utils.System
 {

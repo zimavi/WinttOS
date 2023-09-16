@@ -58,7 +58,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Core\Programs\ProgramsExecutables\" />
+      <Folder Include="System\wosh\Programs\ProgramsExecutables\" />
     </ItemGroup>
 
 </Project>

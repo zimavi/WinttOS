@@ -1,42 +1,44 @@
 ﻿using System;
 using WinttOS.Core;
 using Sys = Cosmos.System;
-using WinttOS.Core.Programs.RunCommands;
-using WinttOS.Core.commands;
-using Cosmos.System.Network.IPv4.UDP.DHCP;
-using Cosmos.HAL;
 using WinttOS.Core.Utils.Debugging;
-using Cosmos.Core.Memory;
-using WinttOS.Core.Users;
 using System.Collections.Specialized;
 using Cosmos.System.Coroutines;
 using System.Collections.Generic;
-using WinttOS.Core.Services;
 using System.Linq;
-using WinttOS.Core.commands.Misc;
 using WinttOS.Core.Utils.System;
-using WinttOS.Core.Utils.Processing;
+using WinttOS.System.wosh;
 
 namespace WinttOS
 {
     public class Kernel : Sys.Kernel
     {
+        #region Fields
+
         public static readonly string Version = "WinttOS v0.1.0-dev, build 786";
         public static StringCollection ReadonlyFiles { get; internal set; }
         public static StringCollection ReadonlyDirectories { get; internal set; }
+        public static CommandManager manager { get; private set; }
+        public static bool FinishingKernel { get; private set; } = false;
+        public static bool isRebooting { get; private set; } = false;
 
-        public static UsersManager UsersManager { get; internal set; } = new(null);
+        public static readonly List<Action> OnKernelFinish = new();
 
+        #endregion
+
+        #region Methods
         protected override void BeforeRun()
         {
             try
             {
+                WinttDebugger.Trace("Registrating readonly files", this);
                 ReadonlyFiles = new()
                 {
                     @"0:\Root.txt",
                     @"0:\Kudzu.txt",
                 };
 
+                WinttDebugger.Trace("Registrating readonly directories", this);
                 ReadonlyDirectories = new()
                 {
                     @"0:\WinttOS",
@@ -48,6 +50,7 @@ namespace WinttOS
 
                 ShellUtils.PrintTaskResult("Registration File System", ShellTaskResult.DOING);
 
+                WinttDebugger.Debug("Registrating filesystem", this);
                 GlobalData.fs = new Sys.FileSystem.CosmosVFS();
                 Sys.FileSystem.VFS.VFSManager.RegisterVFS(GlobalData.fs);
                 GlobalData.fs.Initialize(true);
@@ -56,13 +59,14 @@ namespace WinttOS
                 ShellUtils.PrintTaskResult("Registration File System", ShellTaskResult.OK);
 
 
-
+                /*
                 ShellUtils.PrintTaskResult("Registrating commands", ShellTaskResult.DOING);
 
                 manager = new CommandManager();
 
                 ShellUtils.MoveCursorUp();
                 ShellUtils.PrintTaskResult("Registrating commands", ShellTaskResult.OK);
+                
 
                 Console.WriteLine("NOTE! If you have more then one network apadters, please remove all except one!\n");
 
@@ -88,6 +92,7 @@ namespace WinttOS
                 }
                 else
                     ShellUtils.PrintTaskResult("Discovering IP address", ShellTaskResult.FAILED);
+                
 
                 Console.WriteLine("System initialization complete!");
 
@@ -97,7 +102,7 @@ namespace WinttOS
 
                 Console.Clear();
 
-
+                /*
                 manager.registerCommand(new mivCommand("miv"));
                 manager.registerCommand(new CatUtilCommand("cat"));
                 manager.registerCommand(new DevModeCommand("dev-mode"));
@@ -163,18 +168,10 @@ namespace WinttOS
                     }
                     Console.Clear();
                 }
+                */
 
-                WinttDebugger.Trace("Cleanned " + Heap.Collect() + " objects", this);
-
-                CoroutinePool.Main.AddCoroutine(new(ProcessManager.UpdateProcesses()));
-                CoroutinePool.Main.OnCoroutineCycle.Add(ThreadCycleFinish);
-
-                ServiceProvider.AddService(new TestService());
-
-                ProcessManager.RegisterProcess(ServiceProvider);
-                ProcessManager.StartProcess(0);
-
-                CoroutinePool.Main.StartPool();
+                WinttDebugger.Trace("Kernel initalize complete! Comming to system");
+                System.WinttOS.InitializeSystem();
 
             } catch (Exception ex)
             {
@@ -182,14 +179,7 @@ namespace WinttOS
             }
         }
 
-        public static CommandManager manager { get; private set; }
-        public static ProcessManager ProcessManager { get; private set; } = new();
-
-        public static WinttKernelServiceProvider ServiceProvider { get; private set; } = new();
-
-        public static bool FinishingKernel { get; private set; } = false;
-        private static bool isRebooting = false;
-
+        /*
         IEnumerator<CoroutineControlPoint> serviceHandler()
         {
             WinttKernelServiceProvider provider = new();
@@ -207,9 +197,9 @@ namespace WinttOS
             }
             provider.StopAllServices();
         }
+        */
 
-        private bool didRunCycle = true;
-
+        /*
         private void ThreadCycleFinish()
         {
             try
@@ -249,24 +239,7 @@ namespace WinttOS
             }
             #endregion
         }
-
-        private IEnumerator<CoroutineControlPoint> KernelShutdown()
-        {
-            while (true)
-            {
-                WinttDebugger.Trace($"CoroutinePool.Main.RunningCoroutines.Count() => {CoroutinePool.Main.RunningCoroutines.Count()}", this);
-                yield return WaitFor.Seconds(3);
-                foreach (var coroutine in CoroutinePool.Main.RunningCoroutines)
-                {
-                    coroutine.Stop();
-                }
-                break;
-            }
-            if (isRebooting)
-                Sys.Power.Reboot();
-            else
-                Sys.Power.Shutdown();
-        }
+        */
 
         protected override void Run()
         {
@@ -275,7 +248,6 @@ namespace WinttOS
 
         protected override void AfterRun()
         {
-            UsersManager.SaveUsersData();
             Console.WriteLine("Is now safe to turn off your computer!");
             Sys.Power.Shutdown();
             base.AfterRun();
@@ -284,13 +256,23 @@ namespace WinttOS
 
         public static void ShutdownKernel()
         {
-            Console.Clear();
-            if(!isRebooting)
-                Console.WriteLine("Shutting down...");
-            else
-                Console.WriteLine("Rebooting...");
-            UsersManager.SaveUsersData();
-            FinishingKernel = true;
+            try
+            {
+                foreach (var action in OnKernelFinish)
+                {
+                    action();
+                }
+                Console.Clear();
+                if (!isRebooting)
+                    Console.WriteLine("Shutting down...");
+                else
+                    Console.WriteLine("Rebooting...");
+                FinishingKernel = true;
+            }
+            catch (Exception ex)
+            {
+                WinttDebugger.Critical("Smth happend on shutdown!", ex);
+            }
         }
 
         public static void RebootKernel()
@@ -298,5 +280,7 @@ namespace WinttOS
             isRebooting = true;
             ShutdownKernel();
         }
+
+        #endregion
     }
 }

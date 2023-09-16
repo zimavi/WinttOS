@@ -1,0 +1,72 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using WinttOS.Core.Utils.System;
+using WinttOS.System.wosh.Utils.Commands;
+
+namespace WinttOS.System.wosh.commands.Processing
+{
+    public class ProcessCommand : Command
+    {
+        public ProcessCommand(string name) : base(name, Users.User.AccessLevel.Administrator)
+        {
+            HelpCommandManager.addCommandUsageStrToManager("process [list|kill|start|restart] - manages processes");
+        }
+
+        public override string execute(string[] arguments)
+        {
+            if (arguments.Length == 0)
+                return "Usage: process [list|kill|restart]";
+            if (arguments[0] == "list")
+            {
+                return WinttOS.ProcessManager.GetProcessesList();
+            }
+            else if (arguments[0] == "kill")
+            {
+                if (arguments.Length < 2)
+                    return "Usage: process kill <process id>";
+                if (uint.TryParse(arguments[1], out _))
+                {
+                    if (!WinttOS.ProcessManager.GetProcessInstance(Convert.ToUInt32(arguments[1])).IsNull())
+                    {
+                        if(WinttOS.ProcessManager.GetProcessInstance(Convert.ToUInt32(arguments[1])).Type != 
+                            System.Processing.Process.ProcessType.KernelComponent)
+                        WinttOS.ProcessManager.StopProcess(Convert.ToUInt32(arguments[1]));
+                        return "Done.";
+                    }
+                    return "There is no such process!";
+                }
+                else
+                    return "Process id must be number that equals or bigger then 0";
+            }
+            else if (arguments[0] == "start")
+            {
+                if (arguments.Length < 2)
+                    return "Usage: process start <process id>";
+                if (uint.TryParse(arguments[1], out _))
+                {
+                    WinttOS.ProcessManager.StartProcess(Convert.ToUInt32(arguments[1]));
+                    return "Done.";
+                }
+                else
+                    return "Process id must be number that equals or bigger then 0";
+            }
+            else if (arguments[0] == "restart")
+            {
+                if (arguments.Length < 2)
+                    return "Usage: process restart <process id>";
+                if (uint.TryParse(arguments[1], out _))
+                {
+                    WinttOS.ProcessManager.StopProcess(Convert.ToUInt32(arguments[1]));
+                    WinttOS.ProcessManager.StartProcess(Convert.ToUInt32(arguments[1]));
+                    return "Done.";
+                }
+                else
+                    return "Process id must be number that equals or bigger then 0";
+            }
+            return "process [list|kill|start|restart] - manages processes";
+        }
+    }
+}

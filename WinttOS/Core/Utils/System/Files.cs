@@ -18,6 +18,9 @@ namespace WinttOS.Core.Utils.System
         [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.button_power_off.bmp")]
         public static readonly byte[] RawPowerOffButtonImageAlpha;
 
+        [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.zap-ext-light18.psf")]
+        public static readonly byte[] RawVGAFont;
+
         public static class Installer
         {
             [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.os_install_bg.bmp")]

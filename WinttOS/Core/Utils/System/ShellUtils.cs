@@ -1,12 +1,13 @@
 using Cosmos.HAL;
+using Cosmos.System.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using WinttOS.Core.Programs;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.System.wosh.Programs;
 
 namespace WinttOS.Core.Utils.System
 {
@@ -23,11 +24,12 @@ namespace WinttOS.Core.Utils.System
         #endregion
 
         #region Static Methods
+
         public static void ClearCurrentConsoleLine(int startPos = 0)
         {
             int currLineCursor = Console.CursorTop;
             Console.SetCursorPosition(startPos, Console.CursorTop);
-            Console.Write(new string(' ', Console.WindowWidth - startPos));
+            Console.Write(new string(' ', Console.WindowWidth - startPos - 1));
             //Console.Write("\r" + new string(' ', Console.WindowWidth - 1 - startPos) + "\r");
             Console.SetCursorPosition(startPos, currLineCursor);
         }
@@ -69,7 +71,7 @@ namespace WinttOS.Core.Utils.System
         }
 
         //[Obsolete("This method contains not working code! Please use Console.Readline()!", true)]
-        public static bool ProcessExtendedShellInput(ref string input)
+        public static bool ProcessExtendedThreadableShellInput(ref string input)
         {
             if (Console.KeyAvailable)
             {
@@ -135,8 +137,6 @@ namespace WinttOS.Core.Utils.System
                 {
                     inputToDisplay += key.KeyChar;
 
-                    if (Console.CursorTop >= 26)
-                        MoveCursorUp();
                     ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
                     Console.Write(inputToDisplay);
                 }
@@ -146,7 +146,26 @@ namespace WinttOS.Core.Utils.System
 
         #endregion
 
-
+        public static string ReadLineWithInterception()
+        {
+            string input = "";
+            while(true)
+            {
+                ConsoleKeyInfo key = Console.ReadKey(true);
+                if(key.Key == ConsoleKey.Enter)
+                    return input;
+                else if(key.Key == ConsoleKey.Backspace)
+                {
+                    if(input.Length > 0)
+                        input = input.Substring(0, input.Length - 1);
+                    WinttDebugger.Trace($"input.Substring() => {input}", instance);
+                }
+                else if(!MIV.isForbiddenKey(key.Key))
+                {
+                    input += key.KeyChar;
+                }
+            }
+        }
 
     }
 

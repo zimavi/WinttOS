@@ -1,12 +1,8 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Linq;
-using WinttOS.Core.Utils;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using WinttOS.Core.Utils;
 using Cosmos.System.Graphics.Fonts;
 using IL2CPU.API.Attribs;
+
+using WinttOS.System;
 
 namespace WinttOS.Core
 {
@@ -23,7 +19,7 @@ namespace WinttOS.Core
         {
             get
             {
-                return 6 + currDir.Length + Kernel.UsersManager.currentUser.Name.Length;
+                return 6 + currDir.Length + System.WinttOS.UsersManager.currentUser.Name.Length;
             }
         }
     }
