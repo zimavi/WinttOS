@@ -10,21 +10,25 @@ namespace WinttOS.System.Services
 
         #region Fields / Variables
 
-        private List<IService> _services = new();
+        private List<Service> _services = new();
 
-        public WinttServiceProvider() : base("SrvProvider", ProcessType.KernelComponent)
+        public WinttServiceProvider() : base("servprvd", ProcessType.KernelComponent)
         { }
 
-        public List<IService> Services => _services;
+        public List<Service> Services => _services;
 
         #endregion
 
         #region Methods
 
-        public void AddService(IService service)
+        public void AddService(Service service)
         {
             if (!_services.Contains(service))
+            {
                 _services.Add(service);
+
+                WinttOS.ProcessManager.RegisterProcess(service);
+            }
         }
 
         public void DoServiceProviderTick()
@@ -46,8 +50,8 @@ namespace WinttOS.System.Services
 
             foreach(var service in _services)
             {
-                if(!service.IsRunning)
-                    service.onServiceStart();
+                WinttOS.ProcessManager.StartProcess(service.Name);
+                service.onServiceStart();
             }
         }
 
@@ -57,8 +61,11 @@ namespace WinttOS.System.Services
 
             foreach (var service in _services)
             {
-                if (service.IsRunning)
+                if (service.IsRunning && service.Running)
+                {
                     service.onServiceFinish();
+                    WinttOS.ProcessManager.StopProcess(service.Name);
+                }
             }
         }
 
@@ -68,8 +75,11 @@ namespace WinttOS.System.Services
             {
                 if (service.Name == serviceName)
                 {
-                    if (service.IsRunning)
+                    if (service.IsRunning && service.Running)
+                    {
                         service.onServiceFinish();
+                        WinttOS.ProcessManager.StopProcess(service.Name);
+                    }
                     return;
                 }
             });
@@ -103,8 +113,11 @@ namespace WinttOS.System.Services
         {
             _services.ForEach(service =>
             {
-                if (service.Name == serviceName && !service.IsRunning)
+                if (service.Name == serviceName && !service.IsRunning && !service.Running)
+                {
                     service.onServiceStart();
+                    WinttOS.ProcessManager.StopProcess(service.Name);
+                }
             });
         }
 
@@ -118,9 +131,7 @@ namespace WinttOS.System.Services
         {
             _services.ForEach(service =>
             {
-                //StartService(service.Name);
-                if(!service.IsRunning)
-                    service.onServiceStart();
+                StartService(service.Name);
             });
         }
 

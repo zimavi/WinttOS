@@ -44,7 +44,9 @@ namespace WinttOS.System
             InitUsers();
             InitServiceProvider();
 
-            ProcessManager.RegisterProcess(ServiceProvider);
+            uint servicePrvID = 0;
+
+            ProcessManager.RegisterProcess(ServiceProvider, ref servicePrvID);
 
             CommandManager.registerCommand(new DevModeCommand("dev-mode"));
             CommandManager.registerCommand(new ExampleCrashCommand("crash-pls"));

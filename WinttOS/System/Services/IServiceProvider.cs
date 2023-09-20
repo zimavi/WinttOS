@@ -4,7 +4,7 @@ namespace WinttOS.System.Services
 {
     public interface IServiceProvider
     {
-        public void AddService(IService service);
+        public void AddService(Service service);
         public void StartService(string serviceName);
         public void FinishService(string serviceName);
         public void DoServiceProviderTick();

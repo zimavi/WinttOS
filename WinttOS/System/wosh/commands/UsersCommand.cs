@@ -29,6 +29,7 @@ namespace WinttOS.System.wosh.commands
 
         public override string execute(string[] arguments)
         {
+            throw new NotImplementedException("Command was restricted for using as it couse system fall.");
             if(arguments.Length == 0 || arguments[0] == "list")
             {
                 List<string> res = new();

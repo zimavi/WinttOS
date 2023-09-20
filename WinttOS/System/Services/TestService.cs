@@ -7,7 +7,7 @@ using WinttOS.Core.Utils.Debugging;
 
 namespace WinttOS.System.Services
 {
-    public class TestService : IService
+    public class TestService : Service
     {
 
         #region Fields
@@ -30,7 +30,7 @@ namespace WinttOS.System.Services
 
         #endregion
 
-        public TestService()
+        public TestService() : base("TestService", "test.service")
         {
             _isRunning = false;
             _status = ServiceStatus.OFF;
@@ -39,21 +39,10 @@ namespace WinttOS.System.Services
         }
 
         #region Method
-        public void onServiceFinish()
+        
+        public override void ServiceTick()
         {
-            _isRunning = false;
-            WinttDebugger.Info("Test Service is not now working!", this);
-        }
-
-        public void onServiceStart()
-        {
-            _isRunning = true;
-            WinttDebugger.Info("Test Service is now working!", this);
-        }
-
-        public void onServiceTick()
-        {
-            WinttDebugger.Info("Test Service's tick!", this);
+            
         }
         #endregion
     }

@@ -18,25 +18,13 @@ using WinttOS.System.Services;
 namespace WinttOS.System.wosh
 {
 
-    public class CommandManager : IService
+    public class CommandManager : Service
     {
         private List<Command> commands;
         private bool didRunCycle = true;
-        private bool _running = false;
-        private ServiceStatus _status = ServiceStatus.OFF;
-        private string _err = string.Empty;
-
-        public bool IsRunning => _running;
-        public ServiceStatus Status => _status;
-        public string ErrorMessage => _err;
-        public string Name => "wosh.service";
-
-        public void onServiceStart() => _running = true;
-
-        public void onServiceFinish() => _running = false;
 
 
-        public CommandManager()
+        public CommandManager() : base("conman", "wosh.service")
         {
             this.commands = new List<Command>
             {
@@ -107,7 +95,14 @@ namespace WinttOS.System.wosh
                 {
                     if(cmd.RequiredAccessLevel <= WinttOS.UsersManager.currentUser.UserAccess)
                     {
-                        return cmd.execute(args.ToArray());
+                        try
+                        {
+                            return cmd.execute(args.ToArray());
+                        }
+                        catch (Exception e)
+                        {
+                            return $"Error: {e.GetType()} with message:\n{e.Message}";
+                        }
                     }
                     return "You do not have permission to run this command!";
                 }
@@ -139,7 +134,14 @@ namespace WinttOS.System.wosh
                     if (cmd.RequiredAccessLevel <= user.UserAccess)
                     {
                         user = null;
-                        return cmd.execute(args.ToArray());
+                        try
+                        {
+                            return cmd.execute(args.ToArray());
+                        }
+                        catch(Exception e)
+                        {
+                            return $"Error: {e.GetType()} with message:\n{e.Message}";
+                        }
                     }
                     return "You do not have permission to run this command!";
                 }
@@ -161,7 +163,7 @@ namespace WinttOS.System.wosh
 
         public List<Command> getCommandsListInstances() => commands;
 
-        public void onServiceTick()
+        public override void ServiceTick()
         {
             try
             {
@@ -191,8 +193,6 @@ namespace WinttOS.System.wosh
                 throw;
             }
             #endregion
-
         }
-        
     }
 }

@@ -10,6 +10,8 @@ namespace WinttOS.System.Services
     {
         OK,
         OFF,
+        PAUSED,
+        PENDING,
         ERROR,
         no_data = -1
     }

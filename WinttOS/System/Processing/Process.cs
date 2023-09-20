@@ -62,7 +62,7 @@ namespace WinttOS.System.Processing
             Initialized = true; 
         }
         public virtual void Start() { if (!Initialized) return; if(Running) return; Running = true; }
-        public virtual void Stop() { if (!Initialized) return; if (!Running) return; Running= false; }
+        public virtual void Stop() { if (!Initialized) return; if (!Running) return; Running = false; }
         public virtual void Update() { if (!Initialized) return; }
 
         public void SetName(string name) => Name = name;

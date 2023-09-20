@@ -19,6 +19,7 @@ namespace WinttOS.System.Processing
             }
             _processes.Add(process);
             _processes[_processes.Count - 1].SetProcessID((uint)_processes.Count - 1);
+            _processes[_processes.Count - 1].Initialize();
             return true;
         }
         public bool RegisterProcess(Process process, ref uint newProcessID)
