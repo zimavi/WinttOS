@@ -39,7 +39,7 @@ namespace WinttOS.System.Processing
         {
             foreach (var process in _processes)
             {
-                if (process.Name == processName) 
+                if (process.Name.Equals(processName)) 
                 {
                     if (process.Running)
                         return false;

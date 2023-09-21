@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.System;
+using WinttOS.System.Processing;
 using WinttOS.System.wosh.Utils.Commands;
 
 namespace WinttOS.System.wosh.commands.Processing
@@ -31,9 +32,10 @@ namespace WinttOS.System.wosh.commands.Processing
                 {
                     if (!WinttOS.ProcessManager.GetProcessInstance(Convert.ToUInt32(arguments[1])).IsNull())
                     {
-                        if(WinttOS.ProcessManager.GetProcessInstance(Convert.ToUInt32(arguments[1])).Type != 
-                            System.Processing.Process.ProcessType.KernelComponent)
-                        WinttOS.ProcessManager.StopProcess(Convert.ToUInt32(arguments[1]));
+                        if (!WinttOS.ProcessManager.GetProcessInstance(Convert.ToUInt32(arguments[1])).IsCritical)
+                            WinttOS.ProcessManager.StopProcess(Convert.ToUInt32(arguments[1]));
+                        else
+                            return "Permission denied";
                         return "Done.";
                     }
                     return "There is no such process!";

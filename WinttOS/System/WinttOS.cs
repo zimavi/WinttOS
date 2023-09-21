@@ -1,12 +1,9 @@
 ﻿using Cosmos.Core.Memory;
 using Cosmos.HAL;
-using Cosmos.HAL.Drivers.Video;
 using Cosmos.System.Coroutines;
-using Cosmos.System.Graphics;
 using Cosmos.System.Network.IPv4.UDP.DHCP;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.System;
 using WinttOS.System.Processing;
@@ -25,12 +22,16 @@ namespace WinttOS.System
 
         private static WinttOS instance => new();
 
+        public static WinttServiceProvider ServiceProvider =>
+            (WinttServiceProvider)ProcessManager.GetProcessInstance(ServiceProviderProcessID);
 
         public static UsersManager UsersManager { get; set; } = new(null);
         public static ProcessManager ProcessManager { get; set; } = new();
-        public static WinttServiceProvider ServiceProvider { get; set; } = new();
+        private static WinttServiceProvider _serviceProvider { get; set; } = new();
 
         public static CommandManager CommandManager { get; set; } = new();
+
+        public static uint ServiceProviderProcessID = 0;
 
         #endregion
 
@@ -39,24 +40,23 @@ namespace WinttOS.System
         public static void InitializeSystem()
         {
             Kernel.OnKernelFinish.Add(SystemFinish);
-
             InitNetwork();
             InitUsers();
             InitServiceProvider();
 
-            uint servicePrvID = 0;
-
-            ProcessManager.RegisterProcess(ServiceProvider, ref servicePrvID);
+            ProcessManager.RegisterProcess(_serviceProvider, ref ServiceProviderProcessID);
 
             CommandManager.registerCommand(new DevModeCommand("dev-mode"));
             CommandManager.registerCommand(new ExampleCrashCommand("crash-pls"));
             CommandManager.registerCommand(new UsersCommand("users"));
 
-            ServiceProvider.AddService(CommandManager);
+            //ServiceProvider.AddService(CommandManager);
+            ((WinttServiceProvider)ProcessManager.GetProcessInstance(ServiceProviderProcessID))
+                .AddService(CommandManager);
 
             //ProcessManager.RegisterProcess(man);
 
-            ProcessManager.StartProcess(0);
+            ProcessManager.StartProcess(ServiceProviderProcessID);
 
             Heap.Collect();
 
@@ -72,9 +72,9 @@ namespace WinttOS.System
 
         private static void InitServiceProvider()
         {
-            ServiceProvider.Initialize();
+            _serviceProvider.Initialize();
 
-            ServiceProvider.AddService(new TestService());
+            _serviceProvider.AddService(new TestService());
         }
 
         private static void InitUsers()

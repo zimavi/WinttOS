@@ -27,6 +27,7 @@ namespace WinttOS.System.Services
             {
                 _services.Add(service);
 
+                service.IsCritical = true;
                 WinttOS.ProcessManager.RegisterProcess(service);
             }
         }

@@ -3,6 +3,7 @@
 //
 
 using Cosmos.HAL.Drivers.Video.SVGAII;
+using System;
 using WinttOS.Core.Utils.System;
 
 namespace WinttOS.System.Processing
@@ -10,12 +11,12 @@ namespace WinttOS.System.Processing
     
     public abstract class Process
     {
-        public enum ProcessType : byte
+        public enum ProcessType
         {
             KernelComponent,
             Driver,
             Service,
-            Program
+            Program,
         }
 
         public static string ProcessType_ToString(ProcessType type)
@@ -47,6 +48,7 @@ namespace WinttOS.System.Processing
         public ProcessType Type { get; protected set; }
         public bool Initialized { get; protected set; }
         public bool Running { get; protected set; }
+        public bool IsCritical { get; set; } = false;
 
         public Process(string name, ProcessType type)
         {
@@ -55,6 +57,8 @@ namespace WinttOS.System.Processing
             ProcessID = 0;
             Initialized = false;
             Running = false;
+            if (Type == ProcessType.KernelComponent || Type == ProcessType.Driver)
+                IsCritical = true;
         }
         public virtual void Initialize() 
         { 
