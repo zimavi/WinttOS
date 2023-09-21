@@ -10,12 +10,12 @@ namespace WinttOS.System.Services
 
         #region Fields / Variables
 
-        private List<Service> _services = new();
+        private List<Service> services = new();
 
         public WinttServiceProvider() : base("servprvd", ProcessType.KernelComponent)
         { }
 
-        public List<Service> Services => _services;
+        public List<Service> Services => services;
 
         #endregion
 
@@ -23,35 +23,33 @@ namespace WinttOS.System.Services
 
         public void AddService(Service service)
         {
-            if (!_services.Contains(service))
+            if (!services.Contains(service))
             {
-                _services.Add(service);
+                services.Add(service);
 
-                service.IsCritical = true;
+                service.IsProcessCritical = true;
                 WinttOS.ProcessManager.RegisterProcess(service);
             }
         }
 
         public void DoServiceProviderTick()
         {
-            _services.ForEach(service =>
+            services.ForEach(service =>
             {
-                if(service.IsRunning)
+                if(service.IsServiceRunning)
                     service.onServiceTick();
             });
         }
 
-        public override void Update()
-        {
+        public override void Update() =>
             DoServiceProviderTick();
-        }
         public override void Start()
         {
             base.Start();
 
-            foreach(var service in _services)
+            foreach(var service in services)
             {
-                WinttOS.ProcessManager.StartProcess(service.Name);
+                WinttOS.ProcessManager.StartProcess(service.ProcessName);
                 service.onServiceStart();
             }
         }
@@ -60,26 +58,26 @@ namespace WinttOS.System.Services
         {
             base.Stop();
 
-            foreach (var service in _services)
+            foreach (var service in services)
             {
-                if (service.IsRunning && service.Running)
+                if (service.IsServiceRunning && service.IsProcessRunning)
                 {
                     service.onServiceFinish();
-                    WinttOS.ProcessManager.StopProcess(service.Name);
+                    WinttOS.ProcessManager.StopProcess(service.ProcessName);
                 }
             }
         }
 
         public void FinishService(string serviceName)
         {
-            _services.ForEach(service =>
+            services.ForEach(service =>
             {
-                if (service.Name == serviceName)
+                if (service.ProcessName == serviceName)
                 {
-                    if (service.IsRunning && service.Running)
+                    if (service.IsServiceRunning && service.IsProcessRunning)
                     {
                         service.onServiceFinish();
-                        WinttOS.ProcessManager.StopProcess(service.Name);
+                        WinttOS.ProcessManager.StopProcess(service.ProcessName);
                     }
                     return;
                 }
@@ -88,21 +86,21 @@ namespace WinttOS.System.Services
 
         public (ServiceStatus, string) GetServiceStatus(string serviceName)
         {
-            foreach(var service in _services)
+            foreach(var service in services)
             {
-                if (service.Name == serviceName)
-                    return (service.Status, service.ErrorMessage);
+                if (service.ProcessName == serviceName)
+                    return (service.ServiceStatus, service.ServiceErrorMessage);
             }
             return (ServiceStatus.no_data, null);
         }
 
         public void RestartService(string serviceName)
         {
-            _services.ForEach(service =>
+            services.ForEach(service =>
             {
-                if (service.Name == serviceName)
+                if (service.ProcessName == serviceName)
                 {
-                    if (service.IsRunning)
+                    if (service.IsServiceRunning)
                         service.onServiceFinish();
                     service.onServiceStart();
                     return;
@@ -112,12 +110,12 @@ namespace WinttOS.System.Services
 
         public void StartService(string serviceName)
         {
-            _services.ForEach(service =>
+            services.ForEach(service =>
             {
-                if (service.Name == serviceName && !service.IsRunning && !service.Running)
+                if (service.ProcessName == serviceName && !service.IsServiceRunning && !service.IsProcessRunning)
                 {
                     service.onServiceStart();
-                    WinttOS.ProcessManager.StopProcess(service.Name);
+                    WinttOS.ProcessManager.StopProcess(service.ProcessName);
                 }
             });
         }
@@ -130,23 +128,21 @@ namespace WinttOS.System.Services
 
         public void StartAllServices()
         {
-            _services.ForEach(service =>
+            services.ForEach(service =>
             {
-                StartService(service.Name);
+                StartService(service.ProcessName);
             });
         }
 
         public void StopAllServices()
         {
-            _services.ForEach(service =>
+            services.ForEach(service =>
             {
-                if(service.IsRunning)
+                if(service.IsServiceRunning)
                     service.onServiceFinish();
             });
         }
 
         #endregion
     }
-
-    public class ServiceErrorException : Exception { }
 }

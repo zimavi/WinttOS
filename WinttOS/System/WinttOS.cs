@@ -23,15 +23,15 @@ namespace WinttOS.System
         private static WinttOS instance => new();
 
         public static WinttServiceProvider ServiceProvider =>
-            (WinttServiceProvider)ProcessManager.GetProcessInstance(ServiceProviderProcessID);
+            (WinttServiceProvider)ProcessManager.GetProcessInstance(serviceProviderProcessID);
 
         public static UsersManager UsersManager { get; set; } = new(null);
         public static ProcessManager ProcessManager { get; set; } = new();
-        private static WinttServiceProvider _serviceProvider { get; set; } = new();
+        private static WinttServiceProvider serviceProvider { get; set; } = new();
 
         public static CommandManager CommandManager { get; set; } = new();
 
-        public static uint ServiceProviderProcessID = 0;
+        private static uint serviceProviderProcessID = 0;
 
         #endregion
 
@@ -44,19 +44,16 @@ namespace WinttOS.System
             InitUsers();
             InitServiceProvider();
 
-            ProcessManager.RegisterProcess(_serviceProvider, ref ServiceProviderProcessID);
+            ProcessManager.RegisterProcess(serviceProvider, ref serviceProviderProcessID);
 
-            CommandManager.registerCommand(new DevModeCommand("dev-mode"));
-            CommandManager.registerCommand(new ExampleCrashCommand("crash-pls"));
-            CommandManager.registerCommand(new UsersCommand("users"));
+            CommandManager.RegisterCommand(new DevModeCommand("dev-mode"));
+            CommandManager.RegisterCommand(new ExampleCrashCommand("crash-pls"));
+            CommandManager.RegisterCommand(new UsersCommand("users"));
 
-            //ServiceProvider.AddService(CommandManager);
-            ((WinttServiceProvider)ProcessManager.GetProcessInstance(ServiceProviderProcessID))
+            ((WinttServiceProvider)ProcessManager.GetProcessInstance(serviceProviderProcessID))
                 .AddService(CommandManager);
 
-            //ProcessManager.RegisterProcess(man);
-
-            ProcessManager.StartProcess(ServiceProviderProcessID);
+            ProcessManager.StartProcess(serviceProviderProcessID);
 
             Heap.Collect();
 
@@ -72,9 +69,9 @@ namespace WinttOS.System
 
         private static void InitServiceProvider()
         {
-            _serviceProvider.Initialize();
+            serviceProvider.Initialize();
 
-            _serviceProvider.AddService(new TestService());
+            serviceProvider.AddService(new TestService());
         }
 
         private static void InitUsers()
@@ -131,7 +128,7 @@ namespace WinttOS.System
                 coroutine.Stop();
             }
             WinttDebugger.Info("Finishing Kernel!", instance);
-            if (Kernel.isRebooting)
+            if (Kernel.IsRebooting)
                 Sys.Power.Reboot();
             else
                 Sys.Power.Shutdown();

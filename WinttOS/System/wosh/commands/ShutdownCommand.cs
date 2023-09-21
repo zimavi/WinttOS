@@ -10,7 +10,7 @@ namespace WinttOS.System.wosh.commands
         public ShutdownCommand(String name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"shutdown [-r, -s] - power off pc or reboot it");
-            manual = new List<string>()
+            CommandManual = new List<string>()
             {
                 "Shutdown command is used for managing power in your PC",
                 "It has to have one of two arguments '-s' or '-r'",
@@ -18,7 +18,7 @@ namespace WinttOS.System.wosh.commands
             };
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             if (arguments.Length == 0)
                 return "Usage:\n-r - reboot\n-s - shutdown";

@@ -9,7 +9,7 @@ namespace WinttOS.System.wosh.commands
             HelpCommandManager.addCommandUsageStrToManager(@"sysinfo - shows PC info");
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             string CPUbrand = Cosmos.Core.CPU.GetCPUBrandString();
             uint amoundOfRam = Cosmos.Core.CPU.GetAmountOfRAM();

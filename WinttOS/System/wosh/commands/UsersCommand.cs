@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WinttOS.Core.Utils.System;
 using WinttOS.System.Users;
 using WinttOS.System.wosh.Utils.Commands;
-using WinttOS.System.wosh.Utils.Commands.Manuals;
 
 namespace WinttOS.System.wosh.commands
 {
@@ -27,7 +24,7 @@ namespace WinttOS.System.wosh.commands
             */
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             throw new NotImplementedException("Command was restricted for using as it couse system fall.");
             if(arguments.Length == 0 || arguments[0] == "list")
@@ -35,7 +32,7 @@ namespace WinttOS.System.wosh.commands
                 List<string> res = new();
                 foreach(User user in WinttOS.UsersManager.Users)
                 {
-                    if(WinttOS.UsersManager.activeUsers.Contains(user))
+                    if(WinttOS.UsersManager.ActiveUsers.Contains(user))
                         res.Add(user.Name + " *");
                     else
                         res.Add(user.Name);
@@ -63,7 +60,7 @@ namespace WinttOS.System.wosh.commands
                     {
                         if(user.Name == Username)
                         {
-                            if (WinttOS.UsersManager.activeUsers.Contains(user))
+                            if (WinttOS.UsersManager.ActiveUsers.Contains(user))
                                 return "Logout from account first!";
                             WinttOS.UsersManager.DeleteUser(user);
                             return "Done.";
@@ -78,10 +75,10 @@ namespace WinttOS.System.wosh.commands
                 {
                     if (arguments.Contains("--leave-from-old") || arguments.Contains("-l"))
                     {
-                        User user = WinttOS.UsersManager.GetUserByName(name);
+                        User user = WinttOS.UsersManager.GetUserByName(CommandName);
                         if (user.IsNull())
                             return "This user does not exsist!";
-                        if (WinttOS.UsersManager.currentUser == user)
+                        if (WinttOS.UsersManager.CurrentUser == user)
                             return "You can not login to this account again!";
                         if(user.HasPassword)
                         {

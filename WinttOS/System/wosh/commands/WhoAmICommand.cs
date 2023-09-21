@@ -10,9 +10,9 @@ namespace WinttOS.System.wosh.commands
             HelpCommandManager.addCommandUsageStrToManager("whoami - get current active account");
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
-            return WinttOS.UsersManager.currentUser.Login;
+            return WinttOS.UsersManager.CurrentUser.Login;
         }
     }
 }

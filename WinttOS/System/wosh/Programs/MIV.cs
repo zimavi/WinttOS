@@ -1,15 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WinttOS.System.Programs;
 using WinttOS.Core;
 
 namespace WinttOS.System.wosh.Programs
 {
-    public class MIV : IWinttCommandProgram
+    public class MIV
     {
 
         public static string stringCopy(string value)
@@ -238,17 +233,17 @@ namespace WinttOS.System.wosh.Programs
         }
         public static void StartMIV(string file)
         {
-            GlobalData.fileToEdit = file;
+            GlobalData.FileToEdit = file;
             try
             {
-                if (File.Exists(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit))
+                if (File.Exists(@"0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit))
                 {
                     Console.WriteLine("Found file!");
                 }
-                else if (!File.Exists(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit))
+                else if (!File.Exists(@"0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit))
                 {
                     Console.WriteLine("Creating file!");
-                    File.Create(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit);
+                    File.Create(@"0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit);
                 }
                 //Console.Clear();
             }
@@ -258,11 +253,11 @@ namespace WinttOS.System.wosh.Programs
             }
 
             string text = string.Empty;
-            Console.WriteLine("Do you want to open " + GlobalData.fileToEdit + " content? (Yes/No)");
+            Console.WriteLine("Do you want to open " + GlobalData.FileToEdit + " content? (Yes/No)");
             string input = Console.ReadLine().ToLower();
             if (input == "yes" || input == "y")
             {
-                text = miv(File.ReadAllText(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit));
+                text = miv(File.ReadAllText(@"0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit));
             }
             else
             {
@@ -273,10 +268,10 @@ namespace WinttOS.System.wosh.Programs
 
             if (text != null)
             {
-                if (!Kernel.ReadonlyFiles.Contains(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit))
+                if (!Kernel.ReadonlyFiles.Contains(@"0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit))
                 {
-                    File.WriteAllText(@"0:\" + GlobalData.currDir + GlobalData.fileToEdit, text);
-                    Console.WriteLine(@"Content has been saved to 0:\" + GlobalData.currDir + GlobalData.fileToEdit);
+                    File.WriteAllText(@"0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit, text);
+                    Console.WriteLine(@"Content has been saved to 0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit);
                 }
                 else
                 {

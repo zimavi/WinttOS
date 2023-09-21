@@ -12,50 +12,50 @@ namespace WinttOS.Core.Utils.GUI
     public abstract class OSButton
     {
 
-        public readonly uint x;
-        public readonly uint y;
-        public readonly uint width;
-        public readonly uint height;
-        public readonly Color color;
-        public readonly Bitmap image;
-        private readonly bool usingImage;
-        public readonly bool imageHasAlpha;
+        public readonly uint X;
+        public readonly uint Y;
+        public readonly uint Width;
+        public readonly uint Height;
+        public readonly Color Color;
+        public readonly Bitmap Image;
+        private readonly bool IsUsingImage;
+        public readonly bool DoImageHasAlpha;
         private bool isMouseOver = false;
         private bool hasMouseLeft = false;
 
         public OSButton(uint x, uint y, uint width, uint height, Color color)
         {
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            this.color = color;
-            usingImage = false;
-            imageHasAlpha = false;
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+            Color = color;
+            IsUsingImage = false;
+            DoImageHasAlpha = false;
         }
 
         public OSButton(uint x, uint y, Bitmap image, bool hasAlpha)
         {
-            this.x = x;
-            this.y = y;
-            this.image = image;
-            this.height = image.Height;
-            this.width = image.Width;
-            usingImage = true;
-            imageHasAlpha = hasAlpha;
+            X = x;
+            Y = y;
+            Image = image;
+            Height = image.Height;
+            Width = image.Width;
+            IsUsingImage = true;
+            DoImageHasAlpha = hasAlpha;
         }
 
         public void ButtonScreenUpdate(Canvas canvas)
         {
-            if (usingImage)
+            if (IsUsingImage)
             {
-                if (imageHasAlpha)
-                    canvas.DrawImageAlpha(image, (int)x, (int)y);
+                if (DoImageHasAlpha)
+                    canvas.DrawImageAlpha(Image, (int)X, (int)Y);
                 else
-                    canvas.DrawImage(image, (int)x, (int)y);
+                    canvas.DrawImage(Image, (int)X, (int)Y);
             }
             else
-                canvas.DrawFilledRectangle(color, (int)x, (int)y, (int)width, (int)height);
+                canvas.DrawFilledRectangle(Color, (int)X, (int)Y, (int)Width, (int)Height);
         }
 
         public void ProcessInput()
@@ -64,9 +64,9 @@ namespace WinttOS.Core.Utils.GUI
             uint mouseX = MouseManager.X;
             uint mouseY = MouseManager.Y;
 
-            if (usingImage)
+            if (IsUsingImage)
             {
-                if (mouseX >= x && mouseX <= x + image.Width && mouseY >= y && mouseY <= y + image.Height)
+                if (mouseX >= X && mouseX <= X + Image.Width && mouseY >= Y && mouseY <= Y + Image.Height)
                 {
                     if(!isMouseOver)
                     {
@@ -86,7 +86,7 @@ namespace WinttOS.Core.Utils.GUI
             }
             else
             {
-                if (mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height)
+                if (mouseX >= X && mouseX <= X + Width && mouseY >= Y && mouseY <= Y + Height)
                 {
                     if (!isMouseOver)
                     {

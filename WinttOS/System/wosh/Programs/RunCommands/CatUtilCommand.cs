@@ -12,7 +12,7 @@ namespace WinttOS.System.wosh.Programs.RunCommands
             HelpCommandManager.addCommandUsageStrToManager(@"cat <path\to\file> - reads all text from file (use 'man cat' for more info)");
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             CAT instance = new CAT();
             return instance.Execute(arguments);

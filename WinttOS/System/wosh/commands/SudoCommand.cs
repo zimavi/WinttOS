@@ -13,7 +13,7 @@ namespace WinttOS.System.wosh.commands
             HelpCommandManager.addCommandUsageStrToManager("sudo [command] [command args] - give root permissions");
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             if (arguments.Length == 0)
             {
@@ -25,14 +25,14 @@ namespace WinttOS.System.wosh.commands
                     if (u.IsNull())
                         goto WrongPasswordMsg;
                     Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write($"root$0:\\{GlobalData.currDir}: ");
+                    Console.Write($"root$0:\\{GlobalData.CurrentDirectory}: ");
                     string input = Console.ReadLine();
                     Console.ForegroundColor = ConsoleColor.Gray;
                     if (input == "exit")
                         break;
                     else if (input == "whoami")
                         Console.WriteLine("root");
-                    Console.WriteLine(Kernel.manager.processInput(ref u, input));
+                    Console.WriteLine(WinttOS.CommandManager.ProcessInput(ref u, input));
                 }
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
@@ -43,7 +43,7 @@ namespace WinttOS.System.wosh.commands
                 TempUser u = WinttOS.UsersManager.RequestAdminAccount("root", pass);
                 if (u.IsNull())
                     goto WrongPasswordMsg;
-                return Kernel.manager.processInput(ref u, string.Join(' ', arguments));
+                return WinttOS.CommandManager.ProcessInput(ref u, string.Join(' ', arguments));
             }
             return null;
 

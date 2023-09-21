@@ -13,7 +13,7 @@ namespace WinttOS.System.wosh.commands.Misc
         public EchoCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"echo <message> - repeats message");
-            manual = new List<string>()
+            CommandManual = new List<string>()
             {
                 "Echo command return all text that was gave after 'echo'",
                 "For example:",
@@ -21,7 +21,7 @@ namespace WinttOS.System.wosh.commands.Misc
             };
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             string response = "";
 

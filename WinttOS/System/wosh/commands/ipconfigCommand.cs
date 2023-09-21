@@ -14,7 +14,7 @@ namespace WinttOS.System.wosh.commands
         public ipconfigCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"ipconfig - gets list of network devices");
-            manual = new()
+            CommandManual = new()
             {
                 "Usage:",
                 "ipconfig                   - get network information",
@@ -66,7 +66,7 @@ namespace WinttOS.System.wosh.commands
         }
         */
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             string returnStr = "";
             if (arguments.Length == 0)

@@ -13,7 +13,7 @@ namespace WinttOS.System.wosh.commands
 
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             List<string> helpStrs = HelpCommandManager.getCommandsUsageStringsAsList();
             int index = 0;

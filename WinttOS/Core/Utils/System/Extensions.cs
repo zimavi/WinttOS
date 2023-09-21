@@ -7,12 +7,7 @@ using WinttOS.System.wosh.Programs;
 
 namespace WinttOS.Core.Utils.System
 {
-    // 
-    // 
-    // YOU CAN APPEND THIS CLASS AS IT IS PARTIAL
-    // 
-    // 
-    public static partial class Extensions
+    public static class Extensions
     {
         #region Arrays
 

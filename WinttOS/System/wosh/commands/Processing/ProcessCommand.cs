@@ -16,7 +16,7 @@ namespace WinttOS.System.wosh.commands.Processing
             HelpCommandManager.addCommandUsageStrToManager("process [list|kill|start|restart] - manages processes");
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             if (arguments.Length == 0)
                 return "Usage: process [list|kill|restart]";
@@ -32,7 +32,7 @@ namespace WinttOS.System.wosh.commands.Processing
                 {
                     if (!WinttOS.ProcessManager.GetProcessInstance(Convert.ToUInt32(arguments[1])).IsNull())
                     {
-                        if (!WinttOS.ProcessManager.GetProcessInstance(Convert.ToUInt32(arguments[1])).IsCritical)
+                        if (!WinttOS.ProcessManager.GetProcessInstance(Convert.ToUInt32(arguments[1])).IsProcessCritical)
                             WinttOS.ProcessManager.StopProcess(Convert.ToUInt32(arguments[1]));
                         else
                             return "Permission denied";

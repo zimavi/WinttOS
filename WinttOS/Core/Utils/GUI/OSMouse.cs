@@ -12,24 +12,24 @@ namespace WinttOS.Core.Utils.GUI
 {
     public class OSMouse
     {
-        public readonly Canvas _canvas;
-        private Bitmap _cursor;
+        public readonly Canvas Canvas;
+        private Bitmap cursor;
 
         public OSMouse(Canvas canvas)
         {
-            _canvas = canvas;
-            _cursor = new Bitmap(Files.RawCursorImage);
+            Canvas = canvas;
+            cursor = new Bitmap(Files.RawCursorImage);
         }
 
         public void DrawCursor()
         {
-            Sys.MouseManager.ScreenWidth = _canvas.Mode.Width;
-            Sys.MouseManager.ScreenHeight = _canvas.Mode.Height;
+            Sys.MouseManager.ScreenWidth = Canvas.Mode.Width;
+            Sys.MouseManager.ScreenHeight = Canvas.Mode.Height;
 
             int X = (int)Sys.MouseManager.X;
             int Y = (int)Sys.MouseManager.Y;
 
-            _canvas.DrawImageAlpha(_cursor, X, Y);
+            Canvas.DrawImageAlpha(cursor, X, Y);
         }
 
     }

@@ -12,30 +12,30 @@ namespace WinttOS.Core.Utils
 {
     public class UI
     {
-        public Canvas _canvas { get; private set; }
-        public OSMouse _mouse { get; private set; }
+        public Canvas Canvas { get; private set; }
+        public OSMouse Mouse { get; private set; }
 
         public void InitializeUI()
         {
-            _canvas = FullScreenCanvas.GetFullScreenCanvas(new Mode(1920, 1080, ColorDepth.ColorDepth32));
+            Canvas = FullScreenCanvas.GetFullScreenCanvas(new Mode(1920, 1080, ColorDepth.ColorDepth32));
             InitializeMouseInstence();
         }
         public void InitializeUI(uint modeW, uint modeH)
         {
-            _canvas = FullScreenCanvas.GetFullScreenCanvas(new Mode(modeW, modeH, ColorDepth.ColorDepth32));
+            Canvas = FullScreenCanvas.GetFullScreenCanvas(new Mode(modeW, modeH, ColorDepth.ColorDepth32));
             InitializeMouseInstence();
         }
         public void InitializeUI(uint modeW, uint modeH, ColorDepth depth)
         {
-            _canvas = FullScreenCanvas.GetFullScreenCanvas(new Mode(modeW, modeH, depth));
+            Canvas = FullScreenCanvas.GetFullScreenCanvas(new Mode(modeW, modeH, depth));
             InitializeMouseInstence();
         }
         public void InitializeUI(Mode mode)
         {
-            _canvas = FullScreenCanvas.GetFullScreenCanvas(mode);
+            Canvas = FullScreenCanvas.GetFullScreenCanvas(mode);
             InitializeMouseInstence();
         }
 
-        private void InitializeMouseInstence() => _mouse = new OSMouse(_canvas);
+        private void InitializeMouseInstence() => Mouse = new OSMouse(Canvas);
     }
 }

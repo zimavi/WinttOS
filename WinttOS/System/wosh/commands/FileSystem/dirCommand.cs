@@ -11,7 +11,7 @@ namespace WinttOS.System.wosh.commands.FileSystem
         public dirCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"dir - get list of all directories and files");
-            manual = new List<string>()
+            CommandManual = new List<string>()
             {
                 "Dir command is used for checking what is in current directory.",
                 "When you run this command, you will see some lines.",
@@ -22,13 +22,13 @@ namespace WinttOS.System.wosh.commands.FileSystem
             };
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             try
             {
-                var dir_files = GlobalData.fs.GetDirectoryListing(@"0:\" + GlobalData.currDir);
+                var dir_files = GlobalData.FileSystem.GetDirectoryListing(@"0:\" + GlobalData.CurrentDirectory);
 
-                Console.WriteLine($"<DIR>  0:\\{GlobalData.currDir}");
+                Console.WriteLine($"<DIR>  0:\\{GlobalData.CurrentDirectory}");
 
                 foreach (var file in dir_files)
                 {

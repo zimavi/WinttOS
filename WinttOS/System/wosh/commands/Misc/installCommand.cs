@@ -21,7 +21,7 @@ namespace WinttOS.System.wosh.commands.Misc
         public installCommand(string name) : base(name, true, Users.User.AccessLevel.Administrator)
         {
             HelpCommandManager.addCommandUsageStrToManager(@"install - show install gui (WIP)");
-            manual = new List<string>()
+            CommandManual = new List<string>()
             {
                 "This command runs install gui, but",
                 "it still in development. So it's only test.",
@@ -30,7 +30,7 @@ namespace WinttOS.System.wosh.commands.Misc
             };
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             try
             {
@@ -39,8 +39,8 @@ namespace WinttOS.System.wosh.commands.Misc
                 if (!DevModeCommand.isInDebugMode)
                     return null;
 
-                GlobalData.ui = new UI();
-                GlobalData.ui.InitializeUI(new Mode(1920, 1080, ColorDepth.ColorDepth32));
+                GlobalData.UI = new UI();
+                GlobalData.UI.InitializeUI(new Mode(1920, 1080, ColorDepth.ColorDepth32));
                 Bitmap bitmap = new Bitmap(Files.Installer.RawInstallerNextButtonImage);
                 bg = new Bitmap(Files.Installer.RawInstallerBackgroundImage);
                 Buttons.Add(new InstallNextButton(1207, 795, bitmap));
@@ -56,8 +56,8 @@ namespace WinttOS.System.wosh.commands.Misc
             }
             catch
             {
-                GlobalData.ui._canvas.Disable();
-                GlobalData.ui._mouse._canvas.Disable();
+                GlobalData.UI.Canvas.Disable();
+                GlobalData.UI.Mouse.Canvas.Disable();
                 throw;
             }
         }
@@ -67,26 +67,26 @@ namespace WinttOS.System.wosh.commands.Misc
             while (true)
             {
                 // Show background
-                GlobalData.ui._canvas.DrawImage(bg, 0, 0);
+                GlobalData.UI.Canvas.DrawImage(bg, 0, 0);
 
                 // Buttons tick
                 Buttons.ForEach((button) =>
                 {
-                    button.ButtonScreenUpdate(GlobalData.ui._canvas);
+                    button.ButtonScreenUpdate(GlobalData.UI.Canvas);
                     button.ProcessInput();
                 });
 
                 // Draw mouse cursor
-                GlobalData.ui._mouse.DrawCursor();
+                GlobalData.UI.Mouse.DrawCursor();
 
                 // Finish frame
-                GlobalData.ui._canvas.Display();
+                GlobalData.UI.Canvas.Display();
 
                 // Return that Update frame finished
                 yield return null;
 
                 // Start new frame
-                GlobalData.ui._canvas.Clear();
+                GlobalData.UI.Canvas.Clear();
             }
         }
 

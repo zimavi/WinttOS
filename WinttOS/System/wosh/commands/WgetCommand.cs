@@ -16,7 +16,7 @@ namespace WinttOS.System.wosh.commands
             HelpCommandManager.addCommandUsageStrToManager("wget <url/IPv4>");
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace WinttOS.System.wosh.commands
             {
                 Console.WriteLine("Exception: " + ex);
             }
-            return base.execute(arguments);
+            return base.Execute(arguments);
         }
     }
 }

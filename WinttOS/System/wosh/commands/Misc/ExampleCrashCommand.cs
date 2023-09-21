@@ -12,10 +12,10 @@ namespace WinttOS.System.wosh.commands.Misc
         public ExampleCrashCommand(string name) : base(name, true, Users.User.AccessLevel.Administrator)
         { }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             exampleStackTraceLogging(); // Call stack not working :((
-            return base.execute(arguments);
+            return base.Execute(arguments);
         }
 
         private void exampleStackTraceLogging()

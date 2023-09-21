@@ -16,12 +16,12 @@ namespace WinttOS.System.wosh.commands.FileSystem
             HelpCommandManager.addCommandUsageStrToManager(@"cd <path\to\folder> - change directory");
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             if (arguments[0] == null || arguments[0] == string.Empty || arguments[0] == "")
-                GlobalData.currDir = string.Empty;
+                GlobalData.CurrentDirectory = string.Empty;
             else
-                GlobalData.currDir = arguments[0] + @"\";
+                GlobalData.CurrentDirectory = arguments[0] + @"\";
 
             return $"Changed directory to {arguments[0]}";
         }

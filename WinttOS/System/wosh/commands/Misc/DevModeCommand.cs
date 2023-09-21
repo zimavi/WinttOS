@@ -12,7 +12,7 @@ namespace WinttOS.System.wosh.commands.Misc
         public static bool isInDebugMode { get; private set; }
         public DevModeCommand(string name) : base(name, Users.User.AccessLevel.Administrator)
         {
-            manual = new List<string>()
+            CommandManual = new List<string>()
             {
                 "By running this command, you can switch dev mode.",
                 "This can unlock you some hidden features.",
@@ -21,7 +21,7 @@ namespace WinttOS.System.wosh.commands.Misc
             };
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             if (arguments.Length > 0 && (arguments[0] == "-i" || arguments[0] == "--info"))
             {

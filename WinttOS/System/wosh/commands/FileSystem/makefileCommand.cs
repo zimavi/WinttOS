@@ -12,18 +12,18 @@ namespace WinttOS.System.wosh.commands.FileSystem
             HelpCommandManager.addCommandUsageStrToManager(@"mkfile <new.file> - creates new file");
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             if (arguments.Length >= 1)
             {
-                var file_stream = File.Create(@"0:\" + GlobalData.currDir + @"\" + string.Join(' ', arguments));
+                var file_stream = File.Create(@"0:\" + GlobalData.CurrentDirectory + @"\" + string.Join(' ', arguments));
             }
             else
             {
                 Console.Write("Enter file name: ");
                 string file = Console.ReadLine();
                 // Added replacment of spaces in names into _ for preventing unopenable files
-                var file_stream = File.Create(@"0:\" + GlobalData.currDir + @"\" + string.Join('\n', file.Split(' ')));
+                var file_stream = File.Create(@"0:\" + GlobalData.CurrentDirectory + @"\" + string.Join('\n', file.Split(' ')));
             }
 
             return "Created file!";

@@ -11,11 +11,11 @@ namespace WinttOS.System.wosh.commands.FileSystem
             HelpCommandManager.addCommandUsageStrToManager("touch <file_name> - creates new empty file");
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             if (arguments.Length == 0)
                 return "Usage: touch <file_name>";
-            File.Create(@"0:\" + GlobalData.currDir + string.Join(' ', arguments));
+            File.Create(@"0:\" + GlobalData.CurrentDirectory + string.Join(' ', arguments));
             return "Done.";
         }
     }

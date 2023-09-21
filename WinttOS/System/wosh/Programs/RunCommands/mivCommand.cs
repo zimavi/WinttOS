@@ -9,7 +9,7 @@ namespace WinttOS.System.wosh.Programs.RunCommands
             HelpCommandManager.addCommandUsageStrToManager(@"miv <path\to\file> - edit file");
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             MIV.StartMIV(arguments[0]);
             return string.Empty;

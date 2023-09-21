@@ -14,7 +14,7 @@ namespace WinttOS.System.wosh.commands.Screen
         {
             HelpCommandManager.addCommandUsageStrToManager(@"clear - clears screen");
         }
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             Console.Clear();
             return string.Empty;

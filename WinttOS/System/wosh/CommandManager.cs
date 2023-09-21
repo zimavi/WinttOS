@@ -1,11 +1,7 @@
-﻿using Cosmos.Core.Memory;
-using Cosmos.System.Coroutines;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.System;
 using WinttOS.Core;
-using WinttOS.System.Processing;
 using WinttOS.System.Users;
 using WinttOS.System.wosh.commands;
 using WinttOS.System.wosh.commands.FileSystem;
@@ -26,7 +22,7 @@ namespace WinttOS.System.wosh
 
         public CommandManager() : base("conman", "wosh.service")
         {
-            this.commands = new List<Command>
+            commands = new List<Command>
             {
                 new ClearScreenCommand("clear"),
                 new EchoCommand("echo"),
@@ -60,7 +56,7 @@ namespace WinttOS.System.wosh
         /// </summary>
         /// <param name="command">Command's class that implements <see cref="Command"/> abstract class</param>
         /// <returns>true if successfull</returns>
-        public bool registerCommand(Command command)
+        public bool RegisterCommand(Command command)
         {
             try
             {
@@ -73,7 +69,7 @@ namespace WinttOS.System.wosh
             }
         }
 
-        public string processInput(string input)
+        public string ProcessInput(string input)
         {
             string[] split = input.Split(' ');
 
@@ -91,13 +87,13 @@ namespace WinttOS.System.wosh
 
             foreach (Command cmd in this.commands)
             {
-                if (cmd.name == label)
+                if (cmd.CommandName == label)
                 {
-                    if(cmd.RequiredAccessLevel <= WinttOS.UsersManager.currentUser.UserAccess)
+                    if(cmd.RequiredAccessLevel <= WinttOS.UsersManager.CurrentUser.UserAccess)
                     {
                         try
                         {
-                            return cmd.execute(args.ToArray());
+                            return cmd.Execute(args.ToArray());
                         }
                         catch (Exception e)
                         {
@@ -111,7 +107,7 @@ namespace WinttOS.System.wosh
             return "Command '" + label + "' not exist, please type man <command> or help or more details.";
         }
 
-        public string processInput(ref TempUser user, string input)
+        public string ProcessInput(ref TempUser user, string input)
         {
             string[] split = input.Split(' ');
 
@@ -129,14 +125,14 @@ namespace WinttOS.System.wosh
 
             foreach (Command cmd in this.commands)
             {
-                if (cmd.name == label)
+                if (cmd.CommandName == label)
                 {
                     if (cmd.RequiredAccessLevel <= user.UserAccess)
                     {
                         user = null;
                         try
                         {
-                            return cmd.execute(args.ToArray());
+                            return cmd.Execute(args.ToArray());
                         }
                         catch(Exception e)
                         {
@@ -150,29 +146,30 @@ namespace WinttOS.System.wosh
             return "Command '" + label + "' not exist, please type man <command> or help or more details.";
         }
 
-        public List<String> getCommandsList()
+        public List<String> GetCommandsList()
         {
             List<String> commands = new List<string>();
             foreach(Command command in this.commands)
             {
-                if(!command.isHidden)
-                    commands.Add(command.name);
+                if(!command.IsHiddenCommand)
+                    commands.Add(command.CommandName);
             }
             return commands;
         }
 
-        public List<Command> getCommandsListInstances() => commands;
+        public List<Command> GetCommandsListInstances() => 
+            commands;
 
         public override void ServiceTick()
         {
             try
             {
-                if (Kernel.FinishingKernel)
+                if (Kernel.IsFinishingKernel)
                     return;
                 if (didRunCycle)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.Write(@$"{WinttOS.UsersManager.currentUser.Name}$0:\{GlobalData.currDir}> ");
+                    Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}$0:\{GlobalData.CurrentDirectory}> ");
                     Console.ForegroundColor = ConsoleColor.White;
                     didRunCycle = false;
                 }
@@ -182,7 +179,7 @@ namespace WinttOS.System.wosh
                 {
                     string[] split = input.Split(' ');
                     Console.ForegroundColor = ConsoleColor.Gray;
-                    string response = processInput(input);
+                    string response = ProcessInput(input);
                     Console.WriteLine(response);
                     didRunCycle = true;
                 }

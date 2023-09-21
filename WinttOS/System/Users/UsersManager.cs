@@ -17,9 +17,9 @@ namespace WinttOS.System.Users
 
         public List<User> Users => users;
 
-        public User currentUser { get; private set; } = User.CreateEmptyUser();
+        public User CurrentUser { get; private set; } = User.CreateEmptyUser();
 
-        public List<User> activeUsers { get; private set; } = new();
+        public List<User> ActiveUsers { get; private set; } = new();
 
         /// <summary>
         /// <see cref="User"/> if Root is correct or <see langword="null"/>
@@ -54,7 +54,8 @@ namespace WinttOS.System.Users
             users.Add(User);
         }
 
-        public bool DeleteUser(User User) => users.Remove(User);
+        public bool DeleteUser(User User) => 
+            users.Remove(User);
 
         public User GetUserByName(string name)
         {
@@ -102,43 +103,42 @@ namespace WinttOS.System.Users
 
             foreach (User user in users)
             {
-                if (user.Name == Login)
-                {
-                    if (user.HasPassword)
-                    {
-                        if (user.PasswordHash == MD5.Calculate(Encoding.UTF8.GetBytes(Password)))
-                        {
-                            currentUser = user;
-                            if (!activeUsers.Contains(user))
-                                activeUsers.Add(user);
+                if (!user.Name.Equals(Login))
+                    return false;
 
-                            return true;
-                        }
-                    }
-                    else
+                if (user.HasPassword)
+                {
+                    if (user.PasswordHash == MD5.Calculate(Encoding.UTF8.GetBytes(Password)))
                     {
-                        currentUser = user;
-                        if (!activeUsers.Contains(user))
-                            activeUsers.Add(user);
+                        CurrentUser = user;
+                        if (!ActiveUsers.Contains(user))
+                            ActiveUsers.Add(user);
 
                         return true;
                     }
                 }
-            }
+                else
+                {
+                    CurrentUser = user;
+                    if (!ActiveUsers.Contains(user))
+                        ActiveUsers.Add(user);
 
+                    return true;
+                }
+            }
             return false;
         }
 
         public void LogoutFromUserAccount(User user)
         {
-            if (activeUsers.Count > 0)
+            if (ActiveUsers.Count > 0)
             {
-                foreach (User u in activeUsers)
+                foreach (User u in ActiveUsers)
                 {
                     if (u == user)
                     {
-                        activeUsers.Remove(u);
-                        currentUser = User.CreateEmptyUser();
+                        ActiveUsers.Remove(u);
+                        CurrentUser = User.CreateEmptyUser();
                         return;
                     }
                 }
@@ -147,11 +147,11 @@ namespace WinttOS.System.Users
 
         public void LogoutFromUserAccount(string Login)
         {
-            foreach (User user in activeUsers)
+            foreach (User user in ActiveUsers)
             {
                 if (user.Name == Login)
                 {
-                    activeUsers.Remove(user);
+                    ActiveUsers.Remove(user);
                     return;
                 }
             }

@@ -15,7 +15,7 @@ namespace WinttOS.System.wosh.commands
             HelpCommandManager.addCommandUsageStrToManager(@"version - shows OS version");
         }
 
-        public override string execute(string[] args)
+        public override string Execute(string[] args)
         {
             return $"{Kernel.Version}\nPowered by Cosmos Kernel";
         }

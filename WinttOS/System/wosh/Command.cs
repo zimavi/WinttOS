@@ -4,49 +4,48 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WinttOS.System.Users;
-using WinttOS.System.wosh.Utils.Commands.Manuals;
 
 namespace WinttOS.System.wosh
 {
     public abstract class Command
     {
-        public readonly string name;
-        public List<string> manual { get; protected set; }
+        public readonly string CommandName;
+        public List<string> CommandManual { get; protected set; }
 
-        public readonly bool isHidden;
+        public readonly bool IsHiddenCommand;
 
         public readonly User.AccessLevel RequiredAccessLevel;
 
         public Command(string name)
         {
-            this.name = name;
-            manual = new();
-            isHidden = false;
+            CommandName = name;
+            CommandManual = new();
+            IsHiddenCommand = false;
             RequiredAccessLevel = User.AccessLevel.Default;
         }
         public Command(string name, User.AccessLevel requiredAccessLevel)
         {
-            this.RequiredAccessLevel = requiredAccessLevel;
-            this.name = name;
-            manual = new();
-            isHidden = false;
+            RequiredAccessLevel = requiredAccessLevel;
+            CommandName = name;
+            CommandManual = new();
+            IsHiddenCommand = false;
         }
         public Command(string name, bool hidden)
         {
             RequiredAccessLevel = User.AccessLevel.Default;
-            this.name = name;
-            manual = new List<string>();
-            isHidden = hidden;
+            CommandName = name;
+            CommandManual = new List<string>();
+            IsHiddenCommand = hidden;
         }
         public Command(string name, bool hidden, User.AccessLevel requiredAccessLevel)
         {
             RequiredAccessLevel = requiredAccessLevel;
-            this.name = name;
-            manual = new List<string>();
-            isHidden = hidden;
+            CommandName = name;
+            CommandManual = new List<string>();
+            IsHiddenCommand = hidden;
         }
 
-        public virtual string execute(string[] arguments)
+        public virtual string Execute(string[] arguments)
         {
             return "";
         }

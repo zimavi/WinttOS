@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WinttOS.Core.Utils.System;
 using WinttOS.System.wosh.Utils.Commands;
-using WinttOS.System.wosh.Utils.Commands.Manuals;
 
 namespace WinttOS.System.wosh.commands
 {
@@ -14,7 +12,7 @@ namespace WinttOS.System.wosh.commands
             HelpCommandManager.addCommandUsageStrToManager("man [command name] - shows list of manuals or command manual");
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             //if(arguments.Length == 0)
             //{
@@ -30,10 +28,10 @@ namespace WinttOS.System.wosh.commands
             if(arguments.Length == 0)
             {
                 List<string> commandsWithManuals = new List<string>();
-                foreach(Command command in WinttOS.CommandManager.getCommandsListInstances())
+                foreach(Command command in WinttOS.CommandManager.GetCommandsListInstances())
                 {
-                    if (command.manual.Any())
-                        commandsWithManuals.Add(command.name);
+                    if (command.CommandManual.Any())
+                        commandsWithManuals.Add(command.CommandName);
                     //if(!command.Manual2.IsNull())
                     //{
                     //    commandsWithManuals.Add(command.name);
@@ -44,9 +42,9 @@ namespace WinttOS.System.wosh.commands
                 return returnStr;
             }
 
-            foreach(Command command in WinttOS.CommandManager.getCommandsListInstances())
+            foreach(Command command in WinttOS.CommandManager.GetCommandsListInstances())
             {
-                if(command.name == arguments[0])
+                if(command.CommandName == arguments[0])
                 {
                     /*
                     if(!command.Manual2.IsNull())
@@ -80,9 +78,9 @@ namespace WinttOS.System.wosh.commands
                     }
                     */
 
-                    if(command.manual.Any())
+                    if(command.CommandManual.Any())
                     {
-                        return String.Join('\n', command.manual.ToArray());
+                        return String.Join('\n', command.CommandManual.ToArray());
                     }
                     break;
                 }

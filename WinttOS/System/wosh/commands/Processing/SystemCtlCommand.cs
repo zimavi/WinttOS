@@ -10,19 +10,19 @@ namespace WinttOS.System.wosh.commands.Processing
         public SystemCtlCommand(string name) : base(name, Users.User.AccessLevel.Administrator) 
         {
             HelpCommandManager.addCommandUsageStrToManager("systemctl [--help|-h] - get usage str (or use 'man systemctl')");
-            manual = new()
+            CommandManual = new()
             {
                 "\tsystemctl status <service.name>",
             };
         }
 
-        public override string execute(string[] arguments)
+        public override string Execute(string[] arguments)
         {
             if (arguments.Length == 0 || arguments[0] == "list")
             {
                 string result = string.Empty;
                 foreach (var service in WinttOS.ServiceProvider.Services)
-                    result += service.Name + '\n';
+                    result += service.ProcessName + '\n';
                 return result.Substring(0, result.Length -1);
             }
             if (arguments.Length == 2 || arguments[0] == "status")

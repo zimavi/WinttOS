@@ -58,50 +58,29 @@ namespace WinttOS.System.Users
             UserAccess = AccessLevel.Default;
         }
 
-        /*
-        public User(string UserName, string Password = null, bool isPasswordHashed = false)
-        {
-            Name = UserName;
-            if(Password != null)
-            {
-                if (isPasswordHashed)
-                    this.PasswordHash = Password;
-                else
-                    PasswordHash = MD5.Calculate(Encoding.ASCII.GetBytes(Password));
-            }
-            if (UserName == "Guest")
-                UserAccess = AccessLevel.Guest;
-            else
-                UserAccess = AccessLevel.Default;
-        }
-
-        public User(string UserName, string Password, AccessLevel UserAccessLevel, bool isPasswordHashed = false) : this(UserName, Password, isPasswordHashed)
-        {
-            this.UserAccess = UserAccessLevel;
-        }
-        */
-
         #endregion
 
         #region Operators
 
-        public static bool operator ==(User u1, User u2) => (u1.Name == u2.Name &&
-                u1.PasswordHash == u2.PasswordHash &&
-                u1.UserAccess == u2.UserAccess);
+        public static bool operator ==(User u1, User u2) => 
+            (u1.Name.Equals(u2.Name) &&
+                u1.PasswordHash.Equals(u2.PasswordHash) &&
+                u1.UserAccess.Equals(u2.UserAccess));
 
-        public static bool operator !=(User u1, User u2) => !(u1.Name == u2.Name &&
-                u1.PasswordHash == u2.PasswordHash &&
-                u1.UserAccess == u2.UserAccess);
+        public static bool operator !=(User u1, User u2) => !(u1.Name.Equals(u2.Name) &&
+                u1.PasswordHash.Equals(u2.PasswordHash) &&
+                u1.UserAccess.Equals(u2.UserAccess));
 
         #endregion
 
         #region Methods                                                                                                                             //new(Name, Password, AccessLevel.Administrator);
 
-        public static User CreateGuestAccount() => new UserBuilder().SetUserName("Guest")
-                                                                    .SetAccess(AccessLevel.Guest)
-                                                                    .Build();                                                           //new("Guest");
-
-        public static User CreateEmptyUser() => new User();
+        public static User CreateGuestAccount() => 
+            new UserBuilder().SetUserName("Guest")
+                             .SetAccess(AccessLevel.Guest)
+                             .Build();
+        public static User CreateEmptyUser() => 
+            new User();
 
         public bool ChangePassword(ref User user, string OldPassword, string NewPassword)
         {
@@ -127,7 +106,8 @@ namespace WinttOS.System.Users
         {
             private User user;
 
-            public UserBuilder() => user = new();
+            public UserBuilder() => 
+                user = new();
 
             /// <summary>
             /// Set user's name. You <c>must</c> call this method to successfully build user!
@@ -222,7 +202,8 @@ namespace WinttOS.System.Users
         public class TempUserBuilder
         {
             private TempUser user;
-            public TempUserBuilder() => user = new();
+            public TempUserBuilder() => 
+                user = new();
 
             public TempUserBuilder SetUserName(string Name)
             {

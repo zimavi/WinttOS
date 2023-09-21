@@ -6,42 +6,41 @@ namespace WinttOS.System.Processing
 {
     public class ProcessManager
     {
-        List<Process> _processes = new();
+        private List<Process> processes = new();
 
-        public uint ProcessesCount => (uint) _processes.Count;
-        public uint LastProcessID => (uint) _processes.Count - 1; 
+        public uint ProcessesCount => (uint) processes.Count;
 
         public bool RegisterProcess(Process process)
         {
-            foreach (var _process in _processes)
+            foreach (var _process in processes)
             {
                 if (_process == process) return false;
             }
-            _processes.Add(process);
-            _processes[_processes.Count - 1].SetProcessID((uint)_processes.Count - 1);
-            _processes[_processes.Count - 1].Initialize();
+            processes.Add(process);
+            processes[processes.Count - 1].SetProcessID((uint)processes.Count - 1);
+            processes[processes.Count - 1].Initialize();
             return true;
         }
         public bool RegisterProcess(Process process, ref uint newProcessID)
         {
-            foreach (var _process in _processes)
+            foreach (var _process in processes)
             {
                 if (_process == process) return false;
             }
-            _processes.Add(process);
-            _processes[_processes.Count - 1].SetProcessID((uint)_processes.Count - 1);
-            _processes[_processes.Count - 1].Initialize();
-            newProcessID = (uint)_processes.Count - 1;
+            processes.Add(process);
+            processes[processes.Count - 1].SetProcessID((uint)processes.Count - 1);
+            processes[processes.Count - 1].Initialize();
+            newProcessID = (uint)processes.Count - 1;
             return true;
         }
 
         public bool StartProcess(string processName)
         {
-            foreach (var process in _processes)
+            foreach (var process in processes)
             {
-                if (process.Name.Equals(processName)) 
+                if (process.ProcessName.Equals(processName)) 
                 {
-                    if (process.Running)
+                    if (process.IsProcessRunning)
                         return false;
                     process.Start(); 
                     return true; 
@@ -52,11 +51,11 @@ namespace WinttOS.System.Processing
 
         public bool StopProcess(string processName)
         {
-            foreach (var process in _processes)
+            foreach (var process in processes)
             {
-                if(process.Name == processName)
+                if(process.ProcessName == processName)
                 {
-                    if (!process.Running)
+                    if (!process.IsProcessRunning)
                         return false;
                     process.Stop();
                     return true;
@@ -67,26 +66,26 @@ namespace WinttOS.System.Processing
 
         public bool StartProcess(uint processID)
         {
-            foreach (var process in _processes)
+            foreach (var process in processes)
             {
                 if (process.ProcessID == processID)
-                    return StartProcess(process.Name);
+                    return StartProcess(process.ProcessName);
             }
             return false;
         }
         public bool StopProcess(uint processID)
         {
-            foreach (var process in _processes)
+            foreach (var process in processes)
             {
                  if(process.ProcessID == processID)
-                    return StopProcess(process.Name);
+                    return StopProcess(process.ProcessName);
             }
             return false;
         }
 
         public Process? GetProcessInstance(uint processID)
         {
-            foreach(var process in _processes)
+            foreach(var process in processes)
             {
                 if(process.ProcessID == processID)
                     return process;
@@ -101,19 +100,19 @@ namespace WinttOS.System.Processing
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    foreach (var process in _processes)
+                    foreach (var process in processes)
                     {
-                        if (process.Type == (Process.ProcessType) i && process.Running)
+                        if (process.Type == (Process.ProcessType) i && process.IsProcessRunning)
                             process.Update();
                     }
                 }
                 yield return null;
 
-                if (Kernel.FinishingKernel)
+                if (Kernel.IsFinishingKernel)
                 {
-                    foreach (var process in _processes)
+                    foreach (var process in processes)
                     {
-                        if (process.Running)
+                        if (process.IsProcessRunning)
                             process.Stop();
                     }
                     break;
@@ -125,12 +124,12 @@ namespace WinttOS.System.Processing
         {
             string result = "Status\tName\tProcess ID\n";
 
-            foreach (var process in _processes)
+            foreach (var process in processes)
             {
-                if (process.Running)
-                    result += $" [X]\t{process.Name}\t{process.ProcessID}\n";
+                if (process.IsProcessRunning)
+                    result += $" [X]\t{process.ProcessName}\t{process.ProcessID}\n";
                 else
-                    result += $" [ ]\t{process.Name}\t{process.ProcessID}\n";
+                    result += $" [ ]\t{process.ProcessName}\t{process.ProcessID}\n";
             }
 
             return result;

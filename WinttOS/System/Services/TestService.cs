@@ -11,31 +11,27 @@ namespace WinttOS.System.Services
     {
 
         #region Fields
-        public bool IsRunning => _isRunning;
+        public bool IsRunning => isRunning;
 
-        public ServiceStatus Status => _status;
+        public ServiceStatus Status => status;
 
-        public string ErrorMessage => _errMsg;
-
-        public string Name => _name;
+        public string ErrorMessage => errorMessage;
 
         #endregion
 
         #region Variables
 
-        private bool _isRunning;
-        private ServiceStatus _status;
-        private string _errMsg;
-        private string _name;
+        private bool isRunning;
+        private ServiceStatus status;
+        private string errorMessage;
 
         #endregion
 
         public TestService() : base("TestService", "test.service")
         {
-            _isRunning = false;
-            _status = ServiceStatus.OFF;
-            _errMsg = string.Empty;
-            _name = "test.service";
+            isRunning = false;
+            status = ServiceStatus.OFF;
+            errorMessage = string.Empty;
         }
 
         #region Method
