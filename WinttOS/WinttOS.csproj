@@ -24,6 +24,8 @@
         <BinFormat>Elf</BinFormat>
         <ExtractMapFile>False</ExtractMapFile>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <EnableBochsDebug>True</EnableBochsDebug>
+        <StartBochsDebugGui>True</StartBochsDebugGui>
     </PropertyGroup>
 
     <ItemGroup>

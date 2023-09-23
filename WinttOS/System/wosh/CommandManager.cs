@@ -36,7 +36,7 @@ namespace WinttOS.System.wosh
                 new changeDirectoryCommand("cd"),
                 new dirCommand("dir"),
                 new SystemInfoCommand("sysinfo"),
-                new installCommand("install"),
+                //new installCommand("install"),
                 new HelpCommand("help"),
                 new ManCommand("man"),
                 new TimeCommand("time"),
@@ -204,12 +204,15 @@ namespace WinttOS.System.wosh
                 bool hasKey = ShellUtils.ProcessExtendedInput(ref input);
                 if (hasKey)
                 {
+                    PowerManagerService.isIdling = false;
                     string[] split = input.Split(' ');
                     Console.ForegroundColor = ConsoleColor.Gray;
                     string response = ProcessInput(input);
                     Console.WriteLine(response);
                     didRunCycle = true;
                 }
+                else
+                    PowerManagerService.isIdling = true;
             }
             #region Catch
             catch

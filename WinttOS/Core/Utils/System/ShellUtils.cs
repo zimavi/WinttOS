@@ -2,10 +2,6 @@ using Cosmos.HAL;
 using Cosmos.System.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.System.wosh.Programs;
 

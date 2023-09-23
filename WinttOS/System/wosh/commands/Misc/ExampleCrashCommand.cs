@@ -17,7 +17,7 @@ namespace WinttOS.System.wosh.commands.Misc
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.wosh.Misc.ExampleCrashCommand.Execute()",
                 "string(string[])", "ExampleCrashCommand.cs", 184));
-            exampleStackTraceLogging(); // Call stack not working :((
+            exampleStackTraceLogging();
             WinttCallStack.RegisterReturn();
             return base.Execute(arguments);
         }

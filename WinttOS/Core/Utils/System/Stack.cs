@@ -18,16 +18,16 @@ namespace WinttOS.Core.Utils.System
             return toReturn;
         }
 
-        public Stack()
-        {
+        public Stack() => 
             stack = new();
-        }
 
         public int Count => stack.Count;
 
-        public void Push(T item) => stack.Add(item);
+        public void Push(T item) => 
+            stack.Add(item);
 
-        public T Peek() => stack.Last();
+        public T Peek() => 
+            stack.Last();
 
         public T Pop()
         {

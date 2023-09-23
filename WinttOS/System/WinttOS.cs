@@ -27,10 +27,11 @@ namespace WinttOS.System
 
         public static UsersManager UsersManager { get; set; } = new(null);
         public static ProcessManager ProcessManager { get; set; } = new();
-        private static WinttServiceProvider serviceProvider { get; set; } = new();
-
         public static CommandManager CommandManager { get; set; } = new();
+        public static bool IsSleeping { get; set; } = false;
+        public static List<Action> OnSystemSleep { get; private set; } = new();
 
+        private static WinttServiceProvider serviceProvider = new();
         private static uint serviceProviderProcessID = 0;
 
         #endregion
@@ -78,7 +79,7 @@ namespace WinttOS.System
                 "void()", "WinttOS.cs", 75));
             serviceProvider.Initialize();
 
-            serviceProvider.AddService(new TestService());
+            serviceProvider.AddService(new PowerManagerService());
 
             WinttCallStack.RegisterReturn();
         }
@@ -128,6 +129,13 @@ namespace WinttOS.System
             WinttCallStack.RegisterReturn();
         }
 
+        public static void SystemSleep()
+        {
+            foreach(Action eventHandler in OnSystemSleep)
+            {
+                eventHandler();
+            }
+        }
         public static void SystemFinish()
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.SystemFinish()",

@@ -1,14 +1,13 @@
-﻿
-
+﻿using System.Collections.Generic;
 using WinttOS.Core.Utils.System;
 
 namespace WinttOS.Core.Utils.Debugging
 {
     public static class WinttCallStack
     {
-        private static Stack<MethodCallInfo> callStack = new();
+        private static System.Stack<MethodCallInfo> callStack = new();
 
-        public static Stack<MethodCallInfo> CallStack => callStack;
+        public static System.Stack<MethodCallInfo> CallStack => callStack;
 
         public static void RegisterCall(MethodCallInfo info)
         {
@@ -19,13 +18,16 @@ namespace WinttOS.Core.Utils.Debugging
 
         internal static string GetCallStack()
         {
-            MethodCallInfo lastCall = callStack.Pop(); 
-            string toReturn = $"Last call: {lastCall.MethodFullPath} in {lastCall.FileName}:{lastCall.FileLineNumber}";
-            foreach(MethodCallInfo info in callStack.ToList())
+            MethodCallInfo lastCall = callStack.Pop();
+            List<string> toReturn = new()
             {
-                toReturn += $"  at {info.MethodFullPath} in {lastCall.FileName}:{lastCall.FileLineNumber}\n";
+                $"Last call: {lastCall.MethodFullPath} in {lastCall.FileName}:{lastCall.FileLineNumber}"
+            };
+            foreach (MethodCallInfo info in callStack.ToList())
+            {
+                toReturn.Add($"  at {info.MethodFullPath} in {info.FileName}:{info.FileLineNumber}");
             }
-            return toReturn;
+            return string.Join("\n----------\n", toReturn.ToArray());
         }
     }
 }

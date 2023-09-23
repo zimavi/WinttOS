@@ -117,11 +117,11 @@ namespace WinttOS.Core.Utils.Debugging
             //}
             //else
             //{
-                Cosmos.System.Global.Debugger.Send($"[Serve] {message}");
+                Cosmos.System.Global.Debugger.Send($"[Serve] {message}\n\n{WinttCallStack.GetCallStack()}");
                 if(!executePanic)
                     Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error: {message}");
                 else
-                    Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error: {message}\n{WinttCallStack.GetCallStack()}");
+                    Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error: {message}\n\n{WinttCallStack.GetCallStack()}");
             //}
             if (executePanic)
             {
@@ -141,7 +141,7 @@ namespace WinttOS.Core.Utils.Debugging
             //}
             //else
             //{
-                Cosmos.System.Global.Debugger.Send($"[Serve] {message}");
+                Cosmos.System.Global.Debugger.Send($"[Serve] {message}\n\n{WinttCallStack.GetCallStack()}");
                 Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error: {message}\n{exception.Message}\n{WinttCallStack.GetCallStack()}");
             //}
             //if (!sender.IsNull())
