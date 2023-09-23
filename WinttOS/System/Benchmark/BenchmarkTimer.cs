@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace WinttOS.System.Benchmark
 {
+    [Obsolete("This class couse compile error", true)]
     public class BenchmarkTimer : IDisposable
     {
         private DateTime? start = DateTime.UtcNow;
@@ -15,7 +16,11 @@ namespace WinttOS.System.Benchmark
             start = null;
         }
 
-        public TimeSpan? GetElapsedTime()
-            => DateTime.UtcNow - start;
+        public void RestartTimer() =>
+            start = DateTime.UtcNow;
+
+
+        public TimeSpan? GetElapsedTime() => 
+            DateTime.UtcNow - start;
     }
 }

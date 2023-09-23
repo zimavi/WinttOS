@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.Core.Utils.Debugging;
 using WinttOS.System.Processing;
 
 namespace WinttOS.System.Services
@@ -23,6 +24,8 @@ namespace WinttOS.System.Services
 
         public void AddService(Service service)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceProvider.AddService()",
+                "void(Service)", "WinttServiceProvider.cs", 25));
             if (!services.Contains(service))
             {
                 services.Add(service);
@@ -30,15 +33,19 @@ namespace WinttOS.System.Services
                 service.IsProcessCritical = true;
                 WinttOS.ProcessManager.RegisterProcess(service);
             }
+            WinttCallStack.RegisterReturn();
         }
 
         public void DoServiceProviderTick()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceProvider.DoServiceProviderTick()",
+                "void()", "WinttServiceProvider.cs", 39));
             services.ForEach(service =>
             {
                 if(service.IsServiceRunning)
                     service.onServiceTick();
             });
+            WinttCallStack.RegisterReturn();
         }
 
         public override void Update() =>
@@ -47,16 +54,23 @@ namespace WinttOS.System.Services
         {
             base.Start();
 
+            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceProvider.Start()",
+                "void()", "WinttServiceProvider.cs", 53));
+
             foreach(var service in services)
             {
                 WinttOS.ProcessManager.StartProcess(service.ProcessName);
                 service.onServiceStart();
             }
+            WinttCallStack.RegisterReturn();
         }
 
         public override void Stop()
         {
             base.Stop();
+
+            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceProvider.Stop()",
+                "void()", "WinttServiceProvider.cs", 68));
 
             foreach (var service in services)
             {
@@ -66,10 +80,14 @@ namespace WinttOS.System.Services
                     WinttOS.ProcessManager.StopProcess(service.ProcessName);
                 }
             }
+
+            WinttCallStack.RegisterReturn();
         }
 
         public void FinishService(string serviceName)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceProvider.FinishService()",
+                "void(string)", "WinttServiceProvider.cs", 87));
             services.ForEach(service =>
             {
                 if (service.ProcessName == serviceName)
@@ -79,23 +97,34 @@ namespace WinttOS.System.Services
                         service.onServiceFinish();
                         WinttOS.ProcessManager.StopProcess(service.ProcessName);
                     }
+                    WinttCallStack.RegisterReturn();
                     return;
                 }
             });
+
+            WinttCallStack.RegisterReturn();
         }
 
         public (ServiceStatus, string) GetServiceStatus(string serviceName)
         {
-            foreach(var service in services)
+            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceProvider.GetServiceStatus()",
+                "(ServiceStatuc, string)(string)", "WinttServiceProvider.cs", 108));
+            foreach (var service in services)
             {
                 if (service.ProcessName == serviceName)
+                {
+                    WinttCallStack.RegisterReturn();
                     return (service.ServiceStatus, service.ServiceErrorMessage);
+                }
             }
+            WinttCallStack.RegisterReturn();
             return (ServiceStatus.no_data, null);
         }
 
         public void RestartService(string serviceName)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceProvider.RestartService()",
+                "void(string)", "WinttServiceProvider.cs", 124));
             services.ForEach(service =>
             {
                 if (service.ProcessName == serviceName)
@@ -103,13 +132,17 @@ namespace WinttOS.System.Services
                     if (service.IsServiceRunning)
                         service.onServiceFinish();
                     service.onServiceStart();
+                    WinttCallStack.RegisterReturn();
                     return;
                 }
             });
+            WinttCallStack.RegisterReturn();
         }
 
         public void StartService(string serviceName)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceProvider.StartService()",
+                "void(string)", "WinttServiceProvider.cs", 142));
             services.ForEach(service =>
             {
                 if (service.ProcessName == serviceName && !service.IsServiceRunning && !service.IsProcessRunning)
@@ -118,6 +151,7 @@ namespace WinttOS.System.Services
                     WinttOS.ProcessManager.StopProcess(service.ProcessName);
                 }
             });
+            WinttCallStack.RegisterReturn();
         }
 
         #endregion
@@ -128,19 +162,25 @@ namespace WinttOS.System.Services
 
         public void StartAllServices()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceProvider.StartAllServices()",
+                "void()", "WinttServiceProvider.cs", 163));
             services.ForEach(service =>
             {
                 StartService(service.ProcessName);
             });
+            WinttCallStack.RegisterReturn();
         }
 
         public void StopAllServices()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceProvider.StopAllServices()",
+                "void()", "WinttServiceProvider.cs", 174));
             services.ForEach(service =>
             {
                 if(service.IsServiceRunning)
                     service.onServiceFinish();
             });
+            WinttCallStack.RegisterReturn();
         }
 
         #endregion

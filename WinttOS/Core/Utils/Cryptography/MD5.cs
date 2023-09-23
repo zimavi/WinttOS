@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Core.Utils.Debugging;
 
 namespace WinttOS.Core.Utils.Cryptography
 {
@@ -52,6 +53,8 @@ namespace WinttOS.Core.Utils.Cryptography
         // assumes whole bytes as input
         public static string Calculate(byte[] input)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Cryptography.MD5.Calculate()",
+                "string(byte[])", "MD5.cs", 54));
             uint a0 = 0x67452301;   // A
             uint b0 = 0xefcdab89;   // B
             uint c0 = 0x98badcfe;   // C
@@ -111,7 +114,7 @@ namespace WinttOS.Core.Utils.Cryptography
                 c0 += C;
                 d0 += D;
             }
-
+            WinttCallStack.RegisterReturn();
             return GetByteString(a0) + GetByteString(b0) + GetByteString(c0) + GetByteString(d0);
         }
 

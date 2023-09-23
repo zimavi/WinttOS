@@ -27,14 +27,23 @@ namespace WinttOS.Core.Utils.System
 
         public static void ClearCurrentConsoleLine(int startPos = 0)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.System.ShellUtils.ClearCurrentConsoleLine()",
+                "void(int)", "ShellUtils.cs", 28));
             int currLineCursor = Console.CursorTop;
             Console.SetCursorPosition(startPos, Console.CursorTop);
             Console.Write(new string(' ', Console.WindowWidth - startPos - 1));
             //Console.Write("\r" + new string(' ', Console.WindowWidth - 1 - startPos) + "\r");
             Console.SetCursorPosition(startPos, currLineCursor);
+            WinttCallStack.RegisterReturn();
         }
 
-        public static void MoveCursorUp(int steps = 1) => Console.SetCursorPosition(0, Console.CursorTop - steps);
+        public static void MoveCursorUp(int steps = 1)
+        {
+            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.System.ShellUtils.MoveCursorUp()",
+                "void(int)", "ShellUtils.cs", 40));
+            Console.SetCursorPosition(0, Console.CursorTop - steps);
+            WinttCallStack.RegisterReturn();
+        }
 
         /// <summary>
         /// 
@@ -43,6 +52,8 @@ namespace WinttOS.Core.Utils.System
         /// <param name="isSuccessful">0 - OK; 1 - FAILED; 2 - WORKING; 3 - WARN</param>
         public static void PrintTaskResult(string task, ShellTaskResult isSuccessful, string detailes = "")
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.System.ShellUtils.PrintTaskResult",
+                "void(string, ShellTaskResult, string)", "ShellUtils.cs", 53));
             Console.SetCursorPosition(0, Console.CursorTop - 1);
             ClearCurrentConsoleLine();
             Console.Write("[");
@@ -68,11 +79,14 @@ namespace WinttOS.Core.Utils.System
             }
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine($"] {task}\n");
+            WinttCallStack.RegisterReturn();
         }
 
         //[Obsolete("This method contains not working code! Please use Console.Readline()!", true)]
-        public static bool ProcessExtendedThreadableShellInput(ref string input)
+        public static bool ProcessExtendedInput(ref string input)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.System.ShellUtils.ProcessExtendedInput()",
+                "bool(ref string)", "ShellUtils.cs", 86));
             if (Console.KeyAvailable)
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
@@ -86,6 +100,7 @@ namespace WinttOS.Core.Utils.System
                     input = inputToDisplay;
                     inputToDisplay = "";
                     currentInput = null;
+                    WinttCallStack.RegisterReturn();
                     return true;
                 }
                 else if (key.Key == ConsoleKey.Backspace)
@@ -141,6 +156,7 @@ namespace WinttOS.Core.Utils.System
                     Console.Write(inputToDisplay);
                 }
             }
+            WinttCallStack.RegisterReturn();
             return false;
         }
 
@@ -148,19 +164,24 @@ namespace WinttOS.Core.Utils.System
 
         public static string ReadLineWithInterception()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.System.ShellUtils.ReadLineWithInterception()",
+                "string()", "ShellUtils.cs", 165));
             string input = "";
             while(true)
             {
                 ConsoleKeyInfo key = Console.ReadKey(true);
-                if(key.Key == ConsoleKey.Enter)
-                    return input;
-                else if(key.Key == ConsoleKey.Backspace)
+                if (key.Key == ConsoleKey.Enter)
                 {
-                    if(input.Length > 0)
+                    WinttCallStack.RegisterReturn();
+                    return input;
+                }
+                else if (key.Key == ConsoleKey.Backspace)
+                {
+                    if (input.Length > 0)
                         input = input.Substring(0, input.Length - 1);
                     WinttDebugger.Trace($"input.Substring() => {input}", instance);
                 }
-                else if(!MIV.isForbiddenKey(key.Key))
+                else if (!MIV.isForbiddenKey(key.Key))
                 {
                     input += key.KeyChar;
                 }

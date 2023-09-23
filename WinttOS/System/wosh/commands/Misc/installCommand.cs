@@ -1,8 +1,10 @@
 ﻿using Cosmos.System.Coroutines;
 using Cosmos.System.Graphics;
+using System;
 using System.Collections.Generic;
 using WinttOS.Core;
 using WinttOS.Core.Utils;
+using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.GUI;
 using WinttOS.Core.Utils.System;
 using WinttOS.System.GUI;
@@ -32,6 +34,9 @@ namespace WinttOS.System.wosh.commands.Misc
 
         public override string Execute(string[] arguments)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.wosh.commands.Misc.installCommand.Execute()",
+                "string(string[])", "installCommand.cs", 34));
+            throw new NotImplementedException();
             try
             {
                 //WinttDebugger.Critical("Executed not implemented command!", true, this);

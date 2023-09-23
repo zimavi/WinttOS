@@ -22,7 +22,7 @@ namespace WinttOS.System.wosh.commands.Processing
                 return "Usage: process [list|kill|restart]";
             if (arguments[0] == "list")
             {
-                return WinttOS.ProcessManager.GetProcessesList();
+                WinttOS.ProcessManager.WriteLineProcessesList();
             }
             else if (arguments[0] == "kill")
             {

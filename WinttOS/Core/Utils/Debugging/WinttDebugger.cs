@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.Kernel;
+using WinttOS.Core.Utils.System;
 
 namespace WinttOS.Core.Utils.Debugging
 {
@@ -21,10 +22,13 @@ namespace WinttOS.Core.Utils.Debugging
         /// <param name="sender">Object that sends message</param>
         public static void Trace(string message, object sender = null)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Trace()",
+                "void(string, object)", "WinttDebugger.cs", 22));
             if (sender != null)
                 Cosmos.System.Global.Debugger.Send($"[Trace] From {sender.GetType().Name}: {message}");
             else
                 Cosmos.System.Global.Debugger.Send($"[Trace] {message}");
+            WinttCallStack.RegisterReturn();
         }
         /// <summary>
         /// Send debug log to COM debugger
@@ -33,10 +37,13 @@ namespace WinttOS.Core.Utils.Debugging
         /// <param name="sender">Object that sends message</param>
         public static void Debug(string message, object sender = null)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Debug()",
+                "void(string, object)", "WinttDebugger.cs", 37));
             if (sender != null)
                 Cosmos.System.Global.Debugger.Send($"[Debug] From {sender.GetType().Name}: {message}");
             else
                 Cosmos.System.Global.Debugger.Send($"[Debug] {message}");
+            WinttCallStack.RegisterReturn();
         }
         /// <summary>
         /// Send log to COM debugger
@@ -45,10 +52,13 @@ namespace WinttOS.Core.Utils.Debugging
         /// <param name="sender">Object that sends message</param>
         public static void Info(string message, object sender = null)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Info()",
+                "void(string, object)", "WinttDebugger.cs", 52));
             if (sender != null)
                 Cosmos.System.Global.Debugger.Send($"[Info] From {sender.GetType().Name}: {message}");
             else
                 Cosmos.System.Global.Debugger.Send($"[Info] {message}");
+            WinttCallStack.RegisterReturn();
         }
         /// <summary>
         /// Send warn log to COM debugger
@@ -57,10 +67,13 @@ namespace WinttOS.Core.Utils.Debugging
         /// <param name="sender">Object that sends message</param>
         public static void Warning(string message, object sender = null)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Warning()",
+                "void(string, object)", "WinttDebugger.cs", 67));
             if (sender != null)
                 Cosmos.System.Global.Debugger.Send($"[Warn] From {sender.GetType().Name}: {message}");
             else
                 Cosmos.System.Global.Debugger.Send($"[Warn] {message}");
+            WinttCallStack.RegisterReturn();
         }
         /// <summary>
         /// Send error log to COM debugger
@@ -70,6 +83,8 @@ namespace WinttOS.Core.Utils.Debugging
         /// <param name="sender">Object that sends message</param>
         public static void Error(string message, bool sendMsgBox, object sender = null)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Error()",
+                "void(string, bool, object)", "WinttDebugger.cs", 83));
             if (sender != null)
             {
                 Cosmos.System.Global.Debugger.Send($"[Error] From {sender.GetType().Name}: {message}");
@@ -82,6 +97,7 @@ namespace WinttOS.Core.Utils.Debugging
                 if (sendMsgBox)
                     Cosmos.System.Global.Debugger.SendMessageBox($"Got error: {message}");
             }
+            WinttCallStack.RegisterReturn();
         }
         /// <summary>
         /// Send serve/critical log to COM debugger
@@ -91,39 +107,46 @@ namespace WinttOS.Core.Utils.Debugging
         /// <param name="sender">Object that sends message</param>
         public static void Critical(string message, bool executePanic = true, object sender = null)
         {
-            if (sender != null)
-            {
-                Cosmos.System.Global.Debugger.Send($"[Serve] From {sender.GetType().Name}: {message}");
-                Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error from {sender.GetType().ToString()}: {message}");
-            }
-            else
-            {
+            //if (sender != null)
+            //{
+            //    Cosmos.System.Global.Debugger.Send($"[Serve] From {sender.GetType()}: {message}");
+            //    if(!executePanic)
+            //        Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error from {sender.GetType()}: {message}");
+            //    else
+            //        Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error from {sender.GetType()}: {message}\n{WinttCallStack.GetCallStack()}");
+            //}
+            //else
+            //{
                 Cosmos.System.Global.Debugger.Send($"[Serve] {message}");
-                Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error: {message}");
-            }
+                if(!executePanic)
+                    Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error: {message}");
+                else
+                    Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error: {message}\n{WinttCallStack.GetCallStack()}");
+            //}
             if (executePanic)
             {
-                if (sender != null)
-                    _ = new KernelPanic(message, sender);
-                else
+                //if (sender != null)
+                //    _ = new KernelPanic(message, sender);
+                //else
                     _ = new KernelPanic(message, "Unknown source");
             }
+            WinttCallStack.RegisterReturn();
         }
         public static void Critical(string message, Exception exception, object sender = null)
         {
-            if (sender != null)
-            {
-                Cosmos.System.Global.Debugger.Send($"[Serve] From {sender.GetType().Name}: {message}");
-                Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error from {sender.GetType()}: {message}\n{exception.Message}");
-            }
-            else
-            {
+            //if (!sender.IsNull())
+            //{
+            //    Cosmos.System.Global.Debugger.Send($"[Serve] From {sender.GetType()}: {message}");
+            //    Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error from {sender.GetType()}: {message}\n{exception.Message}\n{WinttCallStack.GetCallStack()}");
+            //}
+            //else
+            //{
                 Cosmos.System.Global.Debugger.Send($"[Serve] {message}");
-                Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error: {message}\n{exception.Message}");
-            }
-            if (sender != null)
-                _ = new KernelPanic(message, sender, exception);
-            else
+                Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error: {message}\n{exception.Message}\n{WinttCallStack.GetCallStack()}");
+            //}
+            //if (!sender.IsNull())
+            //    _ = new KernelPanic(message, sender, exception);
+            //else
                 _ = new KernelPanic(message, "Unknown source", exception);
         }
     }

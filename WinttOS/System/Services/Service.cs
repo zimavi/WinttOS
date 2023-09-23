@@ -1,4 +1,5 @@
-﻿using WinttOS.System.Processing;
+﻿using WinttOS.Core.Utils.Debugging;
+using WinttOS.System.Processing;
 
 namespace WinttOS.System.Services
 {
@@ -27,13 +28,15 @@ namespace WinttOS.System.Services
         }
         public void onServiceTick()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.Services.Service.onServiceTick()",
+                "void()", "Service.cs", 29));
             ServiceStatus = ServiceStatus.OK;
 
             ServiceTick();
 
             ServiceStatus = ServiceStatus.PENDING;
+            WinttCallStack.RegisterReturn();
         }
-
         public abstract void ServiceTick();
     }
 }

@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.Cryptography;
+using WinttOS.Core.Utils.Debugging;
 
 namespace WinttOS.System.Users
 {
@@ -84,12 +85,16 @@ namespace WinttOS.System.Users
 
         public bool ChangePassword(ref User user, string OldPassword, string NewPassword)
         {
-            if(user.PasswordHash == MD5.Calculate(Encoding.UTF8.GetBytes(OldPassword)) ||
+            WinttCallStack.RegisterCall(new("WinttOS.System.Users.User.ChangePassword()",
+                "bool(ref User, string, string)", "User.cs", 86));
+            if (user.PasswordHash == MD5.Calculate(Encoding.UTF8.GetBytes(OldPassword)) ||
                 !user.HasPassword)
             {
                 user.PasswordHash = MD5.Calculate(Encoding.UTF8.GetBytes(NewPassword));
+                WinttCallStack.RegisterReturn();
                 return true;
             }
+            WinttCallStack.RegisterReturn();
             return false;
         }
 
@@ -126,7 +131,12 @@ namespace WinttOS.System.Users
             /// <param name="RawPassword">Raw password string</param>
             public UserBuilder SetPassword(string RawPassword)
             {
+                WinttCallStack.RegisterCall(new("WinttOS.System.Users.User.UserBuilder.SetPassword()",
+                    "UserBuilder(string)", "User.cs", 132));
+
                 user.PasswordHash = MD5.Calculate(Encoding.UTF8.GetBytes(RawPassword));
+
+                WinttCallStack.RegisterReturn();
                 return this;
             }
 

@@ -10,6 +10,7 @@ using WinttOS.System.wosh.commands.Screen;
 using WinttOS.System.wosh.Programs.RunCommands;
 using WinttOS.System.wosh.commands.Processing;
 using WinttOS.System.Services;
+using WinttOS.Core.Utils.Debugging;
 
 namespace WinttOS.System.wosh
 {
@@ -35,7 +36,7 @@ namespace WinttOS.System.wosh
                 new changeDirectoryCommand("cd"),
                 new dirCommand("dir"),
                 new SystemInfoCommand("sysinfo"),
-                //new installCommand("install"),
+                new installCommand("install"),
                 new HelpCommand("help"),
                 new ManCommand("man"),
                 new TimeCommand("time"),
@@ -58,19 +59,25 @@ namespace WinttOS.System.wosh
         /// <returns>true if successfull</returns>
         public bool RegisterCommand(Command command)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.wosh.CommandManager.RegisterCommand()",
+                "bool()", "WinttOS.cs", 60));
             try
             {
                 this.commands.Add(command);
+                WinttCallStack.RegisterReturn();
                 return true;
             }
             catch (Exception)
             {
+                WinttCallStack.RegisterReturn();
                 return false;
             }
         }
 
         public string ProcessInput(string input)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.wosh.CommandManager.ProcessInput()",
+                "string(string)", "WinttOS.cs", 77));
             string[] split = input.Split(' ');
 
             string label = split[0];
@@ -93,22 +100,30 @@ namespace WinttOS.System.wosh
                     {
                         try
                         {
-                            return cmd.Execute(args.ToArray());
+                            string result = cmd.Execute(args.ToArray());
+                            WinttCallStack.RegisterReturn();
+                            return result;
                         }
                         catch (Exception e)
                         {
-                            return $"Error: {e.GetType()} with message:\n{e.Message}";
+                            WinttDebugger.Critical("Command crash", true, this);
+                            WinttCallStack.RegisterReturn();
+                            //return $"Error: {e.GetType()} with message:\n{e.Message}";
                         }
                     }
+                    WinttCallStack.RegisterReturn();
                     return "You do not have permission to run this command!";
                 }
             }
-
+            WinttCallStack.RegisterReturn();
             return "Command '" + label + "' not exist, please type man <command> or help or more details.";
         }
 
         public string ProcessInput(ref TempUser user, string input)
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.wosh.CommandManager.ProcessInput()",
+                "string(ref TempUser, string)", "WinttOS.cs", 121));
+
             string[] split = input.Split(' ');
 
             string label = split[0];
@@ -132,28 +147,35 @@ namespace WinttOS.System.wosh
                         user = null;
                         try
                         {
-                            return cmd.Execute(args.ToArray());
+                            string result = cmd.Execute(args.ToArray());
+                            WinttCallStack.RegisterReturn();
+                            return result;
                         }
                         catch(Exception e)
                         {
+                            WinttCallStack.RegisterReturn();
                             return $"Error: {e.GetType()} with message:\n{e.Message}";
                         }
                     }
+                    WinttCallStack.RegisterReturn();
                     return "You do not have permission to run this command!";
                 }
             }
-
+            WinttCallStack.RegisterReturn();
             return "Command '" + label + "' not exist, please type man <command> or help or more details.";
         }
 
         public List<String> GetCommandsList()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.wosh.CommandManager.GetCommandsList()",
+                "List<string>()", "WinttOS.cs", 167));
             List<String> commands = new List<string>();
             foreach(Command command in this.commands)
             {
                 if(!command.IsHiddenCommand)
                     commands.Add(command.CommandName);
             }
+            WinttCallStack.RegisterReturn();
             return commands;
         }
 
@@ -162,10 +184,15 @@ namespace WinttOS.System.wosh
 
         public override void ServiceTick()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.wosh.CommandManager.ServiceTick()",
+                "void()", "WinttOS.cs", 184));
             try
             {
                 if (Kernel.IsFinishingKernel)
+                {
+                    WinttCallStack.RegisterReturn();
                     return;
+                }
                 if (didRunCycle)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -174,7 +201,7 @@ namespace WinttOS.System.wosh
                     didRunCycle = false;
                 }
                 string input = "";
-                bool hasKey = ShellUtils.ProcessExtendedThreadableShellInput(ref input);
+                bool hasKey = ShellUtils.ProcessExtendedInput(ref input);
                 if (hasKey)
                 {
                     string[] split = input.Split(' ');
@@ -190,6 +217,8 @@ namespace WinttOS.System.wosh
                 throw;
             }
             #endregion
+
+            WinttCallStack.RegisterReturn();
         }
     }
 }

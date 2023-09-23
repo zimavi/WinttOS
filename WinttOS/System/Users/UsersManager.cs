@@ -86,7 +86,7 @@ namespace WinttOS.System.Users
             {
                 byte[] UsersBytes = File.ReadAllBytes(@"users.dat");
                 var serializer = new WinttUserSerializer();
-                users = serializer.DesirializeList(Encoding.ASCII.GetString(UsersBytes));
+                users = serializer.DeserializeList(Encoding.ASCII.GetString(UsersBytes));
                 return true;
             }
             catch

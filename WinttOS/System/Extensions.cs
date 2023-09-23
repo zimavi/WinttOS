@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static WinttOS.System.Processing.Process;
+﻿using static WinttOS.System.Processing.Process;
 
 namespace WinttOS.System
 {
     public static class Extensions
     {
-        public static string ToString(this Processing.Process.ProcessType type)
+        public static string ToString(this ProcessType type)
         {
             #pragma warning disable CS8524
 

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WinttOS.Core.Utils.System;
 using WinttOS.System.wosh;
+using WinttOS.System.Benchmark;
 
 namespace WinttOS
 {
@@ -28,6 +29,7 @@ namespace WinttOS
         #region Methods
         protected override void BeforeRun()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Kernel.BeforeRun()","void()","Kernel.cs",32));
             try
             {
                 WinttDebugger.Trace("Registrating readonly files", this);
@@ -59,10 +61,15 @@ namespace WinttOS
 
                 WinttDebugger.Trace("Kernel initalize complete! Comming to system");
                 System.WinttOS.InitializeSystem();
+                
 
             } catch (Exception ex)
             {
                 WinttDebugger.Critical(ex.Message, true, this);
+            }
+            finally
+            {
+                WinttCallStack.RegisterReturn();
             }
         }
 
@@ -71,14 +78,16 @@ namespace WinttOS
 
         protected override void AfterRun()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Kernel.AfterRun", "void()", "Kernel.cs", 81));
             Console.WriteLine("Is now safe to turn off your computer!");
             Sys.Power.Shutdown();
-            base.AfterRun();
+            WinttCallStack.RegisterReturn();
         }
 
 
         public static void ShutdownKernel()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Kernel.ShutdownKernel()", "void()", "Kernel.cs", 87));
             try
             {
                 foreach (var action in OnKernelFinish)
@@ -96,12 +105,18 @@ namespace WinttOS
             {
                 WinttDebugger.Critical("Smth happend on shutdown!", ex);
             }
+            finally
+            {
+                WinttCallStack.RegisterReturn();
+            }
         }
 
         public static void RebootKernel()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.Kernel.RebootKernel()", "void()", "Kernel.cs", 117));
             IsRebooting = true;
             ShutdownKernel();
+            WinttCallStack.RegisterReturn();
         }
 
         #endregion

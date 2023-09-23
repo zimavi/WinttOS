@@ -4,6 +4,7 @@
 
 using Cosmos.HAL.Drivers.Video.SVGAII;
 using System;
+using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.System;
 
 namespace WinttOS.System.Processing
@@ -47,11 +48,11 @@ namespace WinttOS.System.Processing
             if (Type == ProcessType.KernelComponent || Type == ProcessType.Driver)
                 IsProcessCritical = true;
         }
-        public virtual void Initialize() 
-        { 
-            if(IsProcessInitialized)
+        public virtual void Initialize()
+        {
+            if (IsProcessInitialized)
                 return;
-            IsProcessInitialized = true; 
+            IsProcessInitialized = true;
         }
         public virtual void Start() { if (!IsProcessInitialized) return; if(IsProcessRunning) return; IsProcessRunning = true; }
         public virtual void Stop() { if (!IsProcessInitialized) return; if (!IsProcessRunning) return; IsProcessRunning = false; }

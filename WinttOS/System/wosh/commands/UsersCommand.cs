@@ -12,16 +12,6 @@ namespace WinttOS.System.wosh.commands
         public UsersCommand(string name) : base(name, Users.User.AccessLevel.Administrator)
         {
             HelpCommandManager.addCommandUsageStrToManager("users [list,add,remove,change] - manipulate with users (Please read manual before using)");
-
-            /*
-            Manual2 = new Manual.CommandManualBuilder()
-                .Description("Allows to manage users in system.")
-                .WithKeyWord("list", "Show list of users")
-                .WithKeyWord("add", "Add user")
-                .WithKeyWord("remove", "Remove user from system")
-                .WithKeyWord("change", "Login to another user")
-                .Build();
-            */
         }
 
         public override string Execute(string[] arguments)

@@ -39,6 +39,8 @@ namespace WinttOS.System
 
         public static void InitializeSystem()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitializeSystem()",
+                "void()", "WinttOS.cs", 40));
             Kernel.OnKernelFinish.Add(SystemFinish);
             InitNetwork();
             InitUsers();
@@ -62,31 +64,43 @@ namespace WinttOS.System
             CoroutinePool.Main.OnCoroutineCycle.Add(SystemThread);
 
             CoroutinePool.Main.AddCoroutine(new(ProcessManager.UpdateProcesses()));
+            
+            Console.Clear();
 
             CoroutinePool.Main.StartPool();
-            
+
+            WinttCallStack.RegisterReturn();
         }
 
         private static void InitServiceProvider()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitServiceProvider()",
+                "void()", "WinttOS.cs", 75));
             serviceProvider.Initialize();
 
             serviceProvider.AddService(new TestService());
+
+            WinttCallStack.RegisterReturn();
         }
 
         private static void InitUsers()
         {
-            if(!UsersManager.LoadUsersData())
+            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitUSers()",
+                "void()", "WinttOS.cs", 86));
+            if (!UsersManager.LoadUsersData())
             {
                 UsersManager.AddUser(new User.UserBuilder().SetUserName("root")
                                                            .SetAccess(User.AccessLevel.Administrator)
                                                            .Build());
                 UsersManager.LoginIntoUserAccount("root", null);
             }
+            WinttCallStack.RegisterReturn();
         }
 
         private static void InitNetwork()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitNetwork()",
+                "void()", "WinttOS.cs", 100));
             Console.WriteLine("NOTE! If you have more then one network apadters, please remove all except one!\n");
 
             ShellUtils.PrintTaskResult("Discovering IP address", ShellTaskResult.DOING);
@@ -111,17 +125,31 @@ namespace WinttOS.System
             }
             else
                 ShellUtils.PrintTaskResult("Discovering IP address", ShellTaskResult.FAILED);
+            WinttCallStack.RegisterReturn();
         }
 
         public static void SystemFinish()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.SystemFinish()",
+                "void()", "WinttOS.cs", 131));
             CoroutinePool.Main.AddCoroutine(new(FinishOS()));
+            WinttCallStack.RegisterReturn();
         }
 
         private static IEnumerator<CoroutineControlPoint> FinishOS()
         {
+            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.FinishOS()",
+                "IEnumerator<CoroutineControlPoint>()", "WinttOS.cs", 139));
+
             WinttDebugger.Trace("FinishOS corouting executed! Waiting 3 seconds!", instance);
+
+            WinttCallStack.RegisterReturn();
+
             yield return WaitFor.Seconds(3);
+
+            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.FinishOS()",
+                "IEnumerator<CoroutineControlPoint>()", "WinttOS.cs", 148));
+
             WinttDebugger.Trace("3 seconds elapsed, finishing running coroutines!", instance);
             foreach (var coroutine in CoroutinePool.Main.RunningCoroutines)
             {
@@ -136,8 +164,12 @@ namespace WinttOS.System
 
         public static void SystemThread()
         {
-            //WinttDebugger.Trace("Collected " + Heap.Collect() + " heap objects");
+            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.SystemThread()",
+                "void()", "WinttOS.cs", 165));
+
             Heap.Collect();
+
+            WinttCallStack.RegisterReturn();
         }
 
         #endregion

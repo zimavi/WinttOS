@@ -2,6 +2,7 @@
 using Cosmos.System.Graphics;
 using System;
 using System.Drawing;
+using WinttOS.Core.Utils.Debugging;
 
 namespace WinttOS.Core.Utils.Kernel
 {

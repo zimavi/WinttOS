@@ -17,7 +17,7 @@ namespace WinttOS.System.wosh.commands
         {
             List<string> helpStrs = HelpCommandManager.getCommandsUsageStringsAsList();
             int index = 0;
-            for(; index < 24 && index < helpStrs.Count; index++)
+            for(; index < 23 && index < helpStrs.Count; index++)
             {
                 Console.WriteLine(helpStrs[index]);
             }
