@@ -153,7 +153,7 @@ namespace WinttOS.System.Processing
                 {
                     foreach (var process in processes)
                     {
-                        if (process.Type == (Process.ProcessType) i && process.IsProcessRunning)
+                        if (process.Type == Process.ProcessType.FromValue(i) && process.IsProcessRunning)
                             process.Update();
                     }
                 }

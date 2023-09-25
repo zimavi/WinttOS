@@ -22,6 +22,8 @@ namespace WinttOS.System
 
         private static WinttOS instance => new();
 
+        public const string WinttVersion = "WinttOS v1.0.0 dev. build 1892";
+
         public static WinttServiceProvider ServiceProvider =>
             (WinttServiceProvider)ProcessManager.GetProcessInstance(serviceProviderProcessID);
 

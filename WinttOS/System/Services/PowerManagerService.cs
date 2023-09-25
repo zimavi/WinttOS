@@ -13,19 +13,19 @@ namespace WinttOS.System.Services
 
         public PowerManagerService() : base("pwrmgr", "power.service")
         { 
-            WinttOS.OnSystemSleep.Add(HandleSystemSleepEvent); 
+            //WinttOS.OnSystemSleep.Add(HandleSystemSleepEvent); 
         }
 
         public void HandleSystemSleepEvent()
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Services.PowerManagerService.HandleSystemSleepEvent()",
                 "void()", "PowerManagerService", 19));
-
+            WinttDebugger.Info("Going to sleep mode!");
             Canvas blackCanvas = FullScreenCanvas.GetFullScreenCanvas();
             blackCanvas.Clear(Color.Black);
 
-            Console.ReadKey(true);
-
+            _ = Console.ReadKey();
+            WinttDebugger.Info("Comming out from sleep mode!");
             blackCanvas.Disable();
             FullScreenCanvas.Disable();
             WinttOS.IsSleeping = false;

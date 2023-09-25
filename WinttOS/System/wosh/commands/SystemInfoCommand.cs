@@ -13,7 +13,7 @@ namespace WinttOS.System.wosh.commands
         {
             string CPUbrand = Cosmos.Core.CPU.GetCPUBrandString();
             uint amoundOfRam = Cosmos.Core.CPU.GetAmountOfRAM();
-            uint usedRam = Cosmos.Core.GCImplementation.GetUsedRAM() * 1000000;
+            uint usedRam = Cosmos.Core.GCImplementation.GetUsedRAM();
             return $"CPU: {CPUbrand}\nAmount of RAM: {amoundOfRam} MB\nUsed RAM: {usedRam} MB";
         }
     }

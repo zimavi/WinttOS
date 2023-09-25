@@ -63,4 +63,12 @@
       <Folder Include="System\wosh\Programs\ProgramsExecutables\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <EditorConfigFiles Remove="C:\Users\Anton\source\repos\zimavi\WinttOS\WinttOS\.editorconfig" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="C:\Users\Anton\source\repos\zimavi\WinttOS\WinttOS\.editorconfig" />
+    </ItemGroup>
+
 </Project>

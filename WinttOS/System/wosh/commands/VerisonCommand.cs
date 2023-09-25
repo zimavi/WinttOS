@@ -17,7 +17,7 @@ namespace WinttOS.System.wosh.commands
 
         public override string Execute(string[] args)
         {
-            return $"{Kernel.Version}\nPowered by Cosmos Kernel";
+            return $"{Kernel.KernelVersion}\n{WinttOS.WinttVersion}\nPowered by Cosmos Kernel";
         }
     }
 }

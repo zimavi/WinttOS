@@ -16,7 +16,7 @@ namespace WinttOS
     {
         #region Fields
 
-        public static readonly string Version = "WinttOS v0.1.0-dev, build 786";
+        public const string KernelVersion = "WinttCore v0.1.0";
         public static StringCollection ReadonlyFiles { get; internal set; }
         public static StringCollection ReadonlyDirectories { get; internal set; }
         public static bool IsFinishingKernel { get; private set; } = false;
@@ -32,14 +32,14 @@ namespace WinttOS
             WinttCallStack.RegisterCall(new("WinttOS.Kernel.BeforeRun()","void()","Kernel.cs",32));
             try
             {
-                WinttDebugger.Trace("Registrating readonly files", this);
+                WinttDebugger.Trace("Registering readonly files", this);
                 ReadonlyFiles = new()
                 {
                     @"0:\Root.txt",
                     @"0:\Kudzu.txt",
                 };
 
-                WinttDebugger.Trace("Registrating readonly directories", this);
+                WinttDebugger.Trace("Registering readonly directories", this);
                 ReadonlyDirectories = new()
                 {
                     @"0:\WinttOS",
@@ -51,7 +51,7 @@ namespace WinttOS
 
                 ShellUtils.PrintTaskResult("Registration File System", ShellTaskResult.DOING);
 
-                WinttDebugger.Debug("Registrating filesystem", this);
+                WinttDebugger.Debug("Registering filesystem", this);
                 GlobalData.FileSystem = new Sys.FileSystem.CosmosVFS();
                 Sys.FileSystem.VFS.VFSManager.RegisterVFS(GlobalData.FileSystem);
                 GlobalData.FileSystem.Initialize(true);
@@ -59,7 +59,7 @@ namespace WinttOS
                 ShellUtils.MoveCursorUp();
                 ShellUtils.PrintTaskResult("Registration File System", ShellTaskResult.OK);
 
-                WinttDebugger.Trace("Kernel initalize complete! Comming to system");
+                WinttDebugger.Trace("Kernel initialize complete! Coming to system");
                 System.WinttOS.InitializeSystem();
                 
 
@@ -103,7 +103,7 @@ namespace WinttOS
             }
             catch (Exception ex)
             {
-                WinttDebugger.Critical("Smth happend on shutdown!", ex);
+                WinttDebugger.Critical("Something happened on shutdown!", ex);
             }
             finally
             {

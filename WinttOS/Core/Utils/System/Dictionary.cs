@@ -8,8 +8,11 @@ namespace WinttOS.Core.Utils.System
 {
     public class Dictionary<TKey, TValue>
     {
-        public List<TKey> Keys = new List<TKey>();
-        public List<TValue> Values = new List<TValue>();
+        private List<TKey> keys = new();
+        private List<TValue> values = new();
+
+        public List<TKey> Keys => keys;
+        public List<TValue> Values => values;
 
         public TValue this[TKey key]
         {
@@ -19,40 +22,34 @@ namespace WinttOS.Core.Utils.System
             }
             set
             {
-                Values[Keys.IndexOf(key)] = value;
+                values[keys.IndexOf(key)] = value;
             }
         }
 
-        public int Count
-        {
-            get
-            {
-                return Keys.Count;
-            }
-        }
+        public int Count => keys.Count;
 
-        public bool ContainsKey(TKey k) => Keys.Contains(k);
+        public bool ContainsKey(TKey k) => 
+            keys.Contains(k);
 
-        public TValue Get(TKey key) => Values[Keys.IndexOf(key)];
+        public TValue Get(TKey key) => 
+            values[keys.IndexOf(key)];
 
         public void Add(TKey key, TValue value)
         {
-            Keys.Add(key);
-            Values.Add(value);
+            keys.Add(key);
+            values.Add(value);
         }
 
         public void Remove(TKey key)
         {
-            Keys.RemoveAt(Keys.IndexOf(key));
-            Values.RemoveAt(Keys.IndexOf(key));
+            keys.RemoveAt(keys.IndexOf(key));
+            values.RemoveAt(keys.IndexOf(key));
         }
 
         public void Clear()
         {
-            Keys = new List<TKey>();
-            Values = new List<TValue>();
+            keys = new List<TKey>();
+            values = new List<TValue>();
         }
-
-        public List<TKey> GetAllKeys() => Keys;
     }
 }

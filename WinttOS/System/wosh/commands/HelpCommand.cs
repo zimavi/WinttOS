@@ -17,13 +17,13 @@ namespace WinttOS.System.wosh.commands
         {
             List<string> helpStrs = HelpCommandManager.getCommandsUsageStringsAsList();
             int index = 0;
-            for(; index < 23 && index < helpStrs.Count; index++)
+            for(; index < 22 && index < helpStrs.Count; index++)
             {
                 Console.WriteLine(helpStrs[index]);
             }
             if (index >= helpStrs.Count)
                 return "";
-            Console.Write($"Press Spacebar to continue list ({index + 1}/{helpStrs.Count})...");
+            Console.Write($"Press Space-bar to continue list ({index + 1}/{helpStrs.Count})...");
             while(true)
             {
                 ConsoleKeyInfo info = Console.ReadKey(true);

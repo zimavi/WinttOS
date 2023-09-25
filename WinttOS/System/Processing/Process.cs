@@ -1,44 +1,33 @@
 ﻿//
-// Spectial thanks to Aura-OS developers :)
+// Special thanks to Aura-OS developers :)
 //
 
-using Cosmos.HAL.Drivers.Video.SVGAII;
-using System;
-using WinttOS.Core.Utils.Debugging;
+
 using WinttOS.Core.Utils.System;
 
 namespace WinttOS.System.Processing
 {
-    
+    // TODO: Make privilege system
     public abstract class Process
     {
-        public enum ProcessType
+        public sealed class ProcessType : SmartEnum<ProcessType>
         {
-            KernelComponent,
-            Driver,
-            Service,
-            Program,
+            public static readonly ProcessType KernelComponent = new("KernelComponent", 0);
+            public static readonly ProcessType Driver = new("Driver", 1);
+            public static readonly ProcessType Service = new("Service", 2);
+            public static readonly ProcessType Program = new("Program", 3);
+            private ProcessType(string name, int value) : base(name, value)
+            { }
         }
-
-        /*
-        public enum ProcessPriority : byte
-        {
-            Lowest,
-            Lower,
-            Normal,
-            High,
-            Highest
-        }
-        */
 
         public string ProcessName { get; protected set; }
-        public uint ProcessID { get; protected set; }
-        public ProcessType Type { get; protected set; }
-        public bool IsProcessInitialized { get; protected set; }
-        public bool IsProcessRunning { get; protected set; }
+        public uint ProcessID { get; private set; }
+        public ProcessType Type { get; private set; }
+        public bool IsProcessInitialized { get; private set; }
+        public bool IsProcessRunning { get; private set; }
         public bool IsProcessCritical { get; set; } = false;
 
-        public Process(string name, ProcessType type)
+        protected Process(string name, ProcessType type)
         {
             ProcessName = name;
             Type = type;
