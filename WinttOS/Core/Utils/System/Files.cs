@@ -9,7 +9,7 @@ namespace WinttOS.Core.Utils.System
 {
     public static class Files
     {
-        [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.win7-startup.wav")]
+        [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.startup.wav")]
         public static readonly byte[] RawStartupSound;
 
         [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.cur.bmp")]

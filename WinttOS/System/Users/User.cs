@@ -6,16 +6,26 @@ using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.Cryptography;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.Core.Utils.System;
+using static WinttOS.System.API.PrivilegesSystem;
 
 namespace WinttOS.System.Users
 {
     public class User
     {
-        public enum AccessLevel : byte
+
+        public sealed class AccessLevel : SmartEnum<AccessLevel, byte>
         {
-            Guest,
-            Default,
-            Administrator
+            public static readonly AccessLevel Guest = new("Guest", 0, PrivilegesSet.DEFAULT);
+            public static readonly AccessLevel Default = new("Default", 1, PrivilegesSet.RAISED);
+            public static readonly AccessLevel Administrator = new("Administrator", 2, PrivilegesSet.HIGHEST);
+
+            private AccessLevel(string name, byte value, PrivilegesSet privilegeSet) : base(name, value)
+            {
+                this.PrivilegeSet = privilegeSet;
+            }
+
+            public readonly PrivilegesSet PrivilegeSet;
         }
 
         #region Fields

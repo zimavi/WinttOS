@@ -14,7 +14,7 @@ namespace WinttOS.System.Serialization
             WinttCallStack.RegisterCall(new("WinttOS.System.Serialization.WinttUserSerializer.Serialize()",
                 "string(User)", "WinttSerializer.cs", 12));
             string partialSerizlizedStr = $"(User) " +
-                $"{user.Name} {user.PasswordHash} {(byte)user.UserAccess}\n";
+                $"{user.Name} {user.PasswordHash} {user.UserAccess.Value}\n";
 
             byte[] String2ByteArray = new byte[partialSerizlizedStr.Length];
             int i = 0;
@@ -47,7 +47,7 @@ namespace WinttOS.System.Serialization
             
             User toReturn =  new User.UserBuilder().SetUserName(binarySplit[1])
                                          .SetHashedPassword(binarySplit[2])
-                                         .SetAccess((User.AccessLevel)Convert.ToByte(binarySplit[3]))
+                                         .SetAccess(User.AccessLevel.FromValue(Convert.ToByte(binarySplit[3])))
                                          .Build();
 
             WinttCallStack.RegisterReturn();

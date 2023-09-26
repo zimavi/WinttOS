@@ -3,7 +3,11 @@
 //
 
 
+using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.System;
+using WinttOS.System.API;
+using static WinttOS.System.API.PrivilegesSystem;
+using WinttOS.System.Users;
 
 namespace WinttOS.System.Processing
 {
@@ -23,6 +27,8 @@ namespace WinttOS.System.Processing
         public string ProcessName { get; protected set; }
         public uint ProcessID { get; private set; }
         public ProcessType Type { get; private set; }
+        public PrivilegesSystem.PrivilegesSet CurrentSet { get; private set; } = 
+            PrivilegesSystem.PrivilegesSet.DEFAULT;
         public bool IsProcessInitialized { get; private set; }
         public bool IsProcessRunning { get; private set; }
         public bool IsProcessCritical { get; set; } = false;
@@ -53,6 +59,29 @@ namespace WinttOS.System.Processing
             ProcessID = processID;
         public void SetProcessType(ProcessType processType) => 
             Type = processType;
+
+        // API FUNCTIONS
+
+
+        /// <summary>
+        /// Request to rise process privileges.
+        /// </summary>
+        /// <param name="requested_type">Requested privileges set</param>
+        /// <returns><see langword="true"/> if privileges raised, otherwise, <see langword="false"/></returns>
+        public bool RisePrivileges(PrivilegesSet requested_type)
+        {
+            WinttCallStack.RegisterCall(new("WinttOS.System.Processing.Process.RisePrivileges",
+                "bool(PrivilegesSet)", "Process.cs", 71));
+            if (WinttOS.UsersManager.CurrentUser.UserAccess.Value >= User.AccessLevel.Guest.Value &&
+                WinttOS.UsersManager.CurrentUser.UserAccess.PrivilegeSet.Privileges <= requested_type.Privileges)
+            {
+                CurrentSet = requested_type;
+                WinttCallStack.RegisterReturn();
+                return true;
+            }
+            WinttCallStack.RegisterReturn();
+            return false;
+        }
 
     }
 }
