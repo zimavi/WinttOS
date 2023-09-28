@@ -3,12 +3,8 @@ using WinttOS.Core;
 using Sys = Cosmos.System;
 using WinttOS.Core.Utils.Debugging;
 using System.Collections.Specialized;
-using Cosmos.System.Coroutines;
 using System.Collections.Generic;
-using System.Linq;
 using WinttOS.Core.Utils.System;
-using WinttOS.System.wosh;
-using WinttOS.System.Benchmark;
 
 namespace WinttOS
 {
@@ -79,7 +75,7 @@ namespace WinttOS
         protected override void AfterRun()
         {
             WinttCallStack.RegisterCall(new("WinttOS.Kernel.AfterRun", "void()", "Kernel.cs", 81));
-            Console.WriteLine("Is now safe to turn off your computer!");
+            Console.WriteLine("It is now safe to turn off your computer!");
             Sys.Power.Shutdown();
             WinttCallStack.RegisterReturn();
         }

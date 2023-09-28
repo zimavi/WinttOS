@@ -57,7 +57,7 @@ namespace WinttOS.System.wosh
         /// Adds command to command list
         /// </summary>
         /// <param name="command">Command's class that implements <see cref="Command"/> abstract class</param>
-        /// <returns>true if successfull</returns>
+        /// <returns>true if successful</returns>
         public bool RegisterCommand(Command command)
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.wosh.CommandManager.RegisterCommand()",
@@ -97,7 +97,7 @@ namespace WinttOS.System.wosh
             {
                 if (cmd.CommandName == label)
                 {
-                    if(cmd.RequiredAccessLevel <= WinttOS.UsersManager.CurrentUser.UserAccess)
+                    if(cmd.RequiredAccessLevel.Value <= WinttOS.UsersManager.CurrentUser.UserAccess.Value)
                     {
                         try
                         {
@@ -143,7 +143,7 @@ namespace WinttOS.System.wosh
             {
                 if (cmd.CommandName == label)
                 {
-                    if (cmd.RequiredAccessLevel <= user.UserAccess)
+                    if (cmd.RequiredAccessLevel.Value <= user.UserAccess.Value)
                     {
                         user = null;
                         try

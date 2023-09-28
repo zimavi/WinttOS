@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.System;
+using WinttOS.System.Users;
 
 namespace WinttOS.System.API
 {
@@ -33,15 +35,6 @@ namespace WinttOS.System.API
             }
 
             public readonly Privileges Privileges;
-        }
-        /// <summary>
-        /// Request to rise process privileges.
-        /// </summary>
-        /// <param name="requested_type">Requested privileges set</param>
-        /// <returns><see langword="true"/> if privileges raised, otherwise, <see langword="false"/></returns>
-        public static bool RisePrivileges(this Processing.Process process, PrivilegesSet requested_type)
-        {
-            return false;
         }
     }
 }

@@ -1,7 +1,11 @@
 ﻿using Cosmos.Core.Memory;
 using Cosmos.HAL;
+using Cosmos.HAL.Drivers.Audio;
+using Cosmos.System.Audio.IO;
+using Cosmos.System.Audio;
 using Cosmos.System.Coroutines;
 using Cosmos.System.Network.IPv4.UDP.DHCP;
+using IL2CPU.API.Attribs;
 using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
@@ -103,7 +107,7 @@ namespace WinttOS.System
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitNetwork()",
                 "void()", "WinttOS.cs", 100));
-            Console.WriteLine("NOTE! If you have more then one network apadters, please remove all except one!\n");
+            Console.WriteLine("NOTE! If you have more then one network adapters, please remove all except one!\n");
 
             ShellUtils.PrintTaskResult("Discovering IP address", ShellTaskResult.DOING);
             ShellUtils.MoveCursorUp();
