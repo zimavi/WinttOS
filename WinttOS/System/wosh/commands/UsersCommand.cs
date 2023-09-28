@@ -26,16 +26,16 @@ namespace WinttOS.System.wosh.commands
             {
                 WinttDebugger.Trace($"Showing list with {WinttOS.UsersManager.Users.Count} users");
                 List<string> res = new();
-                for(int i = 0; i < WinttOS.UsersManager.Users.Count; i++)
+                foreach(var user in WinttOS.UsersManager.Users)
                 {
-                    WinttDebugger.Trace($"Working with user '{WinttOS.UsersManager.Users[i].Name}'");
-                    if (WinttOS.UsersManager.Users[i].IsLoggedIn)
+                    WinttDebugger.Trace($"Working with user '{user.Name}'");
+                    if (WinttOS.UsersManager.ActiveUsers.Contains(user))
                     {
-                        res.Add($"{WinttOS.UsersManager.Users[i].Name} *");
+                        res.Add($"{user.Name} *");
                         continue;
                     }
 
-                    res.Add(WinttOS.UsersManager.Users[i].Name);
+                    res.Add(user.Name);
                 }
                 if(res.Any())
                     return string.Join('\n', res.ToArray());
@@ -50,20 +50,20 @@ namespace WinttOS.System.wosh.commands
                     string pass = ShellUtils.ReadLineWithInterception();
                     Console.Write("Enter new user access level\n(g - guest, d - default, a - admin):");
                     char access = Console.ReadKey().KeyChar;
-                    User.AccessLevel accessToCreate;
+                    byte accessToCreate;
                     switch(access)
                     {
                         case 'G':
                         case 'g':
-                            accessToCreate = User.AccessLevel.Guest;
+                            accessToCreate = 0;
                             break;
                         case 'D':
                         case 'd':
-                            accessToCreate = User.AccessLevel.Default;
+                            accessToCreate = 1;
                             break;
                         case 'A':
                         case 'a':
-                            accessToCreate = User.AccessLevel.Administrator;
+                            accessToCreate = 2;
                             break;
                         default:
                             return "Invalid access!";
@@ -71,12 +71,12 @@ namespace WinttOS.System.wosh.commands
                     if (string.IsNullOrEmpty(pass) || string.IsNullOrWhiteSpace(pass))
                     {
                         WinttOS.UsersManager.AddUser(new User.UserBuilder().SetUserName(Username)
-                                                                           .SetAccess(accessToCreate)
+                                                                           .SetAccess(User.AccessLevel.FromValue(accessToCreate))
                                                                            .Build());
                     }
                     else
                         WinttOS.UsersManager.AddUser(new User.UserBuilder().SetUserName(Username)
-                                                                           .SetAccess(accessToCreate)
+                                                                           .SetAccess(User.AccessLevel.FromValue(accessToCreate))
                                                                            .SetPassword(pass)
                                                                            .Build());
                 }    
