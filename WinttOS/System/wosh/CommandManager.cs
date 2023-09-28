@@ -35,12 +35,11 @@ namespace WinttOS.System.wosh
                 new rmCommand("rm"),
                 new changeDirectoryCommand("cd"),
                 new dirCommand("dir"),
-                new SystemInfoCommand("sysinfo"),
+                //new SystemInfoCommand("sysinfo"),
                 //new installCommand("install"),
                 new HelpCommand("help"),
                 new ManCommand("man"),
                 new TimeCommand("time"),
-                new DateCommand("date"),
                 new TouchCommand("touch"),
                 new SudoCommand("sudo"),
                 new WhoAmICommand("whoami"),
@@ -107,9 +106,8 @@ namespace WinttOS.System.wosh
                         }
                         catch (Exception e)
                         {
-                            WinttDebugger.Critical("Command crash", true, this);
                             WinttCallStack.RegisterReturn();
-                            //return $"Error: {e.GetType()} with message:\n{e.Message}";
+                            return $"Error: {e.GetType()} with message:\n{e.Message}";
                         }
                     }
                     WinttCallStack.RegisterReturn();

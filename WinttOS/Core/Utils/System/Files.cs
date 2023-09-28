@@ -1,4 +1,5 @@
-﻿using IL2CPU.API.Attribs;
+﻿using Cosmos.System.Graphics.Fonts;
+using IL2CPU.API.Attribs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,12 @@ namespace WinttOS.Core.Utils.System
         public static readonly byte[] RawPowerOffButtonImageAlpha;
 
         [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.zap-ext-light18.psf")]
-        public static readonly byte[] RawVGAFont;
+        public static byte[] RawFont18;
+
+        public static class Fonts
+        {
+            public static PCScreenFont Font18 = PCScreenFont.LoadFont(RawFont18);
+        }
 
         public static class Installer
         {

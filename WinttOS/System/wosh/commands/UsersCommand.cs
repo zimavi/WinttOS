@@ -22,11 +22,11 @@ namespace WinttOS.System.wosh.commands
             WinttCallStack.RegisterCall(new("WinttOS.System.wosh.commands.UsersCommand.Execute()",
                 "string(string[])", "UsersCommand.cs", 18));
             WinttDebugger.Trace("Entering user's command execute function");
-            if(arguments.Length == 0 || arguments[0] == "list")
+            if (arguments.Length == 0 || arguments[0] == "list")
             {
                 WinttDebugger.Trace($"Showing list with {WinttOS.UsersManager.Users.Count} users");
                 List<string> res = new();
-                foreach(var user in WinttOS.UsersManager.Users)
+                foreach (var user in WinttOS.UsersManager.Users)
                 {
                     WinttDebugger.Trace($"Working with user '{user.Name}'");
                     if (WinttOS.UsersManager.ActiveUsers.Contains(user))
@@ -37,21 +37,22 @@ namespace WinttOS.System.wosh.commands
 
                     res.Add(user.Name);
                 }
-                if(res.Any())
+                if (res.Any())
                     return string.Join('\n', res.ToArray());
                 return "No users";
             }
             else if (arguments[0] == "add")
             {
-                if (arguments.Length > 2)
+                return "NotImplementedYet!";
+                if (arguments.Length > 1)
                 {
-                    string Username = string.Join(' ', arguments.SubArray(1, arguments.Length));
+                    string Username = arguments[1];
                     Console.Write("Enter new user password: ");
-                    string pass = ShellUtils.ReadLineWithInterception();
+                    string pass = Console.ReadLine();
                     Console.Write("Enter new user access level\n(g - guest, d - default, a - admin):");
                     char access = Console.ReadKey().KeyChar;
                     byte accessToCreate;
-                    switch(access)
+                    switch (access)
                     {
                         case 'G':
                         case 'g':
@@ -79,16 +80,17 @@ namespace WinttOS.System.wosh.commands
                                                                            .SetAccess(User.AccessLevel.FromValue(accessToCreate))
                                                                            .SetPassword(pass)
                                                                            .Build());
-                }    
-            } 
+                }
+            }
             else if (arguments[0] == "remove")
             {
-                if(arguments.Length > 2)
+                return "NotImplementedYet!";
+                if (arguments.Length > 1)
                 {
-                    string Username = string.Join(' ', arguments.SubArray(1, arguments.Length));
-                    foreach(User user in WinttOS.UsersManager.Users)
+                    string Username = arguments[1];
+                    foreach (User user in WinttOS.UsersManager.Users)
                     {
-                        if(user.Name == Username)
+                        if (user.Name == Username)
                         {
                             if (WinttOS.UsersManager.ActiveUsers.Contains(user))
                                 return "Logout from account first!";
@@ -101,26 +103,27 @@ namespace WinttOS.System.wosh.commands
             }
             else if (arguments[0] == "change")
             {
-                if (arguments.Length > 3)
+                return "NotImplementedYet!";
+                if (arguments.Length > 1)
                 {
-                    if (arguments[2] == "--leave-from-old" || arguments[2] == "-l")
+                    if (arguments.Length > 2 && (arguments[2] == "--leave-from-old" || arguments[2] == "-l"))
                     {
                         User user = WinttOS.UsersManager.GetUserByName(arguments[1]);
                         if (user.IsNull())
                             return "This user does not exsist!";
                         if (WinttOS.UsersManager.CurrentUser == user)
                             return "You can not login to this account again!";
-                        if(user.HasPassword)
+                        if (user.HasPassword)
                         {
                             Console.Write("Enter password: ");
-                            string pass = ShellUtils.ReadLineWithInterception();
-                            WinttOS.UsersManager.LogoutFromUserAccount(WinttOS.UsersManager.CurrentUser);
-                            WinttOS.UsersManager.LoginIntoUserAccount(user.Name, pass);
+                            string pass = Console.ReadLine();
+                            if (WinttOS.UsersManager.LoginIntoUserAccount(user.Name, pass))
+                                WinttOS.UsersManager.LogoutFromUserAccount(WinttOS.UsersManager.CurrentUser);
                         }
                         else
                         {
-                            WinttOS.UsersManager.LogoutFromUserAccount(WinttOS.UsersManager.CurrentUser);
                             WinttOS.UsersManager.LoginIntoUserAccount(user.Name, null);
+                            WinttOS.UsersManager.LogoutFromUserAccount(WinttOS.UsersManager.CurrentUser);
                         }
                     }
                     else
@@ -133,7 +136,7 @@ namespace WinttOS.System.wosh.commands
                         if (user.HasPassword)
                         {
                             Console.Write("Enter password: ");
-                            string pass = ShellUtils.ReadLineWithInterception();
+                            string pass = Console.ReadLine();
                             WinttOS.UsersManager.LoginIntoUserAccount(user.Name, pass);
                         }
                         else
@@ -142,6 +145,30 @@ namespace WinttOS.System.wosh.commands
                         }
                     }
                 }
+            }
+            else if (arguments[0] == "set-password")
+            {
+                if (arguments.Length > 3)
+                {
+                    for(int i = 0; i < WinttOS.UsersManager.Users.Count; i++)
+                    {
+                        if (WinttOS.UsersManager.Users[i].Name.Equals(arguments[1]))
+                        {
+                            User u = WinttOS.UsersManager.Users[i];
+                            bool result = WinttOS.UsersManager.Users[i].ChangePassword(
+                                ref u, arguments[2], arguments[3]);
+                            WinttOS.UsersManager.Users[i] = u;
+
+                            WinttCallStack.RegisterReturn();
+
+                            return result ? "Done." : "Invalid password!";
+                        }
+                    }
+                    WinttCallStack.RegisterReturn();
+                    return "Invalid user";
+                }
+                else
+                    return "Usage: user set-password <user> <old-password> <new-password>";
             }
             return "";
         }

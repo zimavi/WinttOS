@@ -5,6 +5,9 @@ using WinttOS.Core.Utils.Debugging;
 using System.Collections.Specialized;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.System;
+using WinttOS.Core.Utils.Kernel;
+using WinttOS.System.Users;
+using WinttOS.System.Processing;
 
 namespace WinttOS
 {
@@ -19,6 +22,7 @@ namespace WinttOS
         public static bool IsRebooting { get; private set; } = false;
 
         public static readonly List<Action> OnKernelFinish = new();
+        private static Kernel instance = null;
 
         #endregion
 
@@ -61,7 +65,8 @@ namespace WinttOS
 
             } catch (Exception ex)
             {
-                WinttDebugger.Critical(ex.Message, true, this);
+                WinttDebugger.Error(ex.Message, true, this);
+                WinttRaiseHardError(WinttStatus.PHASE0_INITIALIZATION_FAILED, this, HardErrorResponseOption.OptionShutdownSystem);
             }
             finally
             {
@@ -99,7 +104,8 @@ namespace WinttOS
             }
             catch (Exception ex)
             {
-                WinttDebugger.Critical("Something happened on shutdown!", ex);
+                WinttDebugger.Error("Something happened on shutdown!", true);
+                WinttRaiseHardError(WinttStatus.SYSTEM_THREAD_EXCEPTION_NOT_HANDLED, instance, HardErrorResponseOption.OptionShutdownSystem);
             }
             finally
             {
@@ -113,6 +119,23 @@ namespace WinttOS
             IsRebooting = true;
             ShutdownKernel();
             WinttCallStack.RegisterReturn();
+        }
+
+        #endregion
+
+        #region API
+
+        public static WinttStatus WinttRaiseHardError(WinttStatus WinttStatus, object sender, HardErrorResponseOption responseOption)
+        {
+            if (!WinttStatus.IsStopCode)
+                return WinttStatus.STATUS_FAILURE;
+
+            if (responseOption.Value != 6)
+                return WinttStatus.STATUS_FAILURE;
+
+            _ = new KernelPanic(WinttStatus, sender);
+
+            return WinttStatus.STATUS_SUCCESS;
         }
 
         #endregion

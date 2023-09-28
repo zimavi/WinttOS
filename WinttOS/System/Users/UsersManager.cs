@@ -111,11 +111,14 @@ namespace WinttOS.System.Users
                     if (user.PasswordHash == MD5.Calculate(Encoding.UTF8.GetBytes(Password)))
                     {
                         CurrentUser = user;
-                        if (!ActiveUsers.Contains(user))
+                        foreach(User u in ActiveUsers)
                         {
-                            user.IsLoggedIn = true;
-                            ActiveUsers.Add(user);
+                            if (u.Name.Equals(Login))
+                                return true;
                         }
+
+                        user.IsLoggedIn = true;
+                        ActiveUsers.Add(user);
 
                         return true;
                     }

@@ -12,7 +12,8 @@ namespace WinttOS.System.wosh.commands.Processing
             HelpCommandManager.addCommandUsageStrToManager("systemctl [--help|-h] - get usage str (or use 'man systemctl')");
             CommandManual = new()
             {
-                "\tsystemctl status <service.name>",
+                "  systemctl list - get list of services",
+                "  systemctl status <service.name> - get service status"
             };
         }
 
@@ -20,13 +21,16 @@ namespace WinttOS.System.wosh.commands.Processing
         {
             if (arguments.Length == 0 || arguments[0] == "list")
             {
-                string result = string.Empty;
+                List<string> result = new();
                 foreach (var service in WinttOS.ServiceProvider.Services)
-                    result += service.ProcessName + '\n';
-                return result.Substring(0, result.Length -1);
+                    result.Add(service.ProcessName);
+                return string.Join('\n', result.ToArray());
             }
+            if (arguments[0] == "-h" || arguments[0] == "--help")
+                return string.Join('\n', CommandManual.ToArray());
             if (arguments.Length == 2 || arguments[0] == "status")
             {
+                return "NotImplemented!";
                 string errorMsg = null;
                 ServiceStatus status = ServiceStatus.no_data;
                 (status, errorMsg) = WinttOS.ServiceProvider.GetServiceStatus(arguments[1]);

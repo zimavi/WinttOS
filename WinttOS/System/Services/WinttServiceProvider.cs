@@ -118,7 +118,7 @@ namespace WinttOS.System.Services
                 }
             }
             WinttCallStack.RegisterReturn();
-            return (ServiceStatus.no_data, null);
+            return (ServiceStatus.no_data, string.Empty);
         }
 
         public void RestartService(string serviceName)

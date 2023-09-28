@@ -145,7 +145,7 @@ namespace WinttOS.Core.Utils.Debugging
             //}
             //else
             //{
-                Cosmos.System.Global.Debugger.Send($"[Serve] {message}\n\n{WinttCallStack.GetCallStack()}");
+                Cosmos.System.Global.Debugger.Send($"[Serve] {message}");
                 ErrorMessages.Add($"[Serve] {message}\n\n{WinttCallStack.GetCallStack()}");
                 if(!executePanic)
                     Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error: {message}");
@@ -157,7 +157,7 @@ namespace WinttOS.Core.Utils.Debugging
                 //if (sender != null)
                 //    _ = new KernelPanic(message, sender);
                 //else
-                    _ = new KernelPanic(message, "Unknown source");
+                //    _ = new KernelPanic(message, "Unknown source");
             }
             WinttCallStack.RegisterReturn();
         }
@@ -170,13 +170,13 @@ namespace WinttOS.Core.Utils.Debugging
             //}
             //else
             //{
-                Cosmos.System.Global.Debugger.Send($"[Serve] {message}\n\n{WinttCallStack.GetCallStack()}");
+                Cosmos.System.Global.Debugger.Send($"[Serve] {message}");
                 Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error: {message}\n{exception.Message}\n{WinttCallStack.GetCallStack()}");
             //}
             //if (!sender.IsNull())
             //    _ = new KernelPanic(message, sender, exception);
             //else
-                _ = new KernelPanic(message, "Unknown source", exception);
+            //    _ = new KernelPanic(message, "Unknown source");
         }
     }
 }

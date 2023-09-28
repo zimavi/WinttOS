@@ -163,25 +163,26 @@ namespace WinttOS.Core.Utils.System
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.System.ShellUtils.ReadLineWithInterception()",
                 "string()", "ShellUtils.cs", 165));
             string input = "";
-            while(true)
+            ConsoleKey key;
+            do
             {
-                ConsoleKeyInfo key = Console.ReadKey(true);
-                if (key.Key == ConsoleKey.Enter)
+                var keyInfo = Console.ReadKey(intercept: true);
+                key = keyInfo.Key;
+
+                if (key == ConsoleKey.Backspace && input.Length > 0)
                 {
-                    WinttCallStack.RegisterReturn();
-                    return input;
+                    Console.Write("\b \b");
+                    input = input[0..^1];
                 }
-                else if (key.Key == ConsoleKey.Backspace)
+                else if (!char.IsControl(keyInfo.KeyChar))
                 {
-                    if (input.Length > 0)
-                        input = input.Substring(0, input.Length - 1);
-                    WinttDebugger.Trace($"input.Substring() => {input}", instance);
+                    Console.Write("*");
+                    input += keyInfo.KeyChar;
                 }
-                else if (!MIV.isForbiddenKey(key.Key))
-                {
-                    input += key.KeyChar;
-                }
-            }
+            } while (key != ConsoleKey.Enter);
+
+            WinttCallStack.RegisterReturn();
+            return input;
         }
 
     }

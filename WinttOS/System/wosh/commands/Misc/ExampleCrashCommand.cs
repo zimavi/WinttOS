@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.Core.Utils.Kernel;
 using WinttOS.System.wosh;
 
 namespace WinttOS.System.wosh.commands.Misc
@@ -17,16 +18,12 @@ namespace WinttOS.System.wosh.commands.Misc
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.wosh.Misc.ExampleCrashCommand.Execute()",
                 "string(string[])", "ExampleCrashCommand.cs", 184));
-            exampleStackTraceLogging();
+
+            Kernel.WinttRaiseHardError(WinttStatus.MANUALLY_INITIATED_CRASH, this,
+                HardErrorResponseOption.OptionShutdownSystem);
+
             WinttCallStack.RegisterReturn();
             return base.Execute(arguments);
-        }
-
-        private void exampleStackTraceLogging()
-        {
-            WinttCallStack.RegisterCall(new("WinttOS.System.wosh.Misc.ExampleCrashCommand.exampleStackTraceLogging()",
-                "void()", "ExampleCrashCommand.cs", 25));
-            throw new Exception("Example stack crash command :)");
         }
     }
 }

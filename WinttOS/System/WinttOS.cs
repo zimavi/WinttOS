@@ -17,6 +17,8 @@ using WinttOS.System.wosh;
 using WinttOS.System.wosh.commands;
 using WinttOS.System.wosh.commands.Misc;
 using Sys = Cosmos.System;
+using WinttOS.Core.Utils.Kernel;
+using System.Linq;
 
 namespace WinttOS.System
 {
@@ -26,7 +28,7 @@ namespace WinttOS.System
 
         private static WinttOS instance => new();
 
-        public const string WinttVersion = "WinttOS v1.0.0 dev. build 1987";
+        public const string WinttVersion = "WinttOS v1.0.0 dev. build 2345";
 
         public static WinttServiceProvider ServiceProvider =>
             (WinttServiceProvider)ProcessManager.GetProcessInstance(serviceProviderProcessID);
@@ -48,32 +50,50 @@ namespace WinttOS.System
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitializeSystem()",
                 "void()", "WinttOS.cs", 40));
-            Kernel.OnKernelFinish.Add(SystemFinish);
-            InitNetwork();
-            InitUsers();
-            InitServiceProvider();
+            try
+            {
+                Kernel.OnKernelFinish.Add(SystemFinish);
+                InitNetwork();
+                InitUsers();
+                InitServiceProvider();
 
-            ProcessManager.RegisterProcess(serviceProvider, ref serviceProviderProcessID);
+                ProcessManager.RegisterProcess(serviceProvider, ref serviceProviderProcessID);
 
-            CommandManager.RegisterCommand(new DevModeCommand("dev-mode"));
-            CommandManager.RegisterCommand(new ExampleCrashCommand("crash-pls"));
+                CommandManager.RegisterCommand(new DevModeCommand("dev-mode"));
+                CommandManager.RegisterCommand(new ExampleCrashCommand("crash-pls"));
 
-            ((WinttServiceProvider)ProcessManager.GetProcessInstance(serviceProviderProcessID))
-                .AddService(CommandManager);
+                ((WinttServiceProvider)ProcessManager.GetProcessInstance(serviceProviderProcessID))
+                    .AddService(CommandManager);
 
-            ProcessManager.StartProcess(serviceProviderProcessID);
+                ProcessManager.StartProcess(serviceProviderProcessID);
+            }
+            catch(Exception e)
+            {
+                WinttDebugger.Error(e.Message, true, instance);
+                Kernel.WinttRaiseHardError(WinttStatus.PHASE1_INITIALIZATION_FAILED, instance, HardErrorResponseOption.OptionShutdownSystem);
+            }
 
             Heap.Collect();
 
             CoroutinePool.Main.PerformHeapCollection = false;
 
-            CoroutinePool.Main.OnCoroutineCycle.Add(SystemThread);
+            //CoroutinePool.Main.OnCoroutineCycle.Add(SystemThread);
+
+            CoroutinePool.Main.AddCoroutine(new(SystemThread()));
 
             CoroutinePool.Main.AddCoroutine(new(ProcessManager.UpdateProcesses()));
             
             Console.Clear();
-
-            CoroutinePool.Main.StartPool();
+            try
+            {
+                CoroutinePool.Main.StartPool();
+            }
+            catch(Exception e)
+            {
+                WinttDebugger.Error(e.Message, true);
+                Kernel.WinttRaiseHardError(WinttStatus.TRAP_CAUSE_UNKNOWN, instance, 
+                    HardErrorResponseOption.OptionShutdownSystem);
+            }
 
             WinttCallStack.RegisterReturn();
         }
@@ -99,6 +119,14 @@ namespace WinttOS.System
                                                            .SetAccess(User.AccessLevel.Administrator)
                                                            .Build());
                 UsersManager.LoginIntoUserAccount("root", null);
+            }
+            if(UsersManager.RootUser.HasPassword)
+            {
+                tryMore:
+                Console.Write("Please enter password from user 'root': ");
+                if (!UsersManager.LoginIntoUserAccount("root", Console.ReadLine()))
+                    goto tryMore;
+
             }
             WinttCallStack.RegisterReturn();
         }
@@ -126,7 +154,8 @@ namespace WinttOS.System
                 }
                 catch (Exception e)
                 {
-                    WinttDebugger.Critical(e.Message, true, instance);
+                    WinttDebugger.Error(e.Message, true, instance);
+                    throw;
                 }
             }
             else
@@ -154,7 +183,7 @@ namespace WinttOS.System
             WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.FinishOS()",
                 "IEnumerator<CoroutineControlPoint>()", "WinttOS.cs", 139));
 
-            WinttDebugger.Trace("FinishOS corouting executed! Waiting 3 seconds!", instance);
+            WinttDebugger.Trace("FinishOS coroutine executed! Waiting 3 seconds!", instance);
 
             WinttCallStack.RegisterReturn();
 
@@ -176,14 +205,34 @@ namespace WinttOS.System
                 Sys.Power.Shutdown();
         }
 
-        public static void SystemThread()
+        public static IEnumerator<CoroutineControlPoint> SystemThread()
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.SystemThread()",
                 "void()", "WinttOS.cs", 165));
+            while (!Kernel.IsFinishingKernel)
+            {
+                foreach (var process in ProcessManager.Processes)
+                {
+                    if (process.IsProcessCritical && !process.IsProcessRunning)
+                    {
+                        WinttDebugger.Error($"Critical process died => {process.ProcessName}", true, instance);
+                        Kernel.WinttRaiseHardError(WinttStatus.CRITICAL_PROCESS_DIED, instance, HardErrorResponseOption.OptionShutdownSystem);
+                    }
+                }
+
+                Heap.Collect();
+
+                WinttCallStack.RegisterReturn();
+
+                yield return WaitFor.Seconds(3);
+
+                WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.SystemThread()",
+                "void()", "WinttOS.cs", 165));
+            }
+
+            yield return WaitFor.Seconds(2);
 
             Heap.Collect();
-
-            WinttCallStack.RegisterReturn();
         }
 
         #endregion

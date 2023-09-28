@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.System;
 using WinttOS.System.Processing;
 using WinttOS.System.wosh.Utils.Commands;
@@ -27,11 +28,16 @@ namespace WinttOS.System.wosh.commands.Processing
             else if (arguments[0] == "kill")
             {
                 if (arguments.Length < 2)
-                    return "Usage: process kill <process id>";
+                    return "Usage: process kill <process id> [-f|--force]";
                 if (uint.TryParse(arguments[1], out _))
                 {
                     if (!WinttOS.ProcessManager.GetProcessInstance(Convert.ToUInt32(arguments[1])).IsNull())
                     {
+                        if(arguments.Length > 2 && (arguments[2] == "-f" || arguments[2] == "--force"))
+                        {
+                            WinttDebugger.Trace($"StopProcess() => {WinttOS.ProcessManager.StopProcess(Convert.ToUInt32(arguments[1]))}");
+                            return "Done.";
+                        }
                         if (!WinttOS.ProcessManager.GetProcessInstance(Convert.ToUInt32(arguments[1])).IsProcessCritical)
                             WinttOS.ProcessManager.StopProcess(Convert.ToUInt32(arguments[1]));
                         else

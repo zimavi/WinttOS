@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using WinttOS;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.Core.Utils.Kernel;
 using WinttOS.System.wosh.Utils;
 
 namespace WinttOS.System.Processing
@@ -10,6 +11,8 @@ namespace WinttOS.System.Processing
     public class ProcessManager
     {
         private List<Process> processes = new();
+
+        public List<Process> Processes => processes;
 
         public uint ProcessesCount => (uint) processes.Count;
 
@@ -153,8 +156,16 @@ namespace WinttOS.System.Processing
                 {
                     foreach (var process in processes)
                     {
-                        if (process.Type == Process.ProcessType.FromValue(i) && process.IsProcessRunning)
-                            process.Update();
+                        try
+                        {
+                            if (process.Type == Process.ProcessType.FromValue(i) && process.IsProcessRunning)
+                                process.Update();
+                        }
+                        catch(Exception e)
+                        {
+                            WinttDebugger.Error(e.Message, true, this);
+                            process.Stop();
+                        }
                     }
                 }
                 WinttCallStack.RegisterReturn();
