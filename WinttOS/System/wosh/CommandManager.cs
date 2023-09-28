@@ -47,6 +47,7 @@ namespace WinttOS.System.wosh
                 new mivCommand("miv"),
                 new CatUtilCommand("cat"),
                 new SystemCtlCommand("systemctl"),
+                new UsersCommand("user"),
                 new ProcessCommand("process"),
                 //new WgetCommand("wget"),
             };

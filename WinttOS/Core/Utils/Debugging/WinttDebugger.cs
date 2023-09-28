@@ -15,6 +15,8 @@ namespace WinttOS.Core.Utils.Debugging
     /// </summary>
     public class WinttDebugger
     {
+        public static List<string> ErrorMessages { get;} = new(); 
+
         /// <summary>
         /// Send trace log to COM debugger
         /// </summary>
@@ -25,9 +27,15 @@ namespace WinttOS.Core.Utils.Debugging
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Trace()",
                 "void(string, object)", "WinttDebugger.cs", 22));
             if (sender != null)
+            {
                 Cosmos.System.Global.Debugger.Send($"[Trace] From {sender.GetType().Name}: {message}");
+                ErrorMessages.Add($"[Trace] From {sender.GetType().Name}: {message}");
+            }
             else
+            {
                 Cosmos.System.Global.Debugger.Send($"[Trace] {message}");
+                ErrorMessages.Add($"[Trace] {message}");
+            }
             WinttCallStack.RegisterReturn();
         }
         /// <summary>
@@ -40,9 +48,15 @@ namespace WinttOS.Core.Utils.Debugging
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Debug()",
                 "void(string, object)", "WinttDebugger.cs", 37));
             if (sender != null)
+            {
                 Cosmos.System.Global.Debugger.Send($"[Debug] From {sender.GetType().Name}: {message}");
+                ErrorMessages.Add($"[Debug] From {sender.GetType().Name}: {message}");
+            }
             else
+            {
                 Cosmos.System.Global.Debugger.Send($"[Debug] {message}");
+                ErrorMessages.Add($"[Debug] {message}");
+            }
             WinttCallStack.RegisterReturn();
         }
         /// <summary>
@@ -55,9 +69,15 @@ namespace WinttOS.Core.Utils.Debugging
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Info()",
                 "void(string, object)", "WinttDebugger.cs", 52));
             if (sender != null)
+            {
                 Cosmos.System.Global.Debugger.Send($"[Info] From {sender.GetType().Name}: {message}");
+                ErrorMessages.Add($"[Info] From {sender.GetType().Name}: {message}");
+            }
             else
+            {
                 Cosmos.System.Global.Debugger.Send($"[Info] {message}");
+                ErrorMessages.Add($"[Info] {message}");
+            }
             WinttCallStack.RegisterReturn();
         }
         /// <summary>
@@ -70,9 +90,15 @@ namespace WinttOS.Core.Utils.Debugging
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Warning()",
                 "void(string, object)", "WinttDebugger.cs", 67));
             if (sender != null)
+            {
                 Cosmos.System.Global.Debugger.Send($"[Warn] From {sender.GetType().Name}: {message}");
+                ErrorMessages.Add($"[Warn] From {sender.GetType().Name}: {message}");
+            }
             else
+            {
                 Cosmos.System.Global.Debugger.Send($"[Warn] {message}");
+                ErrorMessages.Add($"[Warn] {message}");
+            }
             WinttCallStack.RegisterReturn();
         }
         /// <summary>
@@ -88,12 +114,14 @@ namespace WinttOS.Core.Utils.Debugging
             if (sender != null)
             {
                 Cosmos.System.Global.Debugger.Send($"[Error] From {sender.GetType().Name}: {message}");
+                ErrorMessages.Add($"[Error] From {sender.GetType().Name}: {message}");
                 if (sendMsgBox)
                     Cosmos.System.Global.Debugger.SendMessageBox($"Got error from {sender.GetType().ToString()}: {message}");
             }
             else
             {
                 Cosmos.System.Global.Debugger.Send($"[Error] {message}");
+                ErrorMessages.Add($"[Error] {message}");
                 if (sendMsgBox)
                     Cosmos.System.Global.Debugger.SendMessageBox($"Got error: {message}");
             }
@@ -118,6 +146,7 @@ namespace WinttOS.Core.Utils.Debugging
             //else
             //{
                 Cosmos.System.Global.Debugger.Send($"[Serve] {message}\n\n{WinttCallStack.GetCallStack()}");
+                ErrorMessages.Add($"[Serve] {message}\n\n{WinttCallStack.GetCallStack()}");
                 if(!executePanic)
                     Cosmos.System.Global.Debugger.SendMessageBox($"Got fatal error: {message}");
                 else

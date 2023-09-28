@@ -30,6 +30,8 @@ namespace WinttOS.System.Users
 
         public string PasswordHash { get; private set; }
 
+        public bool IsLoggedIn { get; internal set; } = false;
+
         public bool HasPassword
         {
             get

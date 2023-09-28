@@ -1,7 +1,9 @@
 ﻿using Cosmos.System;
 using Cosmos.System.Graphics;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using WinttOS.Core.Utils.Debugging;
 
 namespace WinttOS.Core.Utils.Kernel
@@ -23,6 +25,41 @@ namespace WinttOS.Core.Utils.Kernel
             if (FullScreenCanvas.IsInUse)
                 FullScreenCanvas.Disable();
             canvas = FullScreenCanvas.GetFullScreenCanvas(new(640, 480, ColorDepth.ColorDepth32)); // 1024, 768
+
+            canvas.Clear(Color.Red);
+            printCentered("WinttOS has been unexpectedly stopped!", -6);
+            printCentered("If you see this message for the first time,", -3);
+            printCentered("try to reboot you computer, or contact devs.", -2);
+            printCentered("Details:", 0);
+            printCentered(message, 1);
+            printCentered(exception.Message, 2);
+            printCentered($"Collecting core dump...", 3);
+            canvas.Display();
+
+            List<string> textToWrite = new()
+            {
+                "CALL_STACK:",
+                WinttCallStack.GetCallStack(),
+                "LAST_MESSAGES:"
+            };
+
+            textToWrite.AddRange(WinttDebugger.ErrorMessages);
+
+            canvas.Clear(Color.Red);
+            printCentered("WinttOS has been unexpectedly stopped!", -6);
+            printCentered("If you see this message for the first time,", -3);
+            printCentered("try to reboot you computer, or contact devs.", -2);
+            printCentered("Details:", 0);
+            printCentered(message, 1);
+            printCentered(exception.Message, 2);
+            printCentered($"Saving core dump...", 3);
+            canvas.Display();
+
+            if (!File.Exists(@"0:\core_dump.log"))
+                File.Create(@"0:\core_dump.log");
+
+            File.WriteAllText(@"0:\core_dump.log", string.Join('\n', textToWrite.ToArray()));
+
             for (int i = 5; i > 0; i--)
             {
                 canvas.Clear(Color.Red);

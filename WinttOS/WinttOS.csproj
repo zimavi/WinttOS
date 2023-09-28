@@ -13,7 +13,7 @@
         <StartCosmosGDB>False</StartCosmosGDB>
         <VisualStudioDebugPort>Pipe: Cosmos\Serial</VisualStudioDebugPort>
         <CosmosDebugPort>Serial: COM1</CosmosDebugPort>
-        <Launch>VMware</Launch>
+        <Launch>Qemu</Launch>
         <Profile>VMware</Profile>
         <Description>Use VMware Player or Workstation to deploy and debug.</Description>
         <PxeInterface>192.168.0.8</PxeInterface>
@@ -26,6 +26,14 @@
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <EnableBochsDebug>True</EnableBochsDebug>
         <StartBochsDebugGui>True</StartBochsDebugGui>
+        <QemuMemory>512</QemuMemory>
+        <QemuNetworkDevice>RTL8139</QemuNetworkDevice>
+        <QemuVideoDriver>VMWare</QemuVideoDriver>
+        <QemuAudioDriver>AC97</QemuAudioDriver>
+        <QemuUseSerial>False</QemuUseSerial>
+        <QemuUSBMouse>False</QemuUSBMouse>
+        <QemuUSBKeyboard>False</QemuUSBKeyboard>
+        <QemuHWAccelWHPX>False</QemuHWAccelWHPX>
     </PropertyGroup>
 
     <ItemGroup>

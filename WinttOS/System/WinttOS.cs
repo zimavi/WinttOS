@@ -22,7 +22,7 @@ namespace WinttOS.System
 
         private static WinttOS instance => new();
 
-        public const string WinttVersion = "WinttOS v1.0.0 dev. build 1892";
+        public const string WinttVersion = "WinttOS v1.0.0 dev. build 1987";
 
         public static WinttServiceProvider ServiceProvider =>
             (WinttServiceProvider)ProcessManager.GetProcessInstance(serviceProviderProcessID);
@@ -53,7 +53,6 @@ namespace WinttOS.System
 
             CommandManager.RegisterCommand(new DevModeCommand("dev-mode"));
             CommandManager.RegisterCommand(new ExampleCrashCommand("crash-pls"));
-            CommandManager.RegisterCommand(new UsersCommand("users"));
 
             ((WinttServiceProvider)ProcessManager.GetProcessInstance(serviceProviderProcessID))
                 .AddService(CommandManager);
@@ -166,6 +165,7 @@ namespace WinttOS.System
                 coroutine.Stop();
             }
             WinttDebugger.Info("Finishing Kernel!", instance);
+            Console.WriteLine("Is now safe to turn off your computer!");
             if (Kernel.IsRebooting)
                 Sys.Power.Reboot();
             else

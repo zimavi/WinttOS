@@ -18,13 +18,15 @@ namespace WinttOS.Core.Utils.Debugging
 
         internal static string GetCallStack()
         {
-            MethodCallInfo lastCall = callStack.Pop();
+            MethodCallInfo lastCall = callStack.Peek();
             List<string> toReturn = new()
             {
                 $"Last call: {lastCall.MethodFullPath} in {lastCall.FileName}:{lastCall.FileLineNumber}"
             };
             foreach (MethodCallInfo info in callStack.ToList())
             {
+                if (info == lastCall)
+                    continue;
                 toReturn.Add($"  at {info.MethodFullPath} in {info.FileName}:{info.FileLineNumber}");
             }
             return string.Join("\n----------\n", toReturn.ToArray());

@@ -112,7 +112,10 @@ namespace WinttOS.System.Users
                     {
                         CurrentUser = user;
                         if (!ActiveUsers.Contains(user))
+                        {
+                            user.IsLoggedIn = true;
                             ActiveUsers.Add(user);
+                        }
 
                         return true;
                     }
@@ -138,6 +141,7 @@ namespace WinttOS.System.Users
                     if (u == user)
                     {
                         ActiveUsers.Remove(u);
+                        u.IsLoggedIn = false;
                         CurrentUser = User.CreateEmptyUser();
                         return;
                     }
