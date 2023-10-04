@@ -40,6 +40,7 @@ namespace WinttOS.Core.Utils.Kernel
         public static readonly WinttStatus THREAD_STUCK                         = new("THREAD_STUCK", 0x00000020);
         public static readonly WinttStatus STATUS_CANNOT_LOAD_REGISTRY_FILE     = new("STATUS_CANNOT_LOAD_REGISTRY_FILE0", 0x00000021);
         public static readonly WinttStatus STATUS_SYSTEM_PROCESS_TERMINATED     = new("STATUS_SYSTEM_PROCESS_TERMINATED", 0x00000022);
+        public static readonly WinttStatus HAL_INITIALIZATION_FAILED            = new("HAL_INITIALIZATION_FAILED", 0x00000023);
         public static readonly WinttStatus MANUALLY_INITIATED_CRASH1            = new("MANUALLY_INITIATED_CRASH1", 0xDEADDEAD);
         
         // API returns codes
