@@ -275,7 +275,7 @@ namespace WinttOS.System.wosh.Programs
                 }
                 else
                 {
-                    Console.WriteLine("Unable to save. File is readonly!");
+                    Console.WriteLine("Unable to save. Files is readonly!");
                 }
             }
         }

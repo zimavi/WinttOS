@@ -39,11 +39,11 @@ namespace WinttOS.System.wosh.Programs
                         text = File.ReadAllText(@"0:\" + GlobalData.CurrentDirectory + arguments[0]);
                     }
                     else
-                        return "File " + @"0:\" + GlobalData.CurrentDirectory + arguments[0] + " does not exists!";
+                        return "Files " + @"0:\" + GlobalData.CurrentDirectory + arguments[0] + " does not exists!";
                     if (File.Exists(@"0:\" + GlobalData.CurrentDirectory + arguments[2]))
                     {
                         if (Kernel.ReadonlyFiles.Contains(@"0:\" + GlobalData.CurrentDirectory + arguments[2]))
-                            return "File is readonly!";
+                            return "Files is readonly!";
                         File.WriteAllText(@"0:\" + GlobalData.CurrentDirectory + arguments[2], text);
                     }
                     text = "The content will be copied in destination file";
@@ -55,11 +55,11 @@ namespace WinttOS.System.wosh.Programs
                         text = File.ReadAllText(@"0:\" + GlobalData.CurrentDirectory + arguments[0]);
                     }
                     else
-                        return "File " + @"0:\" + GlobalData.CurrentDirectory + arguments[0] + " does not exists!";
+                        return "Files " + @"0:\" + GlobalData.CurrentDirectory + arguments[0] + " does not exists!";
                     if (File.Exists(@"0:\" + GlobalData.CurrentDirectory + arguments[2]))
                     {
                         if (Kernel.ReadonlyFiles.Contains(@"0:\" + GlobalData.CurrentDirectory + arguments[2]))
-                            return "File is readonly!";
+                            return "Files is readonly!";
                         File.AppendAllText(@"0:\" + GlobalData.CurrentDirectory + arguments[2], text);
                     }
                     text = "The content will be copied in destination file";
