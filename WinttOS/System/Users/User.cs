@@ -127,7 +127,7 @@ namespace WinttOS.System.Users
                 user = new();
 
             /// <summary>
-            /// Set user's name. You <c>must</c> call this method to successfully build user!
+            /// Set user's name. You must call this method to successfully build user!
             /// </summary>
             /// <param name="Name">User name string</param>
             /// <returns></returns>
@@ -229,7 +229,7 @@ namespace WinttOS.System.Users
 
             public TempUserBuilder SetUserName(string Name)
             {
-                user.Name = $"$TMP-{Name}";
+                user.Name = $"$TMP.{Name}";
                 return this;
             }
 

@@ -13,9 +13,6 @@ namespace WinttOS.Core.Utils.System
         [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.startup.wav")]
         public static readonly byte[] RawStartupSound;
 
-        [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.cur.bmp")]
-        public static readonly byte[] RawCursorImage;
-
         [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.button_power_off.bmp")]
         public static readonly byte[] RawPowerOffButtonImageAlpha;
 
@@ -25,15 +22,6 @@ namespace WinttOS.Core.Utils.System
         public static class Fonts
         {
             public static PCScreenFont Font18 = PCScreenFont.LoadFont(RawFont18);
-        }
-
-        public static class Installer
-        {
-            [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.os_install_bg.bmp")]
-            public static readonly byte[] RawInstallerBackgroundImage;
-
-            [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.os_next_inst_img.bmp")]
-            public static readonly byte[] RawInstallerNextButtonImage;
         }
     }
 }

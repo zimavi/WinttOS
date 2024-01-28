@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IL2CPU.API.Attribs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ namespace WinttOS.System.GUI
 {
     public static class Files
     {
-        public
+        [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.cur.bmp")]
+        public static readonly byte[] RawCursorImage;
     }
 }

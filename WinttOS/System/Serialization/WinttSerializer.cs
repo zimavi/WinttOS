@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.System.Users;
 
 namespace WinttOS.System.Serialization
 {
-    public class WinttUserSerializer
+    public class WinttUserSerializer : IWinttSerializer<User>
     {
         public string Serialize(User user)
         {
@@ -45,7 +44,7 @@ namespace WinttOS.System.Serialization
             }
             binarySplit = partialSerializedStr.Split(' ');
             
-            User toReturn =  new User.UserBuilder().SetUserName(binarySplit[1])
+            User toReturn = new User.UserBuilder().SetUserName(binarySplit[1])
                                          .SetHashedPassword(binarySplit[2])
                                          .SetAccess(User.AccessLevel.FromValue(Convert.ToByte(binarySplit[3])))
                                          .Build();

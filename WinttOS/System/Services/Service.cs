@@ -30,11 +30,11 @@ namespace WinttOS.System.Services
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Services.Service.onServiceTick()",
                 "void()", "Service.cs", 29));
-            ServiceStatus = ServiceStatus.OK;
+            ServiceStatus = ServiceStatus.PENDING;
 
             ServiceTick();
 
-            ServiceStatus = ServiceStatus.PENDING;
+            ServiceStatus = ServiceStatus.OK;
             WinttCallStack.RegisterReturn();
         }
         public abstract void ServiceTick();

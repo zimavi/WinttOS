@@ -14,7 +14,7 @@ namespace WinttOS.System.wosh.Programs
         {
             string text = "";
             if (arguments.Length == 0)
-                return "Usage: cat <path\to\file>";
+                return "Usage: cat <path\\to\\file>";
             else if (arguments.Length == 1)
                 text = File.ReadAllText(@"0:\" + GlobalData.CurrentDirectory + arguments[0]);
             else if (arguments.Length > 1)
@@ -23,7 +23,7 @@ namespace WinttOS.System.wosh.Programs
                 {
                     for (int i = 0; i < arguments.Length; i++)
                     {
-                        text += $"\t{i + 1} {File.ReadAllText(@"0:\" + GlobalData.CurrentDirectory + arguments[i])}";
+                        text += $"\t{i + 1} {File.ReadLines(@"0:\" + GlobalData.CurrentDirectory + arguments[i])}";
                     }
                 }
                 else if (arguments[0] == ">")

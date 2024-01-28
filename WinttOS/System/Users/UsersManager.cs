@@ -84,7 +84,7 @@ namespace WinttOS.System.Users
         {
             try
             {
-                byte[] UsersBytes = File.ReadAllBytes(@"users.dat");
+                byte[] UsersBytes = File.ReadAllBytes(@"0:\WinttOS\System32\users.dat");
                 var serializer = new WinttUserSerializer();
                 users = serializer.DeserializeList(Encoding.ASCII.GetString(UsersBytes));
                 return true;
@@ -127,7 +127,10 @@ namespace WinttOS.System.Users
                 {
                     CurrentUser = user;
                     if (!ActiveUsers.Contains(user))
+                    {
+                        user.IsLoggedIn = true;
                         ActiveUsers.Add(user);
+                    }
 
                     return true;
                 }
