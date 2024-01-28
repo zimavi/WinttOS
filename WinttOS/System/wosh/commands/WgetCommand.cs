@@ -13,7 +13,7 @@ namespace WinttOS.System.wosh.commands
     {
         public WgetCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
-            HelpCommandManager.addCommandUsageStrToManager("wget <url/IPv4>");
+            HelpCommandManager.AddCommandUsageStrToManager("wget <url/IPv4>");
         }
 
         public override string Execute(string[] arguments)

@@ -12,7 +12,7 @@ namespace WinttOS.System.wosh.commands
     {
         public VerisonCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
         {
-            HelpCommandManager.addCommandUsageStrToManager(@"version - shows OS version");
+            HelpCommandManager.AddCommandUsageStrToManager(@"version - shows OS version");
         }
 
         public override string Execute(string[] args)

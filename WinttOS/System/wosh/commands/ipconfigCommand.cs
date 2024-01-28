@@ -8,12 +8,12 @@ using WinttOS.System.wosh.Utils.Commands;
 
 namespace WinttOS.System.wosh.commands
 {
-    public class ipconfigCommand : Command
+    public class IpConfigCommand : Command
     {
 
-        public ipconfigCommand(string name) : base(name, Users.User.AccessLevel.Guest)
+        public IpConfigCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
-            HelpCommandManager.addCommandUsageStrToManager(@"ipconfig - gets list of network devices");
+            HelpCommandManager.AddCommandUsageStrToManager(@"ipconfig - gets list of network devices");
             CommandManual = new()
             {
                 "Usage:",
@@ -28,44 +28,6 @@ namespace WinttOS.System.wosh.commands
             };
         }
 
-        /*
-        public override string execute(string[] arguments)
-        {
-
-            string getnetwork = "";
-            try
-            {
-                //getnetwork = Cosmos.HAL.NetworkDevice.Devices.ToString();
-                foreach(Cosmos.HAL.NetworkDevice device in Cosmos.HAL.NetworkDevice.Devices)
-                {
-                    ushort ethCount = 0;
-                    ushort wlanCount = 0;
-                    string cardType;
-                    if (device.CardType == Cosmos.HAL.CardType.Ethernet)
-                    {
-                        cardType = "eth" + ethCount++;
-                    }
-                    else
-                    {
-                        cardType = "wlan" + wlanCount++;
-                    }
-
-                    if (device.Ready)
-                        getnetwork += $"{cardType}:  {device.Name} state READY";
-                    else
-                        getnetwork += $"{cardType}:  {device.Name} state NOT READY";
-
-                    getnetwork += '\n';
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("ERROR: " + ex.Message);
-            }
-            return getnetwork;
-        }
-        */
-
         public override string Execute(string[] arguments)
         {
             string returnStr = "";
@@ -73,6 +35,7 @@ namespace WinttOS.System.wosh.commands
             {
                 if (NetworkStack.ConfigEmpty())
                     return "No network configuration detected! Use 'ipconfig -h' or 'ipconfig --help'";
+
                 NetworkConfiguration.NetworkConfigs.ForEach((config) =>
                 {
                     switch (config.Device.CardType)
@@ -86,6 +49,7 @@ namespace WinttOS.System.wosh.commands
                     }
                     if (NetworkConfiguration.CurrentNetworkConfig.Device == config.Device)
                         returnStr += " (current)";
+
                     returnStr += "\n";
 
                     returnStr += $"  MAC Address           : {config.Device.MACAddress.ToString()}\n";

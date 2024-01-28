@@ -22,6 +22,7 @@ namespace WinttOS.System.wosh.Utils
         {
             if (text.Length > columnWidth)
                 text = text[..(columnWidth - 1)];
+
             Console.Write(text.PadRight(columnWidth, ' '));
             currentColumn++;
             checkForNewLine();

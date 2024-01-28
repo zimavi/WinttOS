@@ -16,19 +16,19 @@ namespace WinttOS.System.Services
         public ServiceStatus ServiceStatus { get; private set; } = ServiceStatus.no_data;
         public string ServiceErrorMessage { get; private set; } = null;
         public string ServiceName { get; private set; } = null;
-        public virtual void onServiceStart()
+        public virtual void OnServiceStart()
         {
             IsServiceRunning = true;
             ServiceStatus = ServiceStatus.OK;
         }
-        public virtual void onServiceFinish()
+        public virtual void OnServiceFinish()
         {
             IsServiceRunning = false;
             ServiceStatus = ServiceStatus.OFF;
         }
-        public void onServiceTick()
+        public void OnServiceTick()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Services.Service.onServiceTick()",
+            WinttCallStack.RegisterCall(new("WinttOS.System.Services.Service.OnServiceTick()",
                 "void()", "Service.cs", 29));
             ServiceStatus = ServiceStatus.PENDING;
 

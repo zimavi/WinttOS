@@ -12,13 +12,13 @@ namespace WinttOS.System.wosh.Utils.Commands
     {
         private static List<string> helpList = new List<string>();
 
-        public static void addCommandUsageStrToManager(string usage)
+        public static void AddCommandUsageStrToManager(string usage)
         {
             helpList.Add(usage);
         }
 
-        public static List<string> getCommandsUsageStringsAsList() => helpList;
-        public static string getCommandsUsageStringsAsString()
+        public static List<string> GetCommandsUsageStringsAsList() => helpList;
+        public static string GetCommandsUsageStringsAsString()
         {
             return String.Join('\n', helpList.ToArray());
         }

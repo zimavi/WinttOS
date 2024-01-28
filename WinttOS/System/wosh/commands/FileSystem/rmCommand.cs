@@ -4,11 +4,11 @@ using WinttOS.System.wosh.Utils.Commands;
 
 namespace WinttOS.System.wosh.commands.FileSystem
 {
-    public class rmCommand : Command
+    public class RmCommand : Command
     {
-        public rmCommand(string name) : base(name, Users.User.AccessLevel.Guest)
+        public RmCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
-            HelpCommandManager.addCommandUsageStrToManager(@"rm <path\to\dir\or\file> - deletes directory or file");
+            HelpCommandManager.AddCommandUsageStrToManager(@"rm <path\to\dir\or\file> - deletes directory or file");
         }
         public override string Execute(string[] arguments)
         {
@@ -22,7 +22,7 @@ namespace WinttOS.System.wosh.commands.FileSystem
                     }
                     Cosmos.System.FileSystem.VFS.VFSManager.DeleteFile(@"0:\" + GlobalData.CurrentDirectory + string.Join(' ', arguments));
                 }
-                catch (Exception ex)
+                catch
                 {
                     try
                     {
@@ -32,7 +32,7 @@ namespace WinttOS.System.wosh.commands.FileSystem
                         }
                         Cosmos.System.FileSystem.VFS.VFSManager.DeleteDirectory(@"0:\" + GlobalData.CurrentDirectory + string.Join(' ', arguments), true);
                     }
-                    catch (Exception ex2)
+                    catch
                     {
                         return "Deleting failed!";
                     }
@@ -46,13 +46,13 @@ namespace WinttOS.System.wosh.commands.FileSystem
                 {
                     Cosmos.System.FileSystem.VFS.VFSManager.DeleteFile(@"0:\" + GlobalData.CurrentDirectory + str);
                 }
-                catch (Exception ex)
+                catch
                 {
                     try
                     {
                         Cosmos.System.FileSystem.VFS.VFSManager.DeleteDirectory(@"0:\" + GlobalData.CurrentDirectory + str, true);
                     }
-                    catch (Exception ex2)
+                    catch
                     {
                         return "Deleting failed!";
                     }

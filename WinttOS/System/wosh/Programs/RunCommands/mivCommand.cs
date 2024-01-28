@@ -2,11 +2,11 @@
 
 namespace WinttOS.System.wosh.Programs.RunCommands
 {
-    public class mivCommand : Command
+    public class MivCommand : Command
     {
-        public mivCommand(string name) : base(name, false)
+        public MivCommand(string name) : base(name, false)
         {
-            HelpCommandManager.addCommandUsageStrToManager(@"miv <path\to\file> - edit file");
+            HelpCommandManager.AddCommandUsageStrToManager(@"miv <path\to\file> - edit file");
         }
 
         public override string Execute(string[] arguments)

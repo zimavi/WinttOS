@@ -12,7 +12,7 @@ namespace WinttOS.System.wosh.commands.Screen
     {
         public ClearScreenCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
-            HelpCommandManager.addCommandUsageStrToManager(@"clear - clears screen");
+            HelpCommandManager.AddCommandUsageStrToManager(@"clear - clears screen");
         }
         public override string Execute(string[] arguments)
         {

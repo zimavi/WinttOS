@@ -9,7 +9,7 @@ namespace WinttOS.System.wosh.commands.Misc
 {
     public class DevModeCommand : Command
     {
-        public static bool isInDebugMode { get; private set; }
+        public static bool IsInDebugMode { get; private set; }
         public DevModeCommand(string name) : base(name, Users.User.AccessLevel.Administrator)
         {
             CommandManual = new List<string>()
@@ -25,11 +25,11 @@ namespace WinttOS.System.wosh.commands.Misc
         {
             if (arguments.Length > 0 && (arguments[0] == "-i" || arguments[0] == "--info"))
             {
-                return isInDebugMode ? "In debug mode" : "Not in debug mode";
+                return IsInDebugMode ? "In debug mode" : "Not in debug mode";
             }
-            isInDebugMode = !isInDebugMode;
+            IsInDebugMode = !IsInDebugMode;
 
-            if (isInDebugMode)
+            if (IsInDebugMode)
                 return "Now in debug mode";
             else
                 return "Now debug mode is off";

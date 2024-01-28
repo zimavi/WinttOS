@@ -8,7 +8,7 @@ namespace WinttOS.System.wosh.commands
     {
         public SystemInfoCommand(string name) : base(name, Users.User.AccessLevel.Guest) 
         {
-            HelpCommandManager.addCommandUsageStrToManager(@"sysinfo - shows PC info");
+            HelpCommandManager.AddCommandUsageStrToManager(@"sysinfo - shows PC info");
         }
 
         public override string Execute(string[] arguments)

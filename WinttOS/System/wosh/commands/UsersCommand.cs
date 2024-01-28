@@ -12,16 +12,16 @@ namespace WinttOS.System.wosh.commands
     {
         public UsersCommand(string name) : base(name, User.AccessLevel.Administrator)
         {
-            HelpCommandManager.addCommandUsageStrToManager("user [list,add,remove,change] - manipulate with users (Please read manual before using)");
+            HelpCommandManager.AddCommandUsageStrToManager("user [list,add,remove,change] - manipulate with users (Please read manual before using)");
         }
 
         public override string Execute(string[] arguments)
         {
-            //return "Not implemented yet";
-            //throw new NotImplementedException("Command was restricted for using as it cause system fall.");
             WinttCallStack.RegisterCall(new("WinttOS.System.wosh.commands.UsersCommand.Execute()",
                 "string(string[])", "UsersCommand.cs", 18));
+
             WinttDebugger.Trace("Entering user's command execute function");
+
             if (arguments.Length == 0 || arguments[0] == "list")
             {
                 WinttDebugger.Trace($"Showing list with {WinttOS.UsersManager.Users.Count} users");
@@ -44,6 +44,7 @@ namespace WinttOS.System.wosh.commands
             else if (arguments[0] == "add")
             {
                 return "NotImplementedYet!";
+
                 if (arguments.Length > 1)
                 {
                     string Username = arguments[1];
@@ -85,6 +86,7 @@ namespace WinttOS.System.wosh.commands
             else if (arguments[0] == "remove")
             {
                 return "NotImplementedYet!";
+
                 if (arguments.Length > 1)
                 {
                     string Username = arguments[1];
@@ -104,6 +106,7 @@ namespace WinttOS.System.wosh.commands
             else if (arguments[0] == "change")
             {
                 return "NotImplementedYet!";
+
                 if (arguments.Length > 1)
                 {
                     if (arguments.Length > 2 && (arguments[2] == "--leave-from-old" || arguments[2] == "-l"))
@@ -150,7 +153,7 @@ namespace WinttOS.System.wosh.commands
             {
                 if (arguments.Length > 3)
                 {
-                    for(int i = 0; i < WinttOS.UsersManager.Users.Count; i++)
+                    for (int i = 0; i < WinttOS.UsersManager.Users.Count; i++)
                     {
                         if (WinttOS.UsersManager.Users[i].Name.Equals(arguments[1]))
                         {
@@ -168,7 +171,9 @@ namespace WinttOS.System.wosh.commands
                     return "Invalid user";
                 }
                 else
+                {
                     return "Usage: user set-password <user> <old-password> <new-password>";
+                }
             }
             return "";
         }

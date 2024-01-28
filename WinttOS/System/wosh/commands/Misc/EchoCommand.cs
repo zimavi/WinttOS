@@ -12,7 +12,7 @@ namespace WinttOS.System.wosh.commands.Misc
     {
         public EchoCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
-            HelpCommandManager.addCommandUsageStrToManager(@"echo <message> - repeats message");
+            HelpCommandManager.AddCommandUsageStrToManager(@"echo <message> - repeats message");
             CommandManual = new List<string>()
             {
                 "Echo command return all text that was gave after 'echo'",
@@ -24,20 +24,6 @@ namespace WinttOS.System.wosh.commands.Misc
         public override string Execute(string[] arguments)
         {
             string response = "";
-
-            /*
-             
-            int ctr = 0;
-                                    StringBuilder sb = new StringBuilder();
-                                    foreach (string s in arguments)
-                                    {
-                                        if (ctr > 1)
-                                            sb.Append(s + ' ');
-                                        ++ctr;
-                                    }
-                                    string txt = sb.ToString();
-                                    Byte[] data = Encoding.ASCII.GetBytes(txt.Substring(0, txt.Length - 1)); 
-             */
 
             if (arguments.Length != 0)
             {

@@ -4,11 +4,11 @@ using WinttOS.System.wosh.Utils.Commands;
 
 namespace WinttOS.System.wosh.commands.FileSystem
 {
-    public class makedirCommand : Command
+    public class MakeDirCommand : Command
     {
-        public makedirCommand(string name) : base(name, Users.User.AccessLevel.Guest)
+        public MakeDirCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
-            HelpCommandManager.addCommandUsageStrToManager(@"mkdir <dir> - creates new directory in current one");
+            HelpCommandManager.AddCommandUsageStrToManager(@"mkdir <dir> - creates new directory in current one");
         }
 
         public override string Execute(string[] arguments)

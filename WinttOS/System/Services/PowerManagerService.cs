@@ -25,7 +25,7 @@ namespace WinttOS.System.Services
             blackCanvas.Clear(Color.Black);
 
             _ = Console.ReadKey();
-            WinttDebugger.Info("Comming out from sleep mode!");
+            WinttDebugger.Info("Coming out from sleep mode!");
             blackCanvas.Disable();
             FullScreenCanvas.Disable();
             WinttOS.IsSleeping = false;
@@ -45,6 +45,7 @@ namespace WinttOS.System.Services
                 WinttCallStack.RegisterReturn();
                 return;
             }
+
             if (timer.GetElapsedTime().TotalMinutes >= 1)
                 WinttOS.SystemSleep();
 

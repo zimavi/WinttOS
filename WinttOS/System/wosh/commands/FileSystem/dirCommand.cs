@@ -6,11 +6,11 @@ using WinttOS.System.wosh.Utils.Commands;
 
 namespace WinttOS.System.wosh.commands.FileSystem
 {
-    public class dirCommand : Command
+    public class DirCommand : Command
     {
-        public dirCommand(string name) : base(name, Users.User.AccessLevel.Guest)
+        public DirCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
-            HelpCommandManager.addCommandUsageStrToManager(@"dir - get list of all directories and files");
+            HelpCommandManager.AddCommandUsageStrToManager(@"dir - get list of all directories and files");
             CommandManual = new List<string>()
             {
                 "Dir command is used for checking what is in current directory.",
@@ -33,7 +33,9 @@ namespace WinttOS.System.wosh.commands.FileSystem
                 foreach (var file in dir_files)
                 {
                     if (file.mEntryType == DirectoryEntryTypeEnum.File)
+                    {
                         Console.WriteLine($"<FILE>\t{file.mName}\t{file.mSize}");
+                    }
                     else if (file.mEntryType == DirectoryEntryTypeEnum.Directory)
                     {
                         if (file.mName.StartsWith('.'))

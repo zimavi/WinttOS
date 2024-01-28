@@ -27,8 +27,8 @@ namespace WinttOS.System.Processing
         public string ProcessName { get; protected set; }
         public uint ProcessID { get; private set; }
         public ProcessType Type { get; private set; }
-        public PrivilegesSystem.PrivilegesSet CurrentSet { get; private set; } = 
-            PrivilegesSystem.PrivilegesSet.DEFAULT;
+        public PrivilegesSet CurrentSet { get; private set; } 
+            = PrivilegesSet.DEFAULT;
         public bool IsProcessInitialized { get; private set; }
         public bool IsProcessRunning { get; private set; }
         public bool IsProcessCritical { get; set; } = false;
@@ -47,6 +47,7 @@ namespace WinttOS.System.Processing
         {
             if (IsProcessInitialized)
                 return;
+
             IsProcessInitialized = true;
         }
         public virtual void Start() { if (!IsProcessInitialized) return; if(IsProcessRunning) return; IsProcessRunning = true; }

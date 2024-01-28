@@ -7,7 +7,7 @@ namespace WinttOS.System.Services
 {
     public class WinttServiceProvider : Process, IServiceProvider
     {
-        #region Interface implemetation
+        #region Interface implementation
 
         #region Fields / Variables
 
@@ -43,7 +43,7 @@ namespace WinttOS.System.Services
             services.ForEach(service =>
             {
                 if(service.IsServiceRunning)
-                    service.onServiceTick();
+                    service.OnServiceTick();
             });
             WinttCallStack.RegisterReturn();
         }
@@ -60,7 +60,7 @@ namespace WinttOS.System.Services
             foreach(var service in services)
             {
                 WinttOS.ProcessManager.StartProcess(service.ProcessName);
-                service.onServiceStart();
+                service.OnServiceStart();
             }
             WinttCallStack.RegisterReturn();
         }
@@ -76,7 +76,7 @@ namespace WinttOS.System.Services
             {
                 if (service.IsServiceRunning && service.IsProcessRunning)
                 {
-                    service.onServiceFinish();
+                    service.OnServiceFinish();
                     WinttOS.ProcessManager.StopProcess(service.ProcessName);
                 }
             }
@@ -94,7 +94,7 @@ namespace WinttOS.System.Services
                 {
                     if (service.IsServiceRunning && service.IsProcessRunning)
                     {
-                        service.onServiceFinish();
+                        service.OnServiceFinish();
                         WinttOS.ProcessManager.StopProcess(service.ProcessName);
                     }
                     WinttCallStack.RegisterReturn();
@@ -130,8 +130,8 @@ namespace WinttOS.System.Services
                 if (service.ProcessName == serviceName)
                 {
                     if (service.IsServiceRunning)
-                        service.onServiceFinish();
-                    service.onServiceStart();
+                        service.OnServiceFinish();
+                    service.OnServiceStart();
                     WinttCallStack.RegisterReturn();
                     return;
                 }
@@ -147,7 +147,7 @@ namespace WinttOS.System.Services
             {
                 if (service.ProcessName == serviceName && !service.IsServiceRunning && !service.IsProcessRunning)
                 {
-                    service.onServiceStart();
+                    service.OnServiceStart();
                     WinttOS.ProcessManager.StopProcess(service.ProcessName);
                 }
             });
@@ -178,7 +178,7 @@ namespace WinttOS.System.Services
             services.ForEach(service =>
             {
                 if(service.IsServiceRunning)
-                    service.onServiceFinish();
+                    service.OnServiceFinish();
             });
             WinttCallStack.RegisterReturn();
         }

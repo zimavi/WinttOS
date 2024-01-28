@@ -74,7 +74,9 @@ namespace WinttOS.System.Users
                 Directory.CreateDirectory(@"0:\WinttOS\System32\");
             }
             else if (!Directory.Exists(@"0:\WinttOS\System32"))
+            {
                 Directory.CreateDirectory(@"0:\WinttOS\System32");
+            }
             
             File.WriteAllBytes(@"0:\WinttOS\System32\users.dat",
                 Encoding.ASCII.GetBytes(serializer.SerializeList(users)));

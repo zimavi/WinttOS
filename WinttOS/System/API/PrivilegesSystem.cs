@@ -22,12 +22,12 @@ namespace WinttOS.System.API
         }
         public sealed class PrivilegesSet : SmartEnum<PrivilegesSet, byte>
         {
-            public static readonly PrivilegesSet DEFAULT = new ("DEFAULT", 0, 
-                (Privileges.FILE_READ | Privileges.FILE_WRITE));
-            public static readonly PrivilegesSet RAISED = new ("RAISED", 1, 
-                (Privileges.FILE_READ | Privileges.FILE_WRITE | Privileges.SYSTEM_MODIFY));
-            public static readonly PrivilegesSet HIGHEST = new ("HIGHEST", 2, 
-                (Privileges.FILE_READ | Privileges.FILE_WRITE | Privileges.SYSTEM_MODIFY | Privileges.USERS_CREATE));
+            public static readonly PrivilegesSet DEFAULT 
+                = new ("DEFAULT", 0, (Privileges.FILE_READ | Privileges.FILE_WRITE));
+            public static readonly PrivilegesSet RAISED 
+                = new ("RAISED", 1, (Privileges.FILE_READ | Privileges.FILE_WRITE | Privileges.SYSTEM_MODIFY));
+            public static readonly PrivilegesSet HIGHEST 
+                = new ("HIGHEST", 2, (Privileges.FILE_READ | Privileges.FILE_WRITE | Privileges.SYSTEM_MODIFY | Privileges.USERS_CREATE));
 
             private PrivilegesSet(string name, byte value, Privileges privileges) : base(name, value)
             {

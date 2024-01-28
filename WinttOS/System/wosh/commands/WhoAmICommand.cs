@@ -7,7 +7,7 @@ namespace WinttOS.System.wosh.commands
     {
         public WhoAmICommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
-            HelpCommandManager.addCommandUsageStrToManager("whoami - get current active account");
+            HelpCommandManager.AddCommandUsageStrToManager("whoami - get current active account");
         }
 
         public override string Execute(string[] arguments)

@@ -9,7 +9,7 @@ namespace WinttOS.System.wosh.Programs.RunCommands
     {
         public CatUtilCommand(string name) : base(name, false)
         {
-            HelpCommandManager.addCommandUsageStrToManager(@"cat <path\to\file> - reads all text from file (use 'man cat' for more info)");
+            HelpCommandManager.AddCommandUsageStrToManager(@"cat <path\to\file> - reads all text from file (use 'man cat' for more info)");
         }
 
         public override string Execute(string[] arguments)

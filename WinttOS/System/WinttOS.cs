@@ -41,12 +41,6 @@ namespace WinttOS.System
         private static WinttServiceProvider serviceProvider = new();
         private static uint serviceProviderProcessID = 0;
 
-        //public static AudioMixer Mixer { get; private set; }
-        //public static AC97 AudioDriver { get; private set; }
-
-        //public static AudioManager AudioManager { get; private set; }
-
-
         public static Canvas SystemCanvas { get; private set; }
 
         #endregion
@@ -58,26 +52,6 @@ namespace WinttOS.System
             
             WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitializeSystem()",
                 "void()", "WinttOS.cs", 40));
-            /*
-            try
-            {
-                Mixer = new AudioMixer();
-                var stream = MemoryAudioStream.FromWave(Files.RawStartupSound);
-                AudioDriver = AC97.Initialize(4096);
-                Mixer.Streams.Add(stream);
-                AudioManager = new()
-                {
-                    Stream = Mixer,
-                    Output = AudioDriver
-                };
-                AudioManager.Enable();
-            } 
-            catch
-            {
-                Kernel.WinttRaiseHardError(WinttStatus.HAL_INITIALIZATION_FAILED, instance,
-                    HardErrorResponseOption.OptionShutdownSystem);
-            }
-            */
             try
             {
                 Kernel.OnKernelFinish.Add(SystemFinish);
@@ -90,9 +64,6 @@ namespace WinttOS.System
                 CommandManager.RegisterCommand(new DevModeCommand("dev-mode"));
                 CommandManager.RegisterCommand(new ExampleCrashCommand("crash-pls"));
 
-                //((WinttServiceProvider)ProcessManager.GetProcessInstance(serviceProviderProcessID))
-                //    .AddService(CommandManager);
-
                 ProcessManager.StartProcess(serviceProviderProcessID);
             }
             catch(Exception e)
@@ -104,8 +75,6 @@ namespace WinttOS.System
             Heap.Collect();
 
             CoroutinePool.Main.PerformHeapCollection = false;
-
-            //CoroutinePool.Main.OnCoroutineCycle.Add(SystemThread);
 
             CoroutinePool.Main.AddCoroutine(new(SystemThread()));
 

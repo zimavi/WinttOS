@@ -9,7 +9,7 @@ namespace WinttOS.System.wosh.commands.Processing
     {
         public SystemCtlCommand(string name) : base(name, Users.User.AccessLevel.Administrator) 
         {
-            HelpCommandManager.addCommandUsageStrToManager("systemctl [--help|-h] - get usage str (or use 'man systemctl')");
+            HelpCommandManager.AddCommandUsageStrToManager("systemctl [--help|-h] - get usage str (or use 'man systemctl')");
             CommandManual = new()
             {
                 "  systemctl list - get list of services",

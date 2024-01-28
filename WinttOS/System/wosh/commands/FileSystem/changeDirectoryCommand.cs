@@ -9,11 +9,11 @@ using WinttOS.System.wosh.Utils.Commands;
 
 namespace WinttOS.System.wosh.commands.FileSystem
 {
-    internal class changeDirectoryCommand : Command
+    internal class ChangeDirectoryCommand : Command
     {
-        public changeDirectoryCommand(string name) : base(name, Users.User.AccessLevel.Guest)
+        public ChangeDirectoryCommand(string name) : base(name, Users.User.AccessLevel.Guest)
         {
-            HelpCommandManager.addCommandUsageStrToManager(@"cd <path\to\folder> - change directory");
+            HelpCommandManager.AddCommandUsageStrToManager(@"cd <path\to\folder> - change directory");
         }
 
         public override string Execute(string[] arguments)

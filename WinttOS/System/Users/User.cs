@@ -182,6 +182,14 @@ namespace WinttOS.System.Users
                     return null;
                 return user;
             }
+
+            public bool TryBuild(out User user)
+            {
+                user = Build();
+                if (user is null)
+                    return false;
+                return true;
+            }
         }
     }
 
@@ -250,6 +258,14 @@ namespace WinttOS.System.Users
                 if (string.IsNullOrEmpty(user.Name))
                     return null;
                 return user;
+            }
+
+            public bool TryBuild(out TempUser user)
+            {
+                user = Build();
+                if (user is null)
+                    return false;
+                return true;
             }
         }
     }

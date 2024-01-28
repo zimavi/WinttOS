@@ -15,15 +15,19 @@ namespace WinttOS.System.wosh.commands
 
         public override string Execute(string[] arguments)
         {
-            List<string> helpStrs = HelpCommandManager.getCommandsUsageStringsAsList();
+            List<string> helpStrs = HelpCommandManager.GetCommandsUsageStringsAsList();
             int index = 0;
+
             for(; index < 22 && index < helpStrs.Count; index++)
             {
                 Console.WriteLine(helpStrs[index]);
             }
+
             if (index >= helpStrs.Count)
                 return "";
+
             Console.Write($"Press Space-bar to continue list ({index + 1}/{helpStrs.Count})...");
+
             while(true)
             {
                 ConsoleKeyInfo info = Console.ReadKey(true);
@@ -31,10 +35,12 @@ namespace WinttOS.System.wosh.commands
                 {
                     if (index >= helpStrs.Count)
                         return "";
+
                     ShellUtils.ClearCurrentConsoleLine();
                     ShellUtils.MoveCursorUp(1);
                     WinttDebugger.Debug($"Index: {index}; List count: {helpStrs.Count})", this);
                     Console.WriteLine(helpStrs[index++]);
+
                     if (index < helpStrs.Count)
                         Console.Write($"Press Enter to continue list ({index + 1}/{helpStrs.Count})");
                 }
