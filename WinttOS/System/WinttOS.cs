@@ -68,6 +68,8 @@ namespace WinttOS.System
 
                 ServiceManager = (WinttServiceManager)srv;
 
+                ServiceManager.AddService(CommandManager);
+
                 CommandManager.RegisterCommand(new DevModeCommand("dev-mode"));
                 CommandManager.RegisterCommand(new ExampleCrashCommand("crash-pls"));
 
