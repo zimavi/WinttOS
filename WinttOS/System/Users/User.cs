@@ -156,7 +156,7 @@ namespace WinttOS.System.Users
             /// Set already hashed password
             /// </summary>
             /// <param name="PasswordHash">Computed pasword hash using <see cref="MD5"/></param>
-            public UserBuilder SetHashedPassword(string PasswordHash)
+            public UserBuilder SetPasswordHash(string PasswordHash)
             {
                 user.PasswordHash = PasswordHash;
                 return this;

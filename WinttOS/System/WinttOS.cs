@@ -29,8 +29,7 @@ namespace WinttOS.System
 
         public const string WinttVersion = "WinttOS v1.0.0 dev. build 2345";
 
-        public static WinttServiceProvider ServiceProvider =>
-            (WinttServiceProvider)ProcessManager.GetProcessInstance(serviceProviderProcessID);
+        public static WinttServiceManager ServiceManager = null;
 
         public static UsersManager UsersManager { get; set; } = new(null);
         public static ProcessManager ProcessManager { get; set; } = new();
@@ -38,8 +37,8 @@ namespace WinttOS.System
         public static bool IsSleeping { get; set; } = false;
         public static List<Action> OnSystemSleep { get; private set; } = new();
 
-        private static WinttServiceProvider serviceProvider = new();
-        private static uint serviceProviderProcessID = 0;
+        private static WinttServiceManager serviceManager = new();
+        private static uint serviceProviderProcessID;
 
         public static Canvas SystemCanvas { get; private set; }
 
@@ -59,12 +58,20 @@ namespace WinttOS.System
                 InitUsers();
                 InitServiceProvider();
 
-                ProcessManager.RegisterProcess(serviceProvider, ref serviceProviderProcessID);
+                ProcessManager.TryRegisterProcess(serviceManager, out serviceProviderProcessID);
+
+                Process srv;
+                if(!ProcessManager.TryGetProcessInstance(out srv, serviceProviderProcessID))
+                {
+                    Kernel.WinttRaiseHardError(WinttStatus.PHASE1_INITIALIZATION_FAILED, instance, HardErrorResponseOption.OptionShutdownSystem);
+                }
+
+                ServiceManager = (WinttServiceManager)srv;
 
                 CommandManager.RegisterCommand(new DevModeCommand("dev-mode"));
                 CommandManager.RegisterCommand(new ExampleCrashCommand("crash-pls"));
 
-                ProcessManager.StartProcess(serviceProviderProcessID);
+                ProcessManager.TryStartProcess(serviceProviderProcessID);
             }
             catch(Exception e)
             {
@@ -77,6 +84,8 @@ namespace WinttOS.System
             CoroutinePool.Main.PerformHeapCollection = false;
 
             CoroutinePool.Main.AddCoroutine(new(SystemThread()));
+
+            CoroutinePool.Main.AddCoroutine(new(GarbageCollector()));
 
             CoroutinePool.Main.AddCoroutine(new(ProcessManager.UpdateProcesses()));
             
@@ -99,9 +108,9 @@ namespace WinttOS.System
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitServiceProvider()",
                 "void()", "WinttOS.cs", 75));
-            serviceProvider.Initialize();
+            serviceManager.Initialize();
 
-            serviceProvider.AddService(new PowerManagerService());
+            serviceManager.AddService(new PowerManagerService());
 
             WinttCallStack.RegisterReturn();
         }
@@ -110,7 +119,7 @@ namespace WinttOS.System
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitUSers()",
                 "void()", "WinttOS.cs", 86));
-            if (!UsersManager.LoadUsersData())
+            if (!UsersManager.TryLoadUsersData())
             {
                 UsersManager.AddUser(new User.UserBuilder().SetUserName("root")
                                                            .SetAccess(User.AccessLevel.Administrator)
@@ -212,6 +221,8 @@ namespace WinttOS.System
                 {
                     if (process.IsProcessCritical && !process.IsProcessRunning)
                     {
+                        if (process.CurrentSet == API.PrivilegesSystem.PrivilegesSet.NONE || process.HasOwnerProcess)
+                            continue;
                         WinttDebugger.Error($"Critical process died => {process.ProcessName}", true, instance);
                         Kernel.WinttRaiseHardError(WinttStatus.CRITICAL_PROCESS_DIED, instance, HardErrorResponseOption.OptionShutdownSystem);
                     }
@@ -228,8 +239,17 @@ namespace WinttOS.System
             }
 
             yield return WaitFor.Seconds(2);
+        }
 
-            Heap.Collect();
+        public static IEnumerator<CoroutineControlPoint> GarbageCollector()
+        { 
+            ProcessManager.RunProcessGC();
+            ServiceManager.RunServiceGC();
+
+            WinttDebugger.Trace("Heap -> Collected: " + Heap.Collect() + " objects");
+
+            yield return WaitFor.Milliseconds(1000);
+
         }
 
         #endregion

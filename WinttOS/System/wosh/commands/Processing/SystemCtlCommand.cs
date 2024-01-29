@@ -22,7 +22,7 @@ namespace WinttOS.System.wosh.commands.Processing
             if (arguments.Length == 0 || arguments[0] == "list")
             {
                 List<string> result = new();
-                foreach (var service in WinttOS.ServiceProvider.Services)
+                foreach (var service in WinttOS.ServiceManager.Services)
                     result.Add(service.ProcessName);
                 return string.Join('\n', result.ToArray());
             }
@@ -33,7 +33,7 @@ namespace WinttOS.System.wosh.commands.Processing
                 return "NotImplemented!";
                 string errorMsg = null;
                 ServiceStatus status = ServiceStatus.no_data;
-                (status, errorMsg) = WinttOS.ServiceProvider.GetServiceStatus(arguments[1]);
+                (status, errorMsg) = WinttOS.ServiceManager.GetServiceStatus(arguments[1]);
                 if (status == ServiceStatus.no_data)
                     return "Service not found!";
                 if (string.IsNullOrEmpty(errorMsg))

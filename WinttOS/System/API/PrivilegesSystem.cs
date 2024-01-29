@@ -14,20 +14,23 @@ namespace WinttOS.System.API
         [Flags]
         public enum Privileges
         {
-            None = 0,
+            NONE = 0,
             FILE_READ = 1,
             FILE_WRITE = 2,
             SYSTEM_MODIFY = 4,
             USERS_CREATE = 8,
+            START_NEW_PROCESS = 16,
         }
         public sealed class PrivilegesSet : SmartEnum<PrivilegesSet, byte>
         {
+            public static readonly PrivilegesSet NONE
+                = new ("NONE", 0, Privileges.NONE);
             public static readonly PrivilegesSet DEFAULT 
-                = new ("DEFAULT", 0, (Privileges.FILE_READ | Privileges.FILE_WRITE));
+                = new ("DEFAULT", 1, (Privileges.FILE_READ | Privileges.FILE_WRITE));
             public static readonly PrivilegesSet RAISED 
-                = new ("RAISED", 1, (Privileges.FILE_READ | Privileges.FILE_WRITE | Privileges.SYSTEM_MODIFY));
+                = new ("RAISED", 2, (Privileges.FILE_READ | Privileges.FILE_WRITE | Privileges.SYSTEM_MODIFY | Privileges.START_NEW_PROCESS));
             public static readonly PrivilegesSet HIGHEST 
-                = new ("HIGHEST", 2, (Privileges.FILE_READ | Privileges.FILE_WRITE | Privileges.SYSTEM_MODIFY | Privileges.USERS_CREATE));
+                = new ("HIGHEST", 3, (Privileges.FILE_READ | Privileges.FILE_WRITE | Privileges.SYSTEM_MODIFY | Privileges.USERS_CREATE | Privileges.START_NEW_PROCESS));
 
             private PrivilegesSet(string name, byte value, Privileges privileges) : base(name, value)
             {

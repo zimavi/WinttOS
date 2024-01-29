@@ -82,7 +82,7 @@ namespace WinttOS.System.Users
                 Encoding.ASCII.GetBytes(serializer.SerializeList(users)));
         }
 
-        public bool LoadUsersData()
+        public bool TryLoadUsersData()
         {
             try
             {

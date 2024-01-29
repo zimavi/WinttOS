@@ -36,7 +36,7 @@ namespace WinttOS.System.Services
 
         #region Method
         
-        public override void ServiceTick()
+        public override void OnServiceTick()
         {
             
         }

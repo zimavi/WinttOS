@@ -11,7 +11,7 @@ namespace WinttOS.System.Services
         public static bool isIdling = false;
         private Timer timer = new();
 
-        public PowerManagerService() : base("pwrmgr", "power.service")
+        public PowerManagerService() : base("pwrmgr", "PowerManagerDaemon")
         { 
             //WinttOS.OnSystemSleep.Add(HandleSystemSleepEvent); 
         }
@@ -34,7 +34,7 @@ namespace WinttOS.System.Services
             WinttCallStack.RegisterReturn();
         }
 
-        public override void ServiceTick()
+        public override void OnServiceTick()
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Service.PowerManagerService.ServiceTick()",
                 "void()", "PowerManagerService.cs", 37));

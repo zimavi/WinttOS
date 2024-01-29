@@ -33,15 +33,15 @@ namespace WinttOS.System.wosh.commands.Processing
 
                 if (uint.TryParse(arguments[1], out _))
                 {
-                    if (!WinttOS.ProcessManager.GetProcessInstance(Convert.ToUInt32(arguments[1])).IsNull())
+                    if (WinttOS.ProcessManager.TryGetProcessInstance(out Process process, Convert.ToUInt32(arguments[1])))
                     {
                         if (arguments.Length > 2 && (arguments[2] == "-f" || arguments[2] == "--force"))
                         {
-                            WinttDebugger.Trace($"StopProcess() => {WinttOS.ProcessManager.StopProcess(Convert.ToUInt32(arguments[1]))}");
+                            WinttDebugger.Trace($"TryStopProcess() => {WinttOS.ProcessManager.TryStopProcess(Convert.ToUInt32(arguments[1]))}");
                             return "Done.";
                         }
-                        if (!WinttOS.ProcessManager.GetProcessInstance(Convert.ToUInt32(arguments[1])).IsProcessCritical)
-                            WinttOS.ProcessManager.StopProcess(Convert.ToUInt32(arguments[1]));
+                        if (!process.IsProcessCritical)
+                            WinttOS.ProcessManager.TryStopProcess(Convert.ToUInt32(arguments[1]));
                         else
                             return "Permission denied";
                         return "Done.";
@@ -60,7 +60,7 @@ namespace WinttOS.System.wosh.commands.Processing
 
                 if (uint.TryParse(arguments[1], out _))
                 {
-                    WinttOS.ProcessManager.StartProcess(Convert.ToUInt32(arguments[1]));
+                    WinttOS.ProcessManager.TryStartProcess(Convert.ToUInt32(arguments[1]));
                     return "Done.";
                 }
                 else
@@ -75,8 +75,8 @@ namespace WinttOS.System.wosh.commands.Processing
 
                 if (uint.TryParse(arguments[1], out _))
                 {
-                    WinttOS.ProcessManager.StopProcess(Convert.ToUInt32(arguments[1]));
-                    WinttOS.ProcessManager.StartProcess(Convert.ToUInt32(arguments[1]));
+                    WinttOS.ProcessManager.TryStopProcess(Convert.ToUInt32(arguments[1]));
+                    WinttOS.ProcessManager.TryStartProcess(Convert.ToUInt32(arguments[1]));
                     return "Done.";
                 }
                 else

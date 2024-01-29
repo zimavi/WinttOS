@@ -45,7 +45,7 @@ namespace WinttOS.System.Serialization
             binarySplit = partialSerializedStr.Split(' ');
             
             User toReturn = new User.UserBuilder().SetUserName(binarySplit[1])
-                                         .SetHashedPassword(binarySplit[2])
+                                         .SetPasswordHash(binarySplit[2])
                                          .SetAccess(User.AccessLevel.FromValue(Convert.ToByte(binarySplit[3])))
                                          .Build();
 

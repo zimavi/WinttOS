@@ -21,7 +21,7 @@ namespace WinttOS.System.wosh
         private bool didRunCycle = true;
 
 
-        public CommandManager() : base("conman", "wosh.service")
+        public CommandManager() : base("WoshDaemon", "WoshManagerDaemon")
         {
             commands = new List<Command>
             {
@@ -181,7 +181,7 @@ namespace WinttOS.System.wosh
         public List<Command> GetCommandsListInstances() => 
             commands;
 
-        public override void ServiceTick()
+        public override void OnServiceTick()
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.wosh.CommandManager.ServiceTick()",
                 "void()", "WinttOS.cs", 184));

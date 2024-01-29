@@ -16,6 +16,13 @@ namespace WinttOS.Core.Utils.Debugging
             FileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
             FileLineNumber = fileLineNumber;
         }
+        public MethodCallInfo(string methodFullPath)
+        {
+            MethodFullPath = methodFullPath ?? throw new ArgumentNullException(nameof(methodFullPath));
+            MethodSignature = "N/A";
+            FileName = "N/A";
+            FileLineNumber = 0;
+        }
 
         public static bool operator ==(MethodCallInfo left, MethodCallInfo right) =>
             left.MethodFullPath.Equals(right.MethodFullPath) &&

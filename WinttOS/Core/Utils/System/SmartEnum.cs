@@ -38,6 +38,7 @@ namespace WinttOS.Core.Utils.System
         public static bool operator !=(SmartEnum<TEnum, TValue> left, SmartEnum<TEnum, TValue> right) =>
             !(left == right);
 
+
         public override bool Equals(object obj)
         {
             if (obj is not TEnum)
