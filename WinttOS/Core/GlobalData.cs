@@ -13,7 +13,6 @@ namespace WinttOS.Core
         public static string CurrentDirectory = "";
         public static Cosmos.System.FileSystem.CosmosVFS FileSystem;
         public static string FileToEdit;
-        //public static UI UI;
         public static readonly PCScreenFont FallbackFont = PCScreenFont.LoadFont(fallbackFont);
         public static int ShellClearStartPos
         {
