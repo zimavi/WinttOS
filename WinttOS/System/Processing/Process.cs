@@ -38,6 +38,7 @@ namespace WinttOS.System.Processing
         public bool IsProcessCritical { get; set; } = false;
         public Process OwnerProcess { get; private set; }
         public bool HasOwnerProcess => !OwnerProcess.IsNull();
+        public Queue<Action> TaskQueue { get; private set; } = new Queue<Action>();
 
         protected Process(string name, ProcessType type)
         {

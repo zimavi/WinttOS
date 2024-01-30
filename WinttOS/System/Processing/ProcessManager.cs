@@ -1,6 +1,7 @@
 ﻿using Cosmos.System.Coroutines;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using WinttOS;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Kernel;
@@ -204,6 +205,12 @@ namespace WinttOS.System.Processing
                             if (process.Type == Process.ProcessType.FromValue(i) && process.IsProcessRunning)
                             {
                                 process.Update();
+
+                                if(process.TaskQueue.Count > 0)
+                                {
+                                    Action task = process.TaskQueue.Dequeue();
+                                    task();
+                                }
                             }
                         }
                         catch(Exception e)
