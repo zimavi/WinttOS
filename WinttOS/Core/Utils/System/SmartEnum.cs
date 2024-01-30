@@ -21,15 +21,15 @@ namespace WinttOS.Core.Utils.System
         public readonly string Name;
         public readonly TValue Value;
 
-        static readonly Dictionary<string, TEnum> fromName = new();
-        static readonly Dictionary<TValue, TEnum> fromValue = new();
+        static readonly Dictionary<string, TEnum> _fromName = new();
+        static readonly Dictionary<TValue, TEnum> _fromValue = new();
 
         protected SmartEnum(string name, TValue value)
         {
             Name = name;
             Value = value;
-            fromName.Add(name, (TEnum)this);
-            fromValue.Add(value, (TEnum)this);
+            _fromName.Add(name, (TEnum)this);
+            _fromValue.Add(value, (TEnum)this);
         }
 
         public static bool operator ==(SmartEnum<TEnum, TValue> left, SmartEnum<TEnum, TValue> right) =>
@@ -48,10 +48,10 @@ namespace WinttOS.Core.Utils.System
 
         public static TEnum FromValue(TValue value)
         {
-            foreach (var item in fromValue.Keys)
+            foreach (var item in _fromValue.Keys)
             {
                 if (item.Equals(value))
-                    return fromValue[item];
+                    return _fromValue[item];
             }
 
             return null;
@@ -59,10 +59,10 @@ namespace WinttOS.Core.Utils.System
 
         public static TEnum FromName(string name)
         {
-            foreach (var item in fromName.Keys)
+            foreach (var item in _fromName.Keys)
             {
                 if (item.Equals(name))
-                    return fromName[item];
+                    return _fromName[item];
             }
             return null;
         }

@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace WinttOS.System.wosh.bash
 {
-    internal class Function
+    public class BashFunction
     {
+        public string Name;
+        public int LineStart;
+        public int LineEnd;
     }
 }

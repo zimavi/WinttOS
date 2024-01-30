@@ -9,28 +9,28 @@ namespace WinttOS.System.GUI
 {
     public class Screen
     {
-        private static List<Canvas> screens = new List<Canvas>();
-        private static byte currentScreenIdx = 0;
-        public static Canvas CurrentScreen => screens[currentScreenIdx];
+        private static List<Canvas> _screens = new List<Canvas>();
+        private static byte _currentScreenIdx = 0;
+        public static Canvas CurrentScreen => _screens[_currentScreenIdx];
 
-        private Canvas screen;
-        private Mouse mouse;
+        private Canvas _screen;
+        private Mouse _mouse;
 
-        public Canvas SystemScreen => screen;
-        public Mouse SystemMouse => mouse;
+        public Canvas SystemScreen => _screen;
+        public Mouse SystemMouse => _mouse;
 
         public Screen() : this(new()) { }
 
         public Screen(Mouse mouse) 
         {
-            screen = FullScreenCanvas.GetFullScreenCanvas();
-            this.mouse = mouse;
-            screens.Add(screen);
+            _screen = FullScreenCanvas.GetFullScreenCanvas();
+            this._mouse = mouse;
+            _screens.Add(_screen);
         }
 
         public void Update()
         {
-            mouse.DrawCursor();
+            _mouse.DrawCursor();
         }
     }
 }

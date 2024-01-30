@@ -10,14 +10,11 @@ using WinttOS.System.Processing;
 using WinttOS.System.Services;
 using WinttOS.System.Users;
 using WinttOS.System.wosh;
-using WinttOS.System.wosh.commands;
 using WinttOS.System.wosh.commands.Misc;
 using Sys = Cosmos.System;
 using WinttOS.Core.Utils.Kernel;
-using Cosmos.System.Audio;
-using Cosmos.HAL.Drivers.Audio;
-using Cosmos.System.Audio.IO;
 using Cosmos.System.Graphics;
+using WinttOS.Core;
 
 namespace WinttOS.System
 {
@@ -27,20 +24,30 @@ namespace WinttOS.System
 
         private static WinttOS instance => new();
 
+
         public const string WinttVersion = "WinttOS v1.0.0 dev. build 2345";
 
-        public static WinttServiceManager ServiceManager = null;
 
-        public static UsersManager UsersManager { get; set; } = new(null);
-        public static ProcessManager ProcessManager { get; set; } = new();
-        public static CommandManager CommandManager { get; set; } = new();
+        public static WinttServiceManager ServiceManager { get; private set; } = null;
+        public static UsersManager UsersManager { get; private set; } = new(null);
+        public static ProcessManager ProcessManager { get; private set; } = new();
+        public static CommandManager CommandManager { get; private set; } = new();
+        public static Memory MemoryManager { get; private set; } = new();
         public static bool IsSleeping { get; set; } = false;
-        public static List<Action> OnSystemSleep { get; private set; } = new();
+        private static List<Action> OnSystemSleep = new();
+
 
         private static WinttServiceManager serviceManager = new();
         private static uint serviceProviderProcessID;
 
+
         public static Canvas SystemCanvas { get; private set; }
+
+
+        public static Dictionary<string, string> EnvironmentVariables = new()
+        {
+            { "WINTT_DEBUG", "false" }
+        };
 
         #endregion
 
@@ -131,7 +138,7 @@ namespace WinttOS.System
             if(UsersManager.RootUser.HasPassword)
             {
                 tryMore:
-                Console.Write("Please enter password from user 'root': ");
+                Console.Write("Please enter password from _user 'root': ");
                 if (!UsersManager.LoginIntoUserAccount("root", Console.ReadLine()))
                     goto tryMore;
 
@@ -230,7 +237,7 @@ namespace WinttOS.System
                     }
                 }
 
-                Heap.Collect();
+                MemoryManager.Monitor();
 
                 WinttCallStack.RegisterReturn();
 

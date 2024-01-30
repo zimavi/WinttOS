@@ -9,11 +9,12 @@ namespace WinttOS.Core
     public class GlobalData
     {
         [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.zap-ext-light18.psf")]
-        private static byte[] fallbackFont;
-        public static string CurrentDirectory = "";
+        private static byte[] _fallbackFont;
+        public static string CurrentVolume = @"0:\";
+        public static string CurrentDirectory = @"0:\";
         public static Cosmos.System.FileSystem.CosmosVFS FileSystem;
         public static string FileToEdit;
-        public static readonly PCScreenFont FallbackFont = PCScreenFont.LoadFont(fallbackFont);
+        public static readonly PCScreenFont FallbackFont = PCScreenFont.LoadFont(_fallbackFont);
         public static int ShellClearStartPos
         {
             get

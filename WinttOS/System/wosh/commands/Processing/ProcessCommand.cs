@@ -14,7 +14,7 @@ namespace WinttOS.System.wosh.commands.Processing
     {
         public ProcessCommand(string name) : base(name, Users.User.AccessLevel.Administrator)
         {
-            HelpCommandManager.AddCommandUsageStrToManager("process [list|kill|start|restart] - manages processes");
+            HelpCommandManager.AddCommandUsageStrToManager("process [list|kill|_start|restart] - manages _processes");
         }
 
         public override string Execute(string[] arguments)
@@ -53,10 +53,10 @@ namespace WinttOS.System.wosh.commands.Processing
                     return "Process id must be number that equals or bigger then 0";
                 }
             }
-            else if (arguments[0] == "start")
+            else if (arguments[0] == "_start")
             {
                 if (arguments.Length < 2)
-                    return "Usage: process start <process id>";
+                    return "Usage: process _start <process id>";
 
                 if (uint.TryParse(arguments[1], out _))
                 {
@@ -84,7 +84,7 @@ namespace WinttOS.System.wosh.commands.Processing
                     return "Process id must be number that equals or bigger then 0";
                 }
             }
-            return "process [list|kill|start|restart] - manages processes";
+            return "process [list|kill|_start|restart] - manages _processes";
         }
     }
 }

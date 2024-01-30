@@ -12,15 +12,15 @@ namespace WinttOS.System.wosh.commands
     {
         public UsersCommand(string name) : base(name, User.AccessLevel.Administrator)
         {
-            HelpCommandManager.AddCommandUsageStrToManager("user [list,add,remove,change] - manipulate with users (Please read manual before using)");
+            HelpCommandManager.AddCommandUsageStrToManager("_user [list,add,remove,change] - manipulate with users (Please read manual before using)");
         }
 
         public override string Execute(string[] arguments)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.wosh.commands.UsersCommand.Execute()",
+            WinttCallStack.RegisterCall(new("WinttOS.System.wosh._commands.UsersCommand.Execute()",
                 "string(string[])", "UsersCommand.cs", 18));
 
-            WinttDebugger.Trace("Entering user's command execute function");
+            WinttDebugger.Trace("Entering _user's command execute function");
 
             if (arguments.Length == 0 || arguments[0] == "list")
             {
@@ -28,7 +28,7 @@ namespace WinttOS.System.wosh.commands
                 List<string> res = new();
                 foreach (var user in WinttOS.UsersManager.Users)
                 {
-                    WinttDebugger.Trace($"Working with user '{user.Name}'");
+                    WinttDebugger.Trace($"Working with _user '{user.Name}'");
                     if (WinttOS.UsersManager.ActiveUsers.Contains(user))
                     {
                         res.Add($"{user.Name} *");
@@ -48,9 +48,9 @@ namespace WinttOS.System.wosh.commands
                 if (arguments.Length > 1)
                 {
                     string Username = arguments[1];
-                    Console.Write("Enter new user password: ");
+                    Console.Write("Enter new _user password: ");
                     string pass = Console.ReadLine();
-                    Console.Write("Enter new user access level\n(g - guest, d - default, a - admin):");
+                    Console.Write("Enter new _user access level\n(g - guest, d - default, a - admin):");
                     char access = Console.ReadKey().KeyChar;
                     byte accessToCreate;
                     switch (access)
@@ -100,7 +100,7 @@ namespace WinttOS.System.wosh.commands
                             return "Done.";
                         }
                     }
-                    return "No such a user!";
+                    return "No such a _user!";
                 }
             }
             else if (arguments[0] == "change")
@@ -113,7 +113,7 @@ namespace WinttOS.System.wosh.commands
                     {
                         User user = WinttOS.UsersManager.GetUserByName(arguments[1]);
                         if (user.IsNull())
-                            return "This user does not exsist!";
+                            return "This _user does not exsist!";
                         if (WinttOS.UsersManager.CurrentUser == user)
                             return "You can not login to this account again!";
                         if (user.HasPassword)
@@ -133,7 +133,7 @@ namespace WinttOS.System.wosh.commands
                     {
                         User user = WinttOS.UsersManager.GetUserByName(arguments[1]);
                         if (user.IsNull())
-                            return "This user does not exsist!";
+                            return "This _user does not exsist!";
                         if (WinttOS.UsersManager.CurrentUser == user)
                             return "You can not login to this account again!";
                         if (user.HasPassword)
@@ -168,11 +168,11 @@ namespace WinttOS.System.wosh.commands
                         }
                     }
                     WinttCallStack.RegisterReturn();
-                    return "Invalid user";
+                    return "Invalid _user";
                 }
                 else
                 {
-                    return "Usage: user set-password <user> <old-password> <new-password>";
+                    return "Usage: _user set-password <_user> <old-password> <new-password>";
                 }
             }
             return "";

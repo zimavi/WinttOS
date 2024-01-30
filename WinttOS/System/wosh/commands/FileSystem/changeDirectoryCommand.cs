@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core;
+using WinttOS.System.Filesystem;
 using WinttOS.System.wosh;
 using WinttOS.System.wosh.Utils.Commands;
 
@@ -18,12 +19,11 @@ namespace WinttOS.System.wosh.commands.FileSystem
 
         public override string Execute(string[] arguments)
         {
-            if (arguments[0] == null || arguments[0] == string.Empty || arguments[0] == "")
-                GlobalData.CurrentDirectory = string.Empty;
-            else
-                GlobalData.CurrentDirectory = arguments[0] + @"\";
-
-            return $"Changed directory to {arguments[0]}";
+            if (!CurrentPath.Set(arguments[0], out string error))
+            {
+                return error;
+            }
+            return null;
         }
     }
 }

@@ -121,10 +121,10 @@ namespace WinttOS.System.Users
 
         public class UserBuilder
         {
-            private User user;
+            private User _user;
 
             public UserBuilder() => 
-                user = new();
+                _user = new();
 
             /// <summary>
             /// Set user's name. You must call this method to successfully build user!
@@ -133,7 +133,7 @@ namespace WinttOS.System.Users
             /// <returns></returns>
             public UserBuilder SetUserName(string Name)
             {
-                user.Name = Name;
+                _user.Name = Name;
                 return this;
             }
 
@@ -146,7 +146,7 @@ namespace WinttOS.System.Users
                 WinttCallStack.RegisterCall(new("WinttOS.System.Users.User.UserBuilder.SetPassword()",
                     "UserBuilder(string)", "User.cs", 132));
 
-                user.PasswordHash = MD5.Calculate(Encoding.UTF8.GetBytes(RawPassword));
+                _user.PasswordHash = MD5.Calculate(Encoding.UTF8.GetBytes(RawPassword));
 
                 WinttCallStack.RegisterReturn();
                 return this;
@@ -158,7 +158,7 @@ namespace WinttOS.System.Users
             /// <param name="PasswordHash">Computed pasword hash using <see cref="MD5"/></param>
             public UserBuilder SetPasswordHash(string PasswordHash)
             {
-                user.PasswordHash = PasswordHash;
+                _user.PasswordHash = PasswordHash;
                 return this;
             }
 
@@ -168,7 +168,7 @@ namespace WinttOS.System.Users
             /// <param name="AccessLevel">Specify new user's access level</param>
             public UserBuilder SetAccess(AccessLevel AccessLevel)
             {
-                user.UserAccess = AccessLevel;
+                _user.UserAccess = AccessLevel;
                 return this;
             }
 
@@ -178,9 +178,9 @@ namespace WinttOS.System.Users
             /// <returns><see cref="User"/> object , or <see langword="null"/> if incorrect <see cref="User"/> was built</returns>
             public User Build()
             {
-                if(string.IsNullOrEmpty(user.Name))
+                if(string.IsNullOrEmpty(_user.Name))
                     return null;
-                return user;
+                return _user;
             }
 
             public bool TryBuild(out User user)
@@ -231,33 +231,33 @@ namespace WinttOS.System.Users
 
         public class TempUserBuilder
         {
-            private TempUser user;
+            private TempUser _user;
             public TempUserBuilder() => 
-                user = new();
+                _user = new();
 
             public TempUserBuilder SetUserName(string Name)
             {
-                user.Name = $"$TMP.{Name}";
+                _user.Name = $"$TMP.{Name}";
                 return this;
             }
 
             public TempUserBuilder SetPasswordHash(string Password)
             {
-                user.PasswordHash = Password;
+                _user.PasswordHash = Password;
                 return this;
             }
 
             public TempUserBuilder SetAccess(User.AccessLevel UserAccess)
             {
-                user.UserAccess = UserAccess;
+                _user.UserAccess = UserAccess;
                 return this;
             }
 
             public TempUser? Build()
             {
-                if (string.IsNullOrEmpty(user.Name))
+                if (string.IsNullOrEmpty(_user.Name))
                     return null;
-                return user;
+                return _user;
             }
 
             public bool TryBuild(out TempUser user)

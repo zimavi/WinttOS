@@ -9,30 +9,30 @@ namespace WinttOS.Core.Utils.System
 {
     public class Stack<T>
     {
-        private List<T> stack;
+        private List<T> _stack;
 
         internal List<T> ToList()
         {
-            List<T> toReturn = stack;
+            List<T> toReturn = _stack;
             toReturn.Reverse();
             return toReturn;
         }
 
         public Stack() => 
-            stack = new();
+            _stack = new();
 
-        public int Count => stack.Count;
+        public int Count => _stack.Count;
 
         public void Push(T item) => 
-            stack.Add(item);
+            _stack.Add(item);
 
         public T Peek() => 
-            stack.Last();
+            _stack.Last();
 
         public T Pop()
         {
-            T popedValue = stack.Last();
-            stack = stack.GetRange(0, stack.Count - 1);
+            T popedValue = _stack.Last();
+            _stack = _stack.GetRange(0, _stack.Count - 1);
             return popedValue;
         }
     }

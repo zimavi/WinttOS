@@ -9,7 +9,7 @@ namespace WinttOS.System.Services
     public class PowerManagerService : Service
     {
         public static bool isIdling = false;
-        private Timer timer = new();
+        private Timer _timer = new();
 
         public PowerManagerService() : base("pwrmgr", "PowerManagerDaemon")
         { 
@@ -24,7 +24,7 @@ namespace WinttOS.System.Services
             Canvas blackCanvas = FullScreenCanvas.GetFullScreenCanvas();
             blackCanvas.Clear(Color.Black);
 
-            _ = Console.ReadKey();
+            Console.ReadKey();
             WinttDebugger.Info("Coming out from sleep mode!");
             blackCanvas.Disable();
             FullScreenCanvas.Disable();
@@ -41,12 +41,12 @@ namespace WinttOS.System.Services
 
             if(!isIdling)
             {
-                timer.RestartTimer();
+                _timer.RestartTimer();
                 WinttCallStack.RegisterReturn();
                 return;
             }
 
-            if (timer.GetElapsedTime().TotalMinutes >= 1)
+            if (_timer.GetElapsedTime().TotalMinutes >= 1)
                 WinttOS.SystemSleep();
 
             WinttCallStack.RegisterReturn();

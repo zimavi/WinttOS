@@ -103,6 +103,8 @@ namespace WinttOS.System.Processing
 
         protected void SetChild(Process ChildOwner)
         {
+            if (OwnerProcess == ChildOwner)
+                return;
             ChildOwner.OwnerProcess = this;
         }
 

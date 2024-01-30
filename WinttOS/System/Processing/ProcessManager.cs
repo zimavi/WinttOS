@@ -11,17 +11,17 @@ namespace WinttOS.System.Processing
 {
     public class ProcessManager
     {
-        private List<Process> processes = new();
+        private List<Process> _processes = new();
 
-        public List<Process> Processes => processes;
+        public List<Process> Processes => _processes;
 
-        public uint ProcessesCount => (uint) processes.Count;
+        public uint ProcessesCount => (uint) _processes.Count;
 
         public bool TryRegisterProcess(Process process)
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryRegisterProcess()",
                 "bool(Process)", "ProcessManager.cs", 16));
-            foreach (var p in processes)
+            foreach (var p in _processes)
             {
                 if (p == process)
                 {
@@ -29,9 +29,9 @@ namespace WinttOS.System.Processing
                     return false;
                 }
             }
-            processes.Add(process);
-            processes[processes.Count - 1].SetProcessID((uint)processes.Count - 1);
-            processes[processes.Count - 1].Initialize();
+            _processes.Add(process);
+            _processes[_processes.Count - 1].SetProcessID((uint)_processes.Count - 1);
+            _processes[_processes.Count - 1].Initialize();
             WinttCallStack.RegisterReturn();
             return true;
         }
@@ -39,7 +39,7 @@ namespace WinttOS.System.Processing
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryRegisterProcess()",
                 "bool(Process, ref uint)", "ProcessManager.cs", 34));
-            foreach (var _process in processes)
+            foreach (var _process in _processes)
             {
                 if (_process == process)
                 {
@@ -48,10 +48,10 @@ namespace WinttOS.System.Processing
                     return false;
                 }
             }
-            processes.Add(process);
-            processes[processes.Count - 1].SetProcessID((uint)processes.Count - 1);
-            processes[processes.Count - 1].Initialize();
-            newProcessID = (uint)processes.Count - 1;
+            _processes.Add(process);
+            _processes[_processes.Count - 1].SetProcessID((uint)_processes.Count - 1);
+            _processes[_processes.Count - 1].Initialize();
+            newProcessID = (uint)_processes.Count - 1;
             WinttCallStack.RegisterReturn();
             return true;
         }
@@ -60,7 +60,7 @@ namespace WinttOS.System.Processing
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryStartProcess()",
                 "bool(string)", "ProcessManager.cs", 54));
-            foreach (var process in processes)
+            foreach (var process in _processes)
             {
                 if (process.ProcessName.Equals(processName)) 
                 {
@@ -82,7 +82,7 @@ namespace WinttOS.System.Processing
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryStopProcess()",
                 "bool(Process)", "ProcessManager.cs", 76));
-            foreach (var process in processes)
+            foreach (var process in _processes)
             {
                 if(process.ProcessName == processName)
                 {
@@ -102,17 +102,17 @@ namespace WinttOS.System.Processing
 
         public void RunProcessGC()
         {
-            foreach(var process in processes)
+            foreach(var process in _processes)
             {
                 if (process.Type.Value <= Process.ProcessType.Driver.Value)
                     continue;
                 if (process.HasOwnerProcess && (!process.OwnerProcess.IsProcessRunning || !process.OwnerProcess.IsProcessInitialized))
                 {
-                    processes.Remove(process.OwnerProcess);
+                    _processes.Remove(process.OwnerProcess);
                 }
                 if (!process.IsProcessRunning || !process.IsProcessInitialized)
                 {
-                    processes.Remove(process);
+                    _processes.Remove(process);
                 }
             }    
         }
@@ -121,13 +121,13 @@ namespace WinttOS.System.Processing
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryRemoveDeadProcess()"));
 
-            foreach(Process p in processes)
+            foreach(Process p in _processes)
             {
                 if(p.ProcessID == processId)
                 {
                     if(!p.IsProcessRunning)
                     {
-                        processes.Remove(p);
+                        _processes.Remove(p);
                         WinttCallStack.RegisterReturn();
                         return true;
                     }
@@ -144,7 +144,7 @@ namespace WinttOS.System.Processing
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryStartProcess()",
                 "bool(uint)", "ProcessManager.cs", 98));
-            foreach (var process in processes)
+            foreach (var process in _processes)
             {
                 if (process.ProcessID == processID)
                 {
@@ -159,7 +159,7 @@ namespace WinttOS.System.Processing
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryStopProcess()",
                 "bool(uint)", "ProcessManager.cs", 113));
-            foreach (var process in processes)
+            foreach (var process in _processes)
             {
                 if (process.ProcessID == processID)
                 {
@@ -176,7 +176,7 @@ namespace WinttOS.System.Processing
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryGetProcessInstance()",
                 "Process?(uint)", "ProcessManager.cs", 130));
-            foreach (var p in processes)
+            foreach (var p in _processes)
             {
                 if (p.ProcessID == processID)
                 {
@@ -198,7 +198,7 @@ namespace WinttOS.System.Processing
             {
                 for (byte i = 0; i < 3; i++)
                 {
-                    foreach (var process in processes)
+                    foreach (var process in _processes)
                     {
                         try
                         {
@@ -229,7 +229,7 @@ namespace WinttOS.System.Processing
 
                 if (Kernel.IsFinishingKernel)
                 {
-                    foreach (var process in processes)
+                    foreach (var process in _processes)
                     {
                         if (process.IsProcessRunning)
                             process.Stop();
@@ -249,7 +249,7 @@ namespace WinttOS.System.Processing
             formatter.Write("Process Name");
             formatter.Write("PID");
 
-            foreach (var process in processes)
+            foreach (var process in _processes)
             {
                 formatter.Write(process.IsProcessRunning ? "[X]" : "[ ]");
                 formatter.Write(process.ProcessName);

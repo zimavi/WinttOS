@@ -11,11 +11,11 @@ namespace WinttOS.Core.Utils.System
     {
         #region Variables
 
-        private static List<string> recentInput = new();
-        private static string currentInput = "";
-        private static string inputToDisplay = "";
-        private static int currentRecentPos = 0;
-        private static ShellUtils instance => new();
+        private static List<string> _recentInput = new();
+        private static string _currentInput = "";
+        private static string _inputToDisplay = "";
+        private static int _currentRecentPos = 0;
+        private static ShellUtils _instance => new();
 
         #endregion
 
@@ -88,68 +88,68 @@ namespace WinttOS.Core.Utils.System
                 ConsoleKeyInfo key = Console.ReadKey(true);
                 if (key.Key == ConsoleKey.Enter)
                 {
-                    recentInput.Insert(0, inputToDisplay);
-                    if (recentInput.Count > 10)
-                        recentInput.RemoveAt(recentInput.Count - 1);
+                    _recentInput.Insert(0, _inputToDisplay);
+                    if (_recentInput.Count > 10)
+                        _recentInput.RemoveAt(_recentInput.Count - 1);
                     ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
-                    Console.WriteLine(inputToDisplay);
-                    input = inputToDisplay;
-                    inputToDisplay = "";
-                    currentInput = null;
+                    Console.WriteLine(_inputToDisplay);
+                    input = _inputToDisplay;
+                    _inputToDisplay = "";
+                    _currentInput = null;
                     WinttCallStack.RegisterReturn();
                     return true;
                 }
                 else if (key.Key == ConsoleKey.Backspace)
                 {
-                    if (inputToDisplay.Length > 0)
-                        inputToDisplay = inputToDisplay.Substring(0, inputToDisplay.Length - 1);
+                    if (_inputToDisplay.Length > 0)
+                        _inputToDisplay = _inputToDisplay.Substring(0, _inputToDisplay.Length - 1);
                     ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
-                    Console.Write(inputToDisplay);
+                    Console.Write(_inputToDisplay);
                 }
                 else if (key.Key == ConsoleKey.UpArrow)
                 {
-                    if (currentRecentPos < recentInput.Count - 1)
+                    if (_currentRecentPos < _recentInput.Count - 1)
                     {
-                        if (currentInput == null)
-                            currentInput = inputToDisplay;
-                        if (currentRecentPos > 0)
-                            currentRecentPos++;
-                        if (currentRecentPos < 0) currentRecentPos = 1;
-                        inputToDisplay = recentInput[currentRecentPos];
-                        if (currentRecentPos == 0)
-                            currentRecentPos++;
+                        if (_currentInput == null)
+                            _currentInput = _inputToDisplay;
+                        if (_currentRecentPos > 0)
+                            _currentRecentPos++;
+                        if (_currentRecentPos < 0) _currentRecentPos = 1;
+                        _inputToDisplay = _recentInput[_currentRecentPos];
+                        if (_currentRecentPos == 0)
+                            _currentRecentPos++;
                         ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
-                        Console.Write(inputToDisplay);
+                        Console.Write(_inputToDisplay);
 
                     }
                 }
                 else if (key.Key == ConsoleKey.DownArrow)
                 {
-                    if (currentRecentPos >= 0)
+                    if (_currentRecentPos >= 0)
                     {
-                        currentRecentPos--;
-                        WinttDebugger.Trace(currentRecentPos.ToString(), instance);
-                        if (currentRecentPos == -1)
+                        _currentRecentPos--;
+                        WinttDebugger.Trace(_currentRecentPos.ToString(), _instance);
+                        if (_currentRecentPos == -1)
                         {
-                            inputToDisplay = currentInput;
-                            currentInput = "";
+                            _inputToDisplay = _currentInput;
+                            _currentInput = "";
                             ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
-                            Console.Write(inputToDisplay);
+                            Console.Write(_inputToDisplay);
                         }
                         else
                         {
-                            inputToDisplay = recentInput[currentRecentPos];
+                            _inputToDisplay = _recentInput[_currentRecentPos];
                             ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
-                            Console.Write(inputToDisplay);
+                            Console.Write(_inputToDisplay);
                         }
                     }
                 }
                 else if (!MIV.isForbiddenKey(key.Key))
                 {
-                    inputToDisplay += key.KeyChar;
+                    _inputToDisplay += key.KeyChar;
 
                     ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
-                    Console.Write(inputToDisplay);
+                    Console.Write(_inputToDisplay);
                 }
             }
             WinttCallStack.RegisterReturn();

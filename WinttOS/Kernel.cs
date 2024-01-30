@@ -22,7 +22,7 @@ namespace WinttOS
         public static bool IsRebooting { get; private set; } = false;
 
         public static readonly List<Action> OnKernelFinish = new();
-        private static Kernel instance = null;
+        private static Kernel _instance = null;
 
         #endregion
 
@@ -105,7 +105,7 @@ namespace WinttOS
             catch (Exception ex)
             {
                 WinttDebugger.Error("Something happened on shutdown!", true);
-                WinttRaiseHardError(WinttStatus.SYSTEM_THREAD_EXCEPTION_NOT_HANDLED, instance, HardErrorResponseOption.OptionShutdownSystem);
+                WinttRaiseHardError(WinttStatus.SYSTEM_THREAD_EXCEPTION_NOT_HANDLED, _instance, HardErrorResponseOption.OptionShutdownSystem);
             }
             finally
             {

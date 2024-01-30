@@ -12,12 +12,12 @@ namespace WinttOS.System.Services
 
         #region Fields / Variables
 
-        private List<Service> services = new();
+        private List<Service> _services = new();
 
         public WinttServiceManager() : base("ServiceDaemon", ProcessType.KernelComponent)
         { }
 
-        public List<Service> Services => services;
+        public List<Service> Services => _services;
 
         #endregion
 
@@ -27,9 +27,9 @@ namespace WinttOS.System.Services
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.AddService()",
                 "void(Service)", "WinttServiceManager.cs", 25));
-            if (!services.Contains(service))
+            if (!_services.Contains(service))
             {
-                services.Add(service);
+                _services.Add(service);
 
                 service.IsProcessCritical = true;
                 WinttOS.ProcessManager.TryRegisterProcess(service);
@@ -44,7 +44,7 @@ namespace WinttOS.System.Services
             WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.Start()",
                 "void()", "WinttServiceManager.cs", 53));
 
-            foreach(var service in services)
+            foreach(var service in _services)
             {
                 WinttOS.ProcessManager.TryStartProcess(service.ProcessName);
             }
@@ -58,7 +58,7 @@ namespace WinttOS.System.Services
             WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.Stop()",
                 "void()", "WinttServiceManager.cs", 68));
 
-            foreach (var service in services)
+            foreach (var service in _services)
             {
                 if (service.IsServiceRunning && service.IsProcessRunning)
                 {
@@ -73,7 +73,7 @@ namespace WinttOS.System.Services
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.FinishService()",
                 "void(string)", "WinttServiceManager.cs", 87));
-            services.ForEach(service =>
+            _services.ForEach(service =>
             {
                 if (service.ProcessName == serviceName)
                 {
@@ -91,10 +91,10 @@ namespace WinttOS.System.Services
 
         public void RunServiceGC()
         {
-            foreach(var service in services)
+            foreach(var service in _services)
             {
                 if(!WinttOS.ProcessManager.Processes.Contains(service))
-                    services.Remove(service);
+                    _services.Remove(service);
             }
         }
 
@@ -102,7 +102,7 @@ namespace WinttOS.System.Services
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.GetServiceStatus()",
                 "(ServiceStatuc, string)(string)", "WinttServiceManager.cs", 108));
-            foreach (var service in services)
+            foreach (var service in _services)
             {
                 if (service.ProcessName == serviceName)
                 {
@@ -118,7 +118,7 @@ namespace WinttOS.System.Services
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.RestartService()",
                 "void(string)", "WinttServiceManager.cs", 124));
-            services.ForEach(service =>
+            _services.ForEach(service =>
             {
                 if (service.ProcessName == serviceName)
                 {
@@ -136,7 +136,7 @@ namespace WinttOS.System.Services
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.StartService()",
                 "void(string)", "WinttServiceManager.cs", 142));
-            services.ForEach(service =>
+            _services.ForEach(service =>
             {
                 if (service.ProcessName == serviceName && !service.IsServiceRunning && !service.IsProcessRunning)
                 {
@@ -157,7 +157,7 @@ namespace WinttOS.System.Services
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.StartAllServices()",
                 "void()", "WinttServiceManager.cs", 163));
-            services.ForEach(service =>
+            _services.ForEach(service =>
             {
                 StartService(service.ProcessName);
             });
@@ -168,7 +168,7 @@ namespace WinttOS.System.Services
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.StopAllServices()",
                 "void()", "WinttServiceManager.cs", 174));
-            services.ForEach(service =>
+            _services.ForEach(service =>
             {
                 if (service.IsServiceRunning)
                     WinttOS.ProcessManager.TryStopProcess(service.ProcessName);

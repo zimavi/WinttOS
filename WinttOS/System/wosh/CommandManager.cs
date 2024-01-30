@@ -11,19 +11,20 @@ using WinttOS.System.wosh.Programs.RunCommands;
 using WinttOS.System.wosh.commands.Processing;
 using WinttOS.System.Services;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.System.wosh.Utils;
 
 namespace WinttOS.System.wosh
 {
 
     public class CommandManager : Service
     {
-        private List<Command> commands;
-        private bool didRunCycle = true;
+        private List<Command> _commands;
+        private bool _didRunCycle = true;
 
 
         public CommandManager() : base("WoshDaemon", "WoshManagerDaemon")
         {
-            commands = new List<Command>
+            _commands = new List<Command>
             {
                 new ClearScreenCommand("clear"),
                 new EchoCommand("echo"),
@@ -46,7 +47,7 @@ namespace WinttOS.System.wosh
                 new MivCommand("miv"),
                 new CatUtilCommand("cat"),
                 new SystemCtlCommand("systemctl"),
-                new UsersCommand("user"),
+                new UsersCommand("_user"),
                 new ProcessCommand("process"),
                 //new WgetCommand("wget"),
             };
@@ -63,7 +64,7 @@ namespace WinttOS.System.wosh
                 "bool()", "WinttOS.cs", 60));
             try
             {
-                this.commands.Add(command);
+                this._commands.Add(command);
                 WinttCallStack.RegisterReturn();
                 return true;
             }
@@ -78,29 +79,18 @@ namespace WinttOS.System.wosh
         {
             WinttCallStack.RegisterCall(new("WinttOS.System.wosh.CommandManager.ProcessInput()",
                 "string(string)", "WinttOS.cs", 77));
-            string[] split = input.Split(' ');
 
-            string label = split[0];
-            List<String> args = new List<string>();
+            List<String> parsedCmd = Misc.ParseCommandLine(input);
 
-            int ctr = 0;
-
-            foreach (String i in split)
+            foreach (Command cmd in this._commands)
             {
-
-                if (ctr != 0) args.Add(i);
-                ++ctr;
-            }
-
-            foreach (Command cmd in this.commands)
-            {
-                if (cmd.CommandName == label)
+                if (cmd.CommandName == parsedCmd[0])
                 {
                     if(cmd.RequiredAccessLevel.Value <= WinttOS.UsersManager.CurrentUser.UserAccess.Value)
                     {
                         try
                         {
-                            string result = cmd.Execute(args.ToArray());
+                            string result = cmd.Execute(parsedCmd.ToArray());
                             WinttCallStack.RegisterReturn();
                             return result;
                         }
@@ -115,7 +105,7 @@ namespace WinttOS.System.wosh
                 }
             }
             WinttCallStack.RegisterReturn();
-            return "Command '" + label + "' not exist, please type man <command> or help or more details.";
+            return "Command '" + parsedCmd[0] + "' not exist, please type man <command> or help or more details.";
         }
 
         public string ProcessInput(ref TempUser user, string input)
@@ -123,30 +113,18 @@ namespace WinttOS.System.wosh
             WinttCallStack.RegisterCall(new("WinttOS.System.wosh.CommandManager.ProcessInput()",
                 "string(ref TempUser, string)", "WinttOS.cs", 121));
 
-            string[] split = input.Split(' ');
+            List<string> parsedCmd = Misc.ParseCommandLine(input);
 
-            string label = split[0];
-            List<String> args = new List<string>();
-
-            int ctr = 0;
-
-            foreach (String i in split)
+            foreach (Command cmd in this._commands)
             {
-
-                if (ctr != 0) args.Add(i);
-                ++ctr;
-            }
-
-            foreach (Command cmd in this.commands)
-            {
-                if (cmd.CommandName == label)
+                if (cmd.CommandName == parsedCmd[0])
                 {
                     if (cmd.RequiredAccessLevel.Value <= user.UserAccess.Value)
                     {
                         user = null;
                         try
                         {
-                            string result = cmd.Execute(args.ToArray());
+                            string result = cmd.Execute(parsedCmd.ToArray());
                             WinttCallStack.RegisterReturn();
                             return result;
                         }
@@ -161,7 +139,7 @@ namespace WinttOS.System.wosh
                 }
             }
             WinttCallStack.RegisterReturn();
-            return "Command '" + label + "' not exist, please type man <command> or help or more details.";
+            return "Command '" + parsedCmd[0] + "' not exist, please type man <command> or help or more details.";
         }
 
         public List<String> GetCommandsList()
@@ -169,7 +147,7 @@ namespace WinttOS.System.wosh
             WinttCallStack.RegisterCall(new("WinttOS.System.wosh.CommandManager.GetCommandsList()",
                 "List<string>()", "WinttOS.cs", 167));
             List<String> commands = new List<string>();
-            foreach(Command command in this.commands)
+            foreach(Command command in this._commands)
             {
                 if(!command.IsHiddenCommand)
                     commands.Add(command.CommandName);
@@ -179,7 +157,7 @@ namespace WinttOS.System.wosh
         }
 
         public List<Command> GetCommandsListInstances() => 
-            commands;
+            _commands;
 
         public override void OnServiceTick()
         {
@@ -192,12 +170,12 @@ namespace WinttOS.System.wosh
                     WinttCallStack.RegisterReturn();
                     return;
                 }
-                if (didRunCycle)
+                if (_didRunCycle)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}$0:\{GlobalData.CurrentDirectory}> ");
                     Console.ForegroundColor = ConsoleColor.White;
-                    didRunCycle = false;
+                    _didRunCycle = false;
                 }
                 string input = "";
                 bool hasKey = ShellUtils.ProcessExtendedInput(ref input);
@@ -208,7 +186,7 @@ namespace WinttOS.System.wosh
                     Console.ForegroundColor = ConsoleColor.Gray;
                     string response = ProcessInput(input);
                     Console.WriteLine(response);
-                    didRunCycle = true;
+                    _didRunCycle = true;
                 }
                 else
                     PowerManagerService.isIdling = true;

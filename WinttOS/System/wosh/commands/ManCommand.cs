@@ -24,7 +24,7 @@ namespace WinttOS.System.wosh.commands
                         commandsWithManuals.Add(command.CommandName);
                     
                 }
-                string returnStr = "List of commands with manuals:\n";
+                string returnStr = "List of _commands with manuals:\n";
                 returnStr += String.Join('\n', commandsWithManuals.ToArray());
                 return returnStr;
             }
