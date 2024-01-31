@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.Debugging;
-using WinttOS.Core.Utils.System;
+using WinttOS.Core.Utils.Sys;
 using WinttOS.System.Users;
 
 namespace WinttOS.System.API

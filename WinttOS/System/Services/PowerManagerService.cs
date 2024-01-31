@@ -18,7 +18,7 @@ namespace WinttOS.System.Services
 
         public void HandleSystemSleepEvent()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Services.PowerManagerService.HandleSystemSleepEvent()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Services.PowerManagerService.HandleSystemSleepEvent()",
                 "void()", "PowerManagerService", 19));
             WinttDebugger.Info("Going to sleep mode!");
             Canvas blackCanvas = FullScreenCanvas.GetFullScreenCanvas();
@@ -36,7 +36,7 @@ namespace WinttOS.System.Services
 
         public override void OnServiceTick()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Service.PowerManagerService.ServiceTick()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Service.PowerManagerService.ServiceTick()",
                 "void()", "PowerManagerService.cs", 37));
 
             if(!isIdling)

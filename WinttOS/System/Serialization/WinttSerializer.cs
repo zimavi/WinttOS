@@ -10,7 +10,7 @@ namespace WinttOS.System.Serialization
     {
         public string Serialize(User user)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Serialization.WinttUserSerializer.Serialize()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Serialization.WinttUserSerializer.Serialize()",
                 "string(User)", "WinttSerializer.cs", 12));
             string partialSerizlizedStr = $"(User) " +
                 $"{user.Name} {user.PasswordHash} {user.UserAccess.Value}\n";
@@ -28,7 +28,7 @@ namespace WinttOS.System.Serialization
 
         public User Deserialize(string user)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Serialization.WinttUserSerializer.Deserialize()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Serialization.WinttUserSerializer.Deserialize()",
                 "User(string)", "WinttSerializer.cs", 30));
             string[] binarySplit = user.Split(' ');
             byte[] Binary = new byte[binarySplit.Length];
@@ -55,7 +55,7 @@ namespace WinttOS.System.Serialization
     
         public string SerializeList(List<User> users)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Serialization.WinttUserSerializer.SerializeList()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Serialization.WinttUserSerializer.SerializeList()",
                 "string(List<User>)", "WinttSerializer.cs", 57));
             string toReturn = "";
             foreach(var user in users)
@@ -68,7 +68,7 @@ namespace WinttOS.System.Serialization
         
         public List<User> DeserializeList(string users)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Serialization.WinttUserSerializer.DeserializeList()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Serialization.WinttUserSerializer.DeserializeList()",
                 "List<User>(string)", "WinttSerializer.cs", 70));
             string[] split = users.Split('\t');
             List<User> toReturn = new();

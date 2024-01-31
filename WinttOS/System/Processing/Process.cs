@@ -5,7 +5,7 @@
 
 
 using WinttOS.Core.Utils.Debugging;
-using WinttOS.Core.Utils.System;
+using WinttOS.Core.Utils.Sys;
 using WinttOS.System.API;
 using static WinttOS.System.API.PrivilegesSystem;
 using WinttOS.System.Users;
@@ -87,7 +87,7 @@ namespace WinttOS.System.Processing
         /// <returns><see langword="true"/> if privileges raised, otherwise, <see langword="false"/></returns>
         protected bool TryRisePrivileges(PrivilegesSet requested_type)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Processing.Process.TryRisePrivileges",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.Process.TryRisePrivileges",
                 "bool(PrivilegesSet)", "Process.cs", 71));
             if (WinttOS.UsersManager.CurrentUser.UserAccess.Value >= User.AccessLevel.Guest.Value &&
                 WinttOS.UsersManager.CurrentUser.UserAccess.PrivilegeSet.Privileges <= requested_type.Privileges && 

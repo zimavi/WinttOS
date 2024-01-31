@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using WinttOS.Core.Utils.Debugging;
-using WinttOS.Core.Utils.System;
+using WinttOS.Core.Utils.Sys;
 
 namespace WinttOS.Core.Utils.Kernel
 {

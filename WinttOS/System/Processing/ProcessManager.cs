@@ -5,7 +5,7 @@ using System.Linq;
 using WinttOS;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Kernel;
-using WinttOS.System.wosh.Utils;
+using WinttOS.System.Shell.Utils;
 
 namespace WinttOS.System.Processing
 {
@@ -19,7 +19,7 @@ namespace WinttOS.System.Processing
 
         public bool TryRegisterProcess(Process process)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryRegisterProcess()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.TryRegisterProcess()",
                 "bool(Process)", "ProcessManager.cs", 16));
             foreach (var p in _processes)
             {
@@ -37,7 +37,7 @@ namespace WinttOS.System.Processing
         }
         public bool TryRegisterProcess(Process process, out uint newProcessID)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryRegisterProcess()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.TryRegisterProcess()",
                 "bool(Process, ref uint)", "ProcessManager.cs", 34));
             foreach (var _process in _processes)
             {
@@ -58,7 +58,7 @@ namespace WinttOS.System.Processing
 
         public bool TryStartProcess(string processName)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryStartProcess()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.TryStartProcess()",
                 "bool(string)", "ProcessManager.cs", 54));
             foreach (var process in _processes)
             {
@@ -80,7 +80,7 @@ namespace WinttOS.System.Processing
 
         public bool TryStopProcess(string processName)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryStopProcess()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.TryStopProcess()",
                 "bool(Process)", "ProcessManager.cs", 76));
             foreach (var process in _processes)
             {
@@ -119,7 +119,7 @@ namespace WinttOS.System.Processing
 
         public bool TryRemoveDeadProcess(uint processId)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryRemoveDeadProcess()"));
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.TryRemoveDeadProcess()"));
 
             foreach(Process p in _processes)
             {
@@ -142,7 +142,7 @@ namespace WinttOS.System.Processing
 
         public bool TryStartProcess(uint processID)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryStartProcess()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.TryStartProcess()",
                 "bool(uint)", "ProcessManager.cs", 98));
             foreach (var process in _processes)
             {
@@ -157,7 +157,7 @@ namespace WinttOS.System.Processing
         }
         public bool TryStopProcess(uint processID)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryStopProcess()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.TryStopProcess()",
                 "bool(uint)", "ProcessManager.cs", 113));
             foreach (var process in _processes)
             {
@@ -174,7 +174,7 @@ namespace WinttOS.System.Processing
 
         public bool TryGetProcessInstance(out Process process, uint processID)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.TryGetProcessInstance()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.TryGetProcessInstance()",
                 "Process?(uint)", "ProcessManager.cs", 130));
             foreach (var p in _processes)
             {
@@ -192,7 +192,7 @@ namespace WinttOS.System.Processing
 
         public IEnumerator<CoroutineControlPoint> UpdateProcesses()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.UpdateProcesses()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.UpdateProcesses()",
                 "IEnumerator<CoroutineControlPoint>()", "ProcessManager.cs", 146));
             while (true)
             {
@@ -224,7 +224,7 @@ namespace WinttOS.System.Processing
 
                 yield return null;
 
-                WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.UpdateProcesses()",
+                WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.UpdateProcesses()",
                 "IEnumerator<CoroutineControlPoint>()", "ProcessManager.cs", 162));
 
                 if (Kernel.IsFinishingKernel)
@@ -242,7 +242,7 @@ namespace WinttOS.System.Processing
 
         public void WriteLineProcessesList()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Processing.ProcessManager.WriteLineProcessesList()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.WriteLineProcessesList()",
                 "void()", "ProcessManager.cs", 180));
             ConsoleColumnFormatter formatter = new(20, 3);
             formatter.Write("Status");

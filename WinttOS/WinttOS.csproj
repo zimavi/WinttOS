@@ -66,13 +66,16 @@
         <PackageReference Include="Cosmos.Coroutines" Version="1.0.1" />
         <PackageReference Include="Cosmos.Debug.Kernel" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="Cosmos.System2" Version="0-*" NoWarn="NU1604" />
+        <PackageReference Include="CosmosHttp" Version="1.0.4" />
+        <PackageReference Include="Iconic.Zlib.Netstandard" Version="1.0.0" />
+        <PackageReference Include="jzero" Version="0.4.5" />
         <PackageReference Include="Spectre.Console" Version="0.47.0" />
         <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 		<PackageReference Include="Cosmos.Plugs" Version="0-*" NoWarn="NU1604" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="System\wosh\Programs\ProgramsExecutables\" />
+      <Folder Include="System\Shell\Programs\ProgramsExecutables\" />
     </ItemGroup>
 
     <ItemGroup>

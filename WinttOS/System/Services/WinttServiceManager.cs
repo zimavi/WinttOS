@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
-using WinttOS.Core.Utils.System;
+using WinttOS.Core.Utils.Sys;
 using WinttOS.System.Processing;
 
 namespace WinttOS.System.Services
@@ -25,7 +25,7 @@ namespace WinttOS.System.Services
 
         public void AddService(Service service)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.AddService()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Services.WinttServiceManager.AddService()",
                 "void(Service)", "WinttServiceManager.cs", 25));
             if (!_services.Contains(service))
             {
@@ -41,7 +41,7 @@ namespace WinttOS.System.Services
         {
             base.Start();
 
-            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.Start()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Services.WinttServiceManager.Start()",
                 "void()", "WinttServiceManager.cs", 53));
 
             foreach(var service in _services)
@@ -55,7 +55,7 @@ namespace WinttOS.System.Services
         {
             base.Stop();
 
-            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.Stop()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Services.WinttServiceManager.Stop()",
                 "void()", "WinttServiceManager.cs", 68));
 
             foreach (var service in _services)
@@ -71,7 +71,7 @@ namespace WinttOS.System.Services
 
         public void FinishService(string serviceName)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.FinishService()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Services.WinttServiceManager.FinishService()",
                 "void(string)", "WinttServiceManager.cs", 87));
             _services.ForEach(service =>
             {
@@ -100,7 +100,7 @@ namespace WinttOS.System.Services
 
         public (ServiceStatus, string) GetServiceStatus(string serviceName)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.GetServiceStatus()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Services.WinttServiceManager.GetServiceStatus()",
                 "(ServiceStatuc, string)(string)", "WinttServiceManager.cs", 108));
             foreach (var service in _services)
             {
@@ -116,7 +116,7 @@ namespace WinttOS.System.Services
 
         public void RestartService(string serviceName)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.RestartService()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Services.WinttServiceManager.RestartService()",
                 "void(string)", "WinttServiceManager.cs", 124));
             _services.ForEach(service =>
             {
@@ -134,7 +134,7 @@ namespace WinttOS.System.Services
 
         public void StartService(string serviceName)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.StartService()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Services.WinttServiceManager.StartService()",
                 "void(string)", "WinttServiceManager.cs", 142));
             _services.ForEach(service =>
             {
@@ -155,7 +155,7 @@ namespace WinttOS.System.Services
 
         public void StartAllServices()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.StartAllServices()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Services.WinttServiceManager.StartAllServices()",
                 "void()", "WinttServiceManager.cs", 163));
             _services.ForEach(service =>
             {
@@ -166,7 +166,7 @@ namespace WinttOS.System.Services
 
         public void StopAllServices()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.Services.WinttServiceManager.StopAllServices()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Services.WinttServiceManager.StopAllServices()",
                 "void()", "WinttServiceManager.cs", 174));
             _services.ForEach(service =>
             {

@@ -5,12 +5,12 @@ using Cosmos.System.Network.IPv4.UDP.DHCP;
 using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
-using WinttOS.Core.Utils.System;
+using WinttOS.Core.Utils.Sys;
 using WinttOS.System.Processing;
 using WinttOS.System.Services;
 using WinttOS.System.Users;
-using WinttOS.System.wosh;
-using WinttOS.System.wosh.commands.Misc;
+using WinttOS.System.Shell;
+using WinttOS.System.Shell.Commands.Misc;
 using Sys = Cosmos.System;
 using WinttOS.Core.Utils.Kernel;
 using Cosmos.System.Graphics;
@@ -43,12 +43,6 @@ namespace WinttOS.System
 
         public static Canvas SystemCanvas { get; private set; }
 
-
-        public static Dictionary<string, string> EnvironmentVariables = new()
-        {
-            { "WINTT_DEBUG", "false" }
-        };
-
         #endregion
 
         #region Methods
@@ -56,7 +50,7 @@ namespace WinttOS.System
         public static void InitializeSystem()
         {
             
-            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitializeSystem()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.InitializeSystem()",
                 "void()", "WinttOS.cs", 40));
             try
             {
@@ -115,7 +109,7 @@ namespace WinttOS.System
 
         private static void InitServiceProvider()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitServiceProvider()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.InitServiceProvider()",
                 "void()", "WinttOS.cs", 75));
             serviceManager.Initialize();
 
@@ -126,7 +120,7 @@ namespace WinttOS.System
 
         private static void InitUsers()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitUSers()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.InitUSers()",
                 "void()", "WinttOS.cs", 86));
             if (!UsersManager.TryLoadUsersData())
             {
@@ -148,7 +142,7 @@ namespace WinttOS.System
 
         private static void InitNetwork()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.InitNetwork()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.InitNetwork()",
                 "void()", "WinttOS.cs", 100));
             Console.WriteLine("NOTE! If you have more then one network adapters, please remove all except one!\n");
 
@@ -187,7 +181,7 @@ namespace WinttOS.System
         }
         public static void SystemFinish()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.SystemFinish()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.SystemFinish()",
                 "void()", "WinttOS.cs", 131));
             CoroutinePool.Main.AddCoroutine(new(FinishOS()));
             WinttCallStack.RegisterReturn();
@@ -195,7 +189,7 @@ namespace WinttOS.System
 
         private static IEnumerator<CoroutineControlPoint> FinishOS()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.FinishOS()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.FinishOS()",
                 "IEnumerator<CoroutineControlPoint>()", "WinttOS.cs", 139));
 
             WinttDebugger.Trace("FinishOS coroutine executed! Waiting 3 seconds!", instance);
@@ -204,7 +198,7 @@ namespace WinttOS.System
 
             yield return WaitFor.Seconds(3);
 
-            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.FinishOS()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.FinishOS()",
                 "IEnumerator<CoroutineControlPoint>()", "WinttOS.cs", 148));
 
             WinttDebugger.Trace("3 seconds elapsed, finishing running coroutines!", instance);
@@ -222,7 +216,7 @@ namespace WinttOS.System
 
         public static IEnumerator<CoroutineControlPoint> SystemThread()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.SystemThread()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.SystemThread()",
                 "void()", "WinttOS.cs", 165));
             while (!Kernel.IsFinishingKernel)
             {
@@ -243,7 +237,7 @@ namespace WinttOS.System
 
                 yield return WaitFor.Seconds(3);
 
-                WinttCallStack.RegisterCall(new("WinttOS.System.WinttOS.SystemThread()",
+                WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.SystemThread()",
                 "void()", "WinttOS.cs", 165));
             }
 

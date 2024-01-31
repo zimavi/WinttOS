@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
-using WinttOS.Core.Utils.System;
+using WinttOS.Core.Utils.Sys;
 
 namespace WinttOS.Core.Utils.Debugging
 {
     public static class WinttCallStack
     {
-        private static System.Stack<MethodCallInfo> _callStack = new();
+        private static Sys.Stack<MethodCallInfo> _callStack = new();
 
-        public static System.Stack<MethodCallInfo> CallStack => _callStack;
+        public static Sys.Stack<MethodCallInfo> CallStack => _callStack;
 
         public static void RegisterCall(MethodCallInfo info)
         {

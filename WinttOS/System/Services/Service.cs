@@ -48,7 +48,7 @@ namespace WinttOS.System.Services
         {
             base.Update();
 
-            WinttCallStack.RegisterCall(new("WinttOS.System.Services.Service.OnServiceTick()",
+            WinttCallStack.RegisterCall(new("WinttOS.Sys.Services.Service.OnServiceTick()",
                 "void()", "Service.cs", 29));
             ServiceStatus = ServiceStatus.PENDING;
 
