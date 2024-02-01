@@ -6,8 +6,8 @@ using System.Collections.Specialized;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.Core.Utils.Kernel;
-using WinttOS.System.Users;
-using WinttOS.System.Processing;
+using WinttOS.wSystem.Users;
+using WinttOS.wSystem.Processing;
 using Cosmos.System.Network;
 
 namespace WinttOS
@@ -63,7 +63,7 @@ namespace WinttOS
                 NetworkStack.Initialize();
 
                 WinttDebugger.Trace("Kernel initialize complete! Coming to system");
-                System.WinttOS.InitializeSystem();
+                wSystem.WinttOS.InitializeSystem();
                 
 
             } catch (Exception ex)

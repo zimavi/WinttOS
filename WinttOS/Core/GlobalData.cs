@@ -2,7 +2,7 @@
 using Cosmos.System.Graphics.Fonts;
 using IL2CPU.API.Attribs;
 
-using WinttOS.System;
+using WinttOS.wSystem;
 
 namespace WinttOS.Core
 {
@@ -19,7 +19,7 @@ namespace WinttOS.Core
         {
             get
             {
-                return 6 + CurrentDirectory.Length + System.WinttOS.UsersManager.CurrentUser.Name.Length;
+                return 6 + CurrentDirectory.Length + wSystem.WinttOS.UsersManager.CurrentUser.Name.Length;
             }
         }
     }

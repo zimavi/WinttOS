@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WinttOS.Core.Utils.Debugging;
-using WinttOS.System.Shell.Programs;
+using WinttOS.wSystem.Shell.Programs;
 
 namespace WinttOS.Core.Utils.Sys
 {

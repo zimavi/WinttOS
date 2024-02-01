@@ -3,7 +3,7 @@ using Cosmos.System.Graphics;
 using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
-using WinttOS.System.Shell.Programs;
+using WinttOS.wSystem.Shell.Programs;
 
 namespace WinttOS.Core.Utils.Sys
 {
