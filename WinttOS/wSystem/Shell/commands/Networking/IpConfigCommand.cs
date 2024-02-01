@@ -4,6 +4,7 @@ using Cosmos.System.Network.Config;
 using Cosmos.System.Network.IPv4;
 using Cosmos.System.Network.IPv4.UDP.DHCP;
 using System;
+using System.Collections.Generic;
 using WinttOS.wSystem.Shell.Utils.Commands;
 using WinttOS.wSystem.Users;
 
@@ -12,7 +13,7 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
     public class IpConfigCommand : Command
     {
 
-        public IpConfigCommand(string name) : base(name, User.AccessLevel.Guest)
+        public IpConfigCommand(string[] name) : base(name, User.AccessLevel.Guest)
         {
             HelpCommandManager.AddCommandUsageStrToManager(@"ipconfig - gets list of network devices");
             CommandManual = new()
@@ -30,49 +31,55 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
         };
         }
 
-        public override string Execute(string[] arguments)
+        public override ReturnInfo Execute()
         {
             string returnData = "";
-            if (arguments.Length == 0)
+            if (NetworkStack.ConfigEmpty())
             {
-                if (NetworkStack.ConfigEmpty())
+                Console.WriteLine("No network configuration detected! Use ipconfig /help");
+                return new(this, ReturnCode.OK);
+            }
+            foreach (NetworkConfig config in NetworkConfiguration.NetworkConfigs)
+            {
+                switch (config.Device.CardType)
                 {
-                    return "No network configuration detected! Use ipconfig /help";
+                    case CardType.Ethernet:
+                        returnData += $"Ethernet Card : {config.Device.NameID} - {config.Device.Name}";
+                        break;
+                    case CardType.Wireless:
+                        returnData += $"Wireless Card : {config.Device.NameID} - {config.Device.Name}";
+                        break;
+
                 }
-                foreach (NetworkConfig config in NetworkConfiguration.NetworkConfigs)
+                if (NetworkConfiguration.CurrentNetworkConfig.Device == config.Device)
                 {
-                    switch (config.Device.CardType)
-                    {
-                        case CardType.Ethernet:
-                            returnData += $"Ethernet Card : {config.Device.NameID} - {config.Device.Name}";
-                            break;
-                        case CardType.Wireless:
-                            returnData += $"Wireless Card : {config.Device.NameID} - {config.Device.Name}";
-                            break;
+                    returnData += $" (current)\n";
+                }
+                else
+                {
+                    returnData += '\n';
+                }
 
-                    }
-                    if (NetworkConfiguration.CurrentNetworkConfig.Device == config.Device)
-                    {
-                        returnData += $" (current)\n";
-                    }
-                    else
-                    {
-                        returnData += '\n';
-                    }
+                returnData += "MAC Address          : " + config.Device.MACAddress.ToString();
+                returnData += "IP Address           : " + config.IPConfig.IPAddress.ToString();
+                returnData += "Subnet mask          : " + config.IPConfig.SubnetMask.ToString();
+                returnData += "Default Gateway      : " + config.IPConfig.DefaultGateway.ToString();
+                returnData += "DNS Nameservers      : ";
 
-                    returnData += "MAC Address          : " + config.Device.MACAddress.ToString();
-                    returnData += "IP Address           : " + config.IPConfig.IPAddress.ToString();
-                    returnData += "Subnet mask          : " + config.IPConfig.SubnetMask.ToString();
-                    returnData += "Default Gateway      : " + config.IPConfig.DefaultGateway.ToString();
-                    returnData += "DNS Nameservers      : ";
-
-                    foreach (Address nameServer in DNSConfig.DNSNameservers)
-                    {
-                        returnData += "                       " + nameServer.ToString();
-                    }
+                foreach (Address nameServer in DNSConfig.DNSNameservers)
+                {
+                    returnData += "                       " + nameServer.ToString();
                 }
             }
-            else if (arguments[0] == "--release" || arguments[0] == "-rl")
+
+            Console.WriteLine(returnData);
+            return new(this, ReturnCode.OK);
+        }
+
+
+        public override ReturnInfo Execute(List<string> arguments)
+        {
+            if (arguments[0] == "--release" || arguments[0] == "-rl")
             {
                 DHCPClient xClient = new();
                 xClient.SendReleasePacket();
@@ -89,14 +96,15 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                 {
                     xClient.Close();
                     API.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", true);
-                    return "Configuration applied! Your local IPv4 Address is " + NetworkConfiguration.CurrentAddress + ".";
+                    Console.WriteLine("Configuration applied! Your local IPv4 Address is " + NetworkConfiguration.CurrentAddress + ".");
+                    return new(this, ReturnCode.OK); 
                 }
                 else
                 {
                     NetworkConfiguration.ClearConfigs();
 
                     xClient.Close();
-                    return "DHCP Discover failed. Can't apply dynamic IPv4 address.";
+                    return new(this, ReturnCode.ERROR, "DHCP Discover failed. Can't apply dynamic IPv4 address.");
                 }
             }
             else if (arguments[0] == "--list-devices" || arguments[0] == "-ldv")
@@ -106,23 +114,23 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                     switch (device.CardType)
                     {
                         case CardType.Ethernet:
-                            returnData += "Ethernet Card - " + device.NameID + " - " + device.Name + " (" + device.MACAddress + ")\n";
+                            Console.WriteLine("Ethernet Card - " + device.NameID + " - " + device.Name + " (" + device.MACAddress + ")");
                             break;
                         case CardType.Wireless:
-                            returnData += "Wireless Card - " + device.NameID + " - " + device.Name + " (" + device.MACAddress + ")\n";
+                            Console.WriteLine("Wireless Card - " + device.NameID + " - " + device.Name + " (" + device.MACAddress + ")");
                             break;
                     }
                 }
             }
             else if (arguments[0] == "--set")
             {
-                if (arguments.Length == 3 || arguments.Length == 4)
+                if (arguments.Count == 3 || arguments.Count == 4)
                 {
                     string[] adrNetwork = arguments[2].Split('/');
                     Address ip = Address.Parse(adrNetwork[0]);
                     NetworkDevice nic = NetworkDevice.GetDeviceByName(arguments[1]);
                     Address gw = null;
-                    if (arguments.Length == 4)
+                    if (arguments.Count == 4)
                     {
                         gw = Address.Parse(arguments[3]);
                     }
@@ -134,35 +142,38 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                     }
                     catch (Exception e)
                     {
-                        return e.Message;
+                        return new(this, ReturnCode.ERROR, e.Message);
                     }
                     Address subnet = Address.CIDRToAddress(cidr);
 
                     if (nic == null)
                     {
-                        return "Couldn't find network device: " + arguments[1];
+                        return new(this, ReturnCode.ERROR, "Couldn't find network device: " + arguments[1]);
                     }
 
                     if (ip != null && subnet != null && gw != null)
                     {
                         IPConfig.Enable(nic, ip, subnet, gw);
                         API.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", true);
-                        return "Config OK!";
+                        Console.WriteLine("Config OK!");
+                        return new(this, ReturnCode.OK);
                     }
                     else if (ip != null && subnet != null)
                     {
                         IPConfig.Enable(nic, ip, subnet, ip);
                         API.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", true);
-                        return "Config OK!";
+                        Console.WriteLine("Config OK!");
+                        return new(this, ReturnCode.OK);
                     }
                     else
                     {
-                        return "Can't parse IP addresses (make sure they are well formated).";
+                        return new(this, ReturnCode.ERROR_ARG, "Can't parse IP addresses (make sure they are well formated).");
                     }
                 }
                 else
                 {
-                    return "Usage : ipconfig --set {device} {IPv4/CIDR} {Gateway|null}";
+                    Console.WriteLine("Usage : ipconfig --set {device} {IPv4/CIDR} {Gateway|null}");
+                    return new(this, ReturnCode.OK);
                 }
             }
             else if (arguments[0] == "--nameserver" || arguments[0] == "-ns")
@@ -170,20 +181,22 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                 if (arguments[1] == "--add" || arguments[1] == "-a")
                 {
                     DNSConfig.Add(Address.Parse(arguments[2]));
-                    return arguments[2] + " has been added to nameservers.";
+                    Console.WriteLine(arguments[2] + " has been added to nameservers.");
+                    return new(this, ReturnCode.OK);
                 }
                 else if (arguments[1] == "--remove" || arguments[1] == "-rm")
                 {
                     DNSConfig.Remove(Address.Parse(arguments[2]));
-                    return "arguments[2] + \" has been removed from nameservers list.";
+                    Console.WriteLine(arguments[2] + " has been removed from nameservers list.");
+                    return new(this, ReturnCode.OK);
                 }
             }
             else
             {
-                return "Wrong usage, please type: man ipconfig";
+                Console.WriteLine("Wrong usage, please type: man ipconfig");
+                return new(this, ReturnCode.OK);
             }
-
-            return returnData;
+            return new(this, ReturnCode.OK);
         }
     }
 }

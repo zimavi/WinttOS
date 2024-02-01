@@ -11,14 +11,14 @@ namespace WinttOS.wSystem.Shell.Commands.Screen
 {
     public class ClearScreenCommand : Command
     {
-        public ClearScreenCommand(string name) : base(name, User.AccessLevel.Guest)
+        public ClearScreenCommand(string[] name) : base(name, User.AccessLevel.Guest)
         {
             HelpCommandManager.AddCommandUsageStrToManager(@"clear - clears _screen");
         }
-        public override string Execute(string[] arguments)
+        public override ReturnInfo Execute()
         {
             Console.Clear();
-            return string.Empty;
+            return new(this, ReturnCode.OK);
         }
     }
 }

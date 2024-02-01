@@ -1,10 +1,8 @@
-﻿using JZero;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using WinttOS.Core.Utils.Debugging;
 using WinttOS.wSystem.Networking;
+using WinttOS.wSystem.Json;
 
 namespace WinttOS.wSystem.Processing
 {
@@ -26,60 +24,121 @@ namespace WinttOS.wSystem.Processing
 
         public void Update()
         {
-            foreach(string repoUrl in Repositories)
+            try
             {
-                Console.WriteLine($"Updating from '{repoUrl}'...");
-
-                string json = Http.DownloadFile(repoUrl);
-
-                var rdr = new JsonReader(json);
-                rdr.ReadArrayStart();
+                foreach (string repoUrl in Repositories)
                 {
-                    while(rdr.NextElement())
+                    Console.WriteLine($"Updating from '{repoUrl}'...");
+
+                    string json = Http.DownloadFile(repoUrl);
+
+                    WinttDebugger.Info($"Downloaded json '{json}'", this);
+
+                    /*
+                    var rdr = new JsonReader(json);
+
+                    WinttDebugger.Info("Created Reader", this);
+
+                    rdr.ReadArrayStart();
+                    {
+                        while (rdr.NextElement())
+                        {
+                            var package = new Package();
+                            package.Installed = false;
+
+                            rdr.ReadObjectStart();
+                            {
+                                while (rdr.NextProperty())
+                                {
+                                    var charSegment = rdr.ReadPropertyName();
+                                    var charSegment2 = rdr.ReadString();
+
+                                    string propertyName = new string(charSegment.Array, charSegment.Offset, charSegment.Count);
+                                    string propertyValue = new string(charSegment2.Array, charSegment2.Offset, charSegment2.Count);
+                                    switch (propertyName)
+                                    {
+                                        case "name":
+                                            package.Name = propertyValue;
+                                            break;
+                                        case "display-name":
+                                            package.DisplayName = propertyValue;
+                                            break;
+                                        case "description":
+                                            package.Description = propertyValue;
+                                            break;
+                                        case "author":
+                                            package.Author = propertyValue;
+                                            break;
+                                        case "link":
+                                            package.Link = propertyValue;
+                                            break;
+                                        case "version":
+                                            package.Version = propertyValue;
+                                            break;
+                                    }
+                                }
+                            }
+
+                            LocalRepository.Add(package);
+
+                        }
+                    }
+                    */
+
+                    JsonArray array = null;
+
+                    using (var rdr = new JsonReader(json))
+                    {
+                        rdr.Parse();
+
+                        array = rdr.GetArray();
+                    }
+
+                    for (int i = 0; i < array.Objects.Count; i++)
                     {
                         var package = new Package();
                         package.Installed = false;
 
-                        rdr.ReadObjectStart();
+                        for(int j = 0; j < array[i].Count; i++)
                         {
-                            while (rdr.NextProperty())
-                            {
-                                var charSegment = rdr.ReadPropertyName();
-                                var charSegment2 = rdr.ReadString();
+                            string propertyName, propertyValue;
 
-                                string propName = new string(charSegment.Array, charSegment.Offset, charSegment.Count);
-                                string propValue = new string(charSegment2.Array, charSegment2.Offset, charSegment2.Count);
-                                
-                                switch(propName)
-                                {
-                                    case "name":
-                                        package.Name = propValue;
-                                        break;
-                                    case "display-name":
-                                        package.DisplayName = propValue;
-                                        break;
-                                    case "description":
-                                        package.Description = propValue;
-                                        break;
-                                    case "author":
-                                        package.Author = propValue;
-                                        break;
-                                    case "link":
-                                        package.Link = propValue;
-                                        break;
-                                    case "version":
-                                        package.Version = propValue;
-                                        break;
-                                }
+                            (propertyName, propertyValue) = array[i][j];
+
+                            switch (propertyName)
+                            {
+                                case "name":
+                                    package.Name = propertyValue;
+                                    break;
+                                case "display-name":
+                                    package.DisplayName = propertyValue;
+                                    break;
+                                case "description":
+                                    package.Description = propertyValue;
+                                    break;
+                                case "author":
+                                    package.Author = propertyValue;
+                                    break;
+                                case "link":
+                                    package.Link = propertyValue;
+                                    break;
+                                case "version":
+                                    package.Version = propertyValue;
+                                    break;
                             }
                         }
 
                         LocalRepository.Add(package);
                     }
                 }
-            }
 
-            Console.WriteLine("Done.");
+                Console.WriteLine("Done.");
+            }
+            catch (Exception e)
+            {
+                WinttDebugger.Error(e.Message, true);
+                Kernel.WinttRaiseHardError(Core.Utils.Kernel.WinttStatus.SYSTEM_SERVICE_EXCEPTION, this, Core.Utils.Kernel.HardErrorResponseOption.OptionShutdownSystem);
+            }
         }
 
         public void Upgrade()

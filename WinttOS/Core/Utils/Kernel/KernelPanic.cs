@@ -9,6 +9,7 @@ using System.Drawing;
 using System.IO;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem;
 
 namespace WinttOS.Core.Utils.Kernel
 {
@@ -17,16 +18,13 @@ namespace WinttOS.Core.Utils.Kernel
         static Canvas canvas;
         private static WinttStatus _status;
         static double completePercentage = 0;
-        private KernelPanic(WinttStatus message, object sender, Exception exception)
+        
+        internal KernelPanic(WinttStatus message, HALException exception)
         {
-            panic(message, sender, exception);
+            panic(message, exception);
         }
 
         internal KernelPanic(WinttStatus message, object sender)
-        {
-            panic(message, sender);
-        }
-        private static void panic(WinttStatus message, object sender, Exception exception)
         {
             panic(message, sender);
         }
@@ -73,6 +71,27 @@ namespace WinttOS.Core.Utils.Kernel
             canvas.DrawString($"{completePercentage:P0} complete", Files.Fonts.Font18, Color.White, 10, 110);
             canvas.DrawString($"Stop code: {_status.Name} (0x{_status.Value:X8})", Files.Fonts.Font18, Color.White, 10, 150);
             canvas.Display();
+        }
+        private static void panic(WinttStatus message, HALException exception)
+        {
+            canvas = FullScreenCanvas.GetFullScreenCanvas(new(1024, 768, ColorDepth.ColorDepth32)); // 1024, 768 | 640, 480
+
+            canvas.Clear(Color.Black);
+            canvas.DrawString($"CPU Exception x{exception.CTXInterrupt} occurred in WinttOS", Files.Fonts.Font18, Color.White, 10, 10);
+            canvas.DrawString($"Exception: {exception.Exception}", Files.Fonts.Font18, Color.White, 10, 30);
+            canvas.DrawString($"Description: {exception.Description}", Files.Fonts.Font18, Color.White, 10, 55);
+            canvas.DrawString($"Wintt version: {wSystem.WinttOS.WinttVersion}", Files.Fonts.Font18, Color.White, 10, 80);
+            canvas.DrawString($"Wintt revision: ", Files.Fonts.Font18, Color.White, 10, 110);
+            if(exception.LastKnownAddress != "")
+            {
+                canvas.DrawString($"Last known address: 0x{exception.LastKnownAddress}", Files.Fonts.Font18, Color.White, 10, 125);
+            }
+            canvas.DrawString($"Press any key to reboot...", Files.Fonts.Font18, Color.White, 10, 175);
+            canvas.Display();
+
+            System.Console.ReadKey(true);
+
+            Power.Reboot();
         }
     }
 }

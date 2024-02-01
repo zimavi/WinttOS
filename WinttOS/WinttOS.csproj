@@ -37,6 +37,23 @@
         <StackCorruptionDetectionLevel>MethodFooters</StackCorruptionDetectionLevel>
     </PropertyGroup>
 
+	<PropertyGroup>
+		<Year>$([System.DateTime]::Now.ToString("yyyy"))</Year>
+		<Month>$([System.DateTime]::Now.ToString("MM"))</Month>
+		<Date>$([System.DateTime]::Now.ToString("dd"))</Date>
+		<Time>$([System.DateTime]::Now.ToString("HHmm"))</Time>
+		<WinttRevision>
+			    <![CDATA[
+        namespace WinttOS.wSystem
+{
+    public class VersionInfo
+    {
+        public static readonly string revision = "$(Date)$(Month)$(Year)$(Time)"%3b
+    }
+}]]>
+		</WinttRevision>
+	</PropertyGroup>
+
     <ItemGroup>
       <None Remove="Core\resources\button_power_off.bmp" />
       <None Remove="Core\resources\cur.bmp" />
@@ -74,6 +91,10 @@
 		<PackageReference Include="Cosmos.Plugs" Version="0-*" NoWarn="NU1604" />
     </ItemGroup>
 
+	<ItemGroup>
+		<PlugsReference Include="$(MSBuildProjectDirectory)\..\WinttPlugs\bin\Debug\net6.0\WinttPlugs.dll" />
+	</ItemGroup>
+
     <ItemGroup>
       <Folder Include="wSystem\Shell\Programs\ProgramsExecutables\" />
     </ItemGroup>
@@ -89,5 +110,9 @@
     <ItemGroup>
       <EmbeddedResource Include="Core\resources\startup.wav" />
     </ItemGroup>
+
+	<Target Name="GetVersion">
+		<WriteLinesToFile File="wSystem\Properies\VersionInfo.cs" Lines="$(WinttRevision)" Overwrite="true" />
+	</Target>
 
 </Project>

@@ -236,14 +236,14 @@ namespace WinttOS.wSystem.Shell.Programs
             GlobalData.FileToEdit = file;
             try
             {
-                if (File.Exists(@"0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit))
+                if (File.Exists(GlobalData.CurrentDirectory + GlobalData.FileToEdit))
                 {
                     Console.WriteLine("Found file!");
                 }
-                else if (!File.Exists(@"0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit))
+                else if (!File.Exists(GlobalData.CurrentDirectory + GlobalData.FileToEdit))
                 {
                     Console.WriteLine("Creating file!");
-                    File.Create(@"0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit);
+                    File.Create(GlobalData.CurrentDirectory + GlobalData.FileToEdit);
                 }
                 //Console.Clear();
             }
@@ -257,7 +257,7 @@ namespace WinttOS.wSystem.Shell.Programs
             string input = Console.ReadLine().ToLower();
             if (input == "yes" || input == "y")
             {
-                text = miv(File.ReadAllText(@"0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit));
+                text = miv(File.ReadAllText(GlobalData.CurrentDirectory + GlobalData.FileToEdit));
             }
             else
             {
@@ -268,10 +268,10 @@ namespace WinttOS.wSystem.Shell.Programs
 
             if (text != null)
             {
-                if (!Kernel.ReadonlyFiles.Contains(@"0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit))
+                if (!Kernel.ReadonlyFiles.Contains(GlobalData.CurrentDirectory + GlobalData.FileToEdit))
                 {
-                    File.WriteAllText(@"0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit, text);
-                    Console.WriteLine(@"Content has been saved to 0:\" + GlobalData.CurrentDirectory + GlobalData.FileToEdit);
+                    File.WriteAllText(GlobalData.CurrentDirectory + GlobalData.FileToEdit, text);
+                    Console.WriteLine(@"Content has been saved to " + GlobalData.CurrentDirectory + GlobalData.FileToEdit);
                 }
                 else
                 {

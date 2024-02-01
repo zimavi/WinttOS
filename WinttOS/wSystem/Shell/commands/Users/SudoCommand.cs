@@ -3,42 +3,29 @@ using WinttOS.Core;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Users;
 using WinttOS.wSystem.Shell.Utils.Commands;
+using System.Collections.Generic;
+using Cosmos.System.Coroutines;
 
 namespace WinttOS.wSystem.Shell.Commands.Users
 {
     internal class SudoCommand : Command
     {
-        public SudoCommand(string name) : base(name)
+        public SudoCommand(string[] name) : base(name)
         {
             HelpCommandManager.AddCommandUsageStrToManager("sudo [command] [command args] - give root permissions");
         }
 
-        public override string Execute(string[] arguments)
+        private string _passwrd;
+
+        public override ReturnInfo Execute(List<string> arguments)
         {
-            if (arguments.Length == 0)
+            if (arguments.Count == 0)
             {
                 Console.Write("Enter password: ");
-                string pass = Console.ReadLine();
+                _passwrd = Console.ReadLine();
 
-                while (true)
-                {
-                    TempUser u = WinttOS.UsersManager.RequestAdminAccount("root", pass);
-
-                    if (u.IsNull())
-                        goto WrongPasswordMsg;
-
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.Write($"root$0:\\{GlobalData.CurrentDirectory}: ");
-                    string input = Console.ReadLine();
-                    Console.ForegroundColor = ConsoleColor.Gray;
-
-                    if (input == "exit")
-                        break;
-                    else if (input == "whoami")
-                        Console.WriteLine("root");
-
-                    Console.WriteLine(WinttOS.CommandManager.ProcessInput(ref u, input));
-                }
+                CoroutinePool.Main.AddCoroutine(new(HandleSudoShellAsync()));
+                
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
             else
@@ -50,12 +37,38 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                 if (u.IsNull())
                     goto WrongPasswordMsg;
 
-                return WinttOS.CommandManager.ProcessInput(ref u, string.Join(' ', arguments));
+                WinttOS.CommandManager.ProcessInput(ref u, string.Join(' ', arguments));
             }
-            return null;
+            return new(this, ReturnCode.OK);
 
         WrongPasswordMsg:
-            return "Wrong password!";
+            return new(this, ReturnCode.ERROR, "Wrong password!");
+        }
+
+        public IEnumerator<CoroutineControlPoint> HandleSudoShellAsync()
+        {
+            /*  TODO: Make input as it works with shell
+            while (true)
+            {
+                TempUser u = WinttOS.UsersManager.RequestAdminAccount("root", _passwrd);
+
+                if (u.IsNull())
+                    yield break;
+
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write($"root$0:\\{GlobalData.CurrentDirectory}: ");
+                string input = Console.ReadLine();
+                Console.ForegroundColor = ConsoleColor.Gray;
+
+                if (input == "exit")
+                    break;
+                else if (input == "whoami")
+                    Console.WriteLine("root");
+
+                Console.WriteLine(WinttOS.CommandManager.ProcessInput(ref u, input));
+            }
+            */
+            yield break;
         }
     }
 }

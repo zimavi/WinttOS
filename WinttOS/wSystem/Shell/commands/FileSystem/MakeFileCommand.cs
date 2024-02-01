@@ -16,7 +16,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
 
         public override ReturnInfo Execute(List<string> arguments)
         {
-            var file_stream = File.Create(@"0:\" + GlobalData.CurrentDirectory + @"\" + string.Join(' ', arguments));
+            var file_stream = File.Create(GlobalData.CurrentDirectory + @"\" + string.Join(' ', arguments));
             
 
             Console.WriteLine("Created file!");
@@ -28,7 +28,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
             Console.Write("Enter file name: ");
             string file = Console.ReadLine();
             // Added replacement of spaces in names into _ for preventing unopenable files
-            var file_stream = File.Create(@"0:\" + GlobalData.CurrentDirectory + @"\" + string.Join('\n', file.Split(' ')));
+            var file_stream = File.Create(GlobalData.CurrentDirectory + @"\" + string.Join('\n', file.Split(' ')));
             return new(this, ReturnCode.OK);
         }
     }

@@ -60,8 +60,6 @@ namespace WinttOS
                 ShellUtils.MoveCursorUp();
                 ShellUtils.PrintTaskResult("Registration Files Sys", ShellTaskResult.OK);
 
-                NetworkStack.Initialize();
-
                 WinttDebugger.Trace("Kernel initialize complete! Coming to system");
                 wSystem.WinttOS.InitializeSystem();
                 
@@ -137,6 +135,16 @@ namespace WinttOS
                 return WinttStatus.STATUS_FAILURE;
 
             _ = new KernelPanic(WinttStatus, sender);
+
+            return WinttStatus.STATUS_SUCCESS;
+        }
+
+        public static WinttStatus WinttRaiseHardError(WinttStatus WinttStatus, HALException exception)
+        {
+            if (!WinttStatus.IsStopCode)
+                return WinttStatus.STATUS_FAILURE;
+
+            _ = new KernelPanic(WinttStatus, exception);
 
             return WinttStatus.STATUS_SUCCESS;
         }

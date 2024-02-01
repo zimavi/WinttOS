@@ -34,6 +34,7 @@ namespace WinttOS.wSystem
         public static UsersManager UsersManager { get; private set; } = new(null);
         public static ProcessManager ProcessManager { get; private set; } = new();
         public static CommandManager CommandManager { get; private set; } = new();
+        public static PackageManager PackageManager { get; private set; }
         public static Memory MemoryManager { get; private set; } = new();
         public static bool IsSleeping { get; set; } = false;
         private static List<Action> OnSystemSleep = new();
@@ -62,6 +63,9 @@ namespace WinttOS.wSystem
                 InitServiceProvider();
 
                 ProcessManager.TryRegisterProcess(serviceManager, out serviceProviderProcessID);
+                
+                PackageManager = new();
+                PackageManager.Initialize();
 
                 Process srv;
                 if(!ProcessManager.TryGetProcessInstance(out srv, serviceProviderProcessID))
@@ -73,8 +77,16 @@ namespace WinttOS.wSystem
 
                 ServiceManager.AddService(CommandManager);
 
-                CommandManager.RegisterCommand(new DevModeCommand("dev-mode"));
-                CommandManager.RegisterCommand(new ExampleCrashCommand("crash-pls"));
+                CommandManager.RegisterCommand(new DevModeCommand(new string[] { "dev-mode" }));
+                CommandManager.RegisterCommand(new CommandAction(new string[] { "crash" }, User.AccessLevel.Administrator, () =>
+                {
+                    WinttCallStack.RegisterCall(new("WinttOS.wSystem,WinttOS.Execute()"));
+
+                    Kernel.WinttRaiseHardError(WinttStatus.MANUALLY_INITIATED_CRASH, instance,
+                        HardErrorResponseOption.OptionShutdownSystem);
+
+                    WinttCallStack.RegisterReturn();
+                }));
 
                 ProcessManager.TryStartProcess(serviceProviderProcessID);
             }

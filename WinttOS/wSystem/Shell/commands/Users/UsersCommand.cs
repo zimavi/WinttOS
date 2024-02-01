@@ -10,19 +10,19 @@ namespace WinttOS.wSystem.Shell.Commands.Users
 {
     public class UsersCommand : Command
     {
-        public UsersCommand(string name) : base(name, User.AccessLevel.Administrator)
+        public UsersCommand(string[] name) : base(name, User.AccessLevel.Administrator)
         {
             HelpCommandManager.AddCommandUsageStrToManager("_user [list,add,remove,change] - manipulate with users (Please read manual before using)");
         }
 
-        public override string Execute(string[] arguments)
+        public override ReturnInfo Execute(List<string> arguments)
         {
             WinttCallStack.RegisterCall(new("WinttOS.Sys.Shell._commands.UsersCommand.Execute()",
                 "string(string[])", "UsersCommand.cs", 18));
 
             WinttDebugger.Trace("Entering _user's command execute function");
 
-            if (arguments.Length == 0 || arguments[0] == "list")
+            if (arguments[0] == "--list")
             {
                 WinttDebugger.Trace($"Showing list with {WinttOS.UsersManager.Users.Count} users");
                 List<string> res = new();
@@ -38,14 +38,15 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                     res.Add(user.Name);
                 }
                 if (res.Any())
-                    return string.Join('\n', res.ToArray());
-                return "No users";
+                    Console.WriteLine(string.Join('\n', res.ToArray()));
+                Console.WriteLine("No users");
+                return new(this, ReturnCode.OK);
             }
-            else if (arguments[0] == "add")
+            else if (arguments[0] == "--add")
             {
-                return "NotImplementedYet!";
+                return new(this, ReturnCode.CRASH, "NotImplementedYet!");
 
-                if (arguments.Length > 1)
+                if (arguments.Count > 1)
                 {
                     string Username = arguments[1];
                     Console.Write("Enter new _user password: ");
@@ -68,7 +69,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                             accessToCreate = 2;
                             break;
                         default:
-                            return "Invalid access!";
+                            return new(this, ReturnCode.ERROR_ARG, "Invalid access!");
                     }
                     if (string.IsNullOrEmpty(pass) || string.IsNullOrWhiteSpace(pass))
                     {
@@ -83,11 +84,11 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                                                                            .Build());
                 }
             }
-            else if (arguments[0] == "remove")
+            else if (arguments[0] == "--remove")
             {
-                return "NotImplementedYet!";
+                return new(this, ReturnCode.CRASH, "NotImplementedYet!");
 
-                if (arguments.Length > 1)
+                if (arguments.Count > 1)
                 {
                     string Username = arguments[1];
                     foreach (User user in WinttOS.UsersManager.Users)
@@ -95,27 +96,28 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                         if (user.Name == Username)
                         {
                             if (WinttOS.UsersManager.ActiveUsers.Contains(user))
-                                return "Logout from account first!";
+                                return new(this, ReturnCode.ERROR, "Logout from account first!");
                             WinttOS.UsersManager.DeleteUser(user);
-                            return "Done.";
+                            Console.WriteLine("Done.");
+                            return new(this, ReturnCode.OK);
                         }
                     }
-                    return "No such a _user!";
+                    return new(this, ReturnCode.ERROR, "No such a user!");
                 }
             }
-            else if (arguments[0] == "change")
+            else if (arguments[0] == "--change")
             {
-                return "NotImplementedYet!";
+                return new(this, ReturnCode.CRASH, "NotImplementedYet!");
 
-                if (arguments.Length > 1)
+                if (arguments.Count > 1)
                 {
-                    if (arguments.Length > 2 && (arguments[2] == "--leave-from-old" || arguments[2] == "-l"))
+                    if (arguments.Count > 2 && (arguments[2] == "--leave-from-old" || arguments[2] == "-l"))
                     {
                         User user = WinttOS.UsersManager.GetUserByName(arguments[1]);
                         if (user.IsNull())
-                            return "This _user does not exsist!";
+                            return new(this, ReturnCode.ERROR, "This user does not exsist!");
                         if (WinttOS.UsersManager.CurrentUser == user)
-                            return "You can not login to this account again!";
+                            return new(this, ReturnCode.ERROR, "You can not login to this account again!");
                         if (user.HasPassword)
                         {
                             Console.Write("Enter password: ");
@@ -133,9 +135,9 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                     {
                         User user = WinttOS.UsersManager.GetUserByName(arguments[1]);
                         if (user.IsNull())
-                            return "This _user does not exsist!";
+                            return new(this, ReturnCode.ERROR, "This user does not exsist!");
                         if (WinttOS.UsersManager.CurrentUser == user)
-                            return "You can not login to this account again!";
+                            return new(this, ReturnCode.ERROR, "You can not login to this account again!");
                         if (user.HasPassword)
                         {
                             Console.Write("Enter password: ");
@@ -149,9 +151,9 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                     }
                 }
             }
-            else if (arguments[0] == "set-password")
+            else if (arguments[0] == "--set-password")
             {
-                if (arguments.Length > 3)
+                if (arguments.Count > 3)
                 {
                     for (int i = 0; i < WinttOS.UsersManager.Users.Count; i++)
                     {
@@ -164,18 +166,19 @@ namespace WinttOS.wSystem.Shell.Commands.Users
 
                             WinttCallStack.RegisterReturn();
 
-                            return result ? "Done." : "Invalid password!";
+                            return new(this, result ? ReturnCode.OK : ReturnCode.ERROR,
+                                result ? "Done." : "Invalid password!");
                         }
                     }
                     WinttCallStack.RegisterReturn();
-                    return "Invalid _user";
+                    return new(this, ReturnCode.ERROR, "Invalid user");
                 }
                 else
                 {
-                    return "Usage: _user set-password <_user> <old-password> <new-password>";
+                    PrintHelp();
                 }
             }
-            return "";
+            return new(this, ReturnCode.OK);
         }
     }
 }

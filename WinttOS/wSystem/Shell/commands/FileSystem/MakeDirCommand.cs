@@ -15,7 +15,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
 
         public override ReturnInfo Execute(List<string> arguments)
         {
-            GlobalData.FileSystem.CreateDirectory(@"0:\" + GlobalData.CurrentDirectory + arguments[0]);
+            GlobalData.FileSystem.CreateDirectory(GlobalData.CurrentDirectory + arguments[0]);
             
             Console.WriteLine("Created directory!");
             return new(this, ReturnCode.OK);
@@ -25,7 +25,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
             Console.Write("Enter new dir name: ");
             string dir = Console.ReadLine();
             // Added replacment of spaces in names into _ for preventing unopenable folders
-            GlobalData.FileSystem.CreateDirectory(@"0:\" + GlobalData.CurrentDirectory + string.Join('_', dir.Split(' ')));
+            GlobalData.FileSystem.CreateDirectory(GlobalData.CurrentDirectory + string.Join('_', dir.Split(' ')));
             return new(this, ReturnCode.OK);
         }
     }

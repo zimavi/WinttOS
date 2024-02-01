@@ -23,13 +23,13 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
             };
         }
 
-        public override ReturnInfo Execute(List<string> arguments)
+        public override ReturnInfo Execute()
         {
             try
             {
-                var dir_files = GlobalData.FileSystem.GetDirectoryListing(@"0:\" + GlobalData.CurrentDirectory);
+                var dir_files = GlobalData.FileSystem.GetDirectoryListing(GlobalData.CurrentDirectory);
 
-                Console.WriteLine($"<DIR>  0:\\{GlobalData.CurrentDirectory}");
+                Console.WriteLine($"<DIR>  {GlobalData.CurrentDirectory}");
 
                 foreach (var file in dir_files)
                 {

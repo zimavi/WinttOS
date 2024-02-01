@@ -14,6 +14,10 @@ using WinttOS.wSystem.Shell.Utils;
 using WinttOS.wSystem.Shell.Commands.Networking;
 using WinttOS.wSystem.Shell.Commands.Users;
 using WinttOS.wSystem.Shell.commands.Networking;
+using System.Linq;
+using Cosmos.System.Network;
+using System.Windows.Input;
+using System.IO;
 
 namespace WinttOS.wSystem.Shell
 {
@@ -22,36 +26,37 @@ namespace WinttOS.wSystem.Shell
     {
         private List<Command> _commands;
         private bool _didRunCycle = true;
+        private bool _redirect = false;
+        private string _commandOutput = "";
 
 
         public CommandManager() : base("WoshDaemon", "WoshManagerDaemon")
         {
             _commands = new List<Command>
             {
-                new ClearScreenCommand("clear"),
-                new EchoCommand("echo"),
-                new VerisonCommand("version"),
-                new ShutdownCommand("shutdown"),
-                new IpConfigCommand("ipconfig"),
-                new MakeFileCommand("mkfile"),
-                new MakeDirCommand("mkdir"),
-                new RmCommand("rm"),
-                new ChangeDirectoryCommand("cd"),
-                new DirCommand("dir"),
-                //new SystemInfoCommand("sysinfo"),
-                //new installCommand("install"),
-                new HelpCommand("help"),
-                new ManCommand("man"),
-                new TimeCommand("time"),
-                new TouchCommand("touch"),
-                new SudoCommand("sudo"),
-                new WhoAmICommand("whoami"),
-                new MivCommand("miv"),
-                new CatUtilCommand("cat"),
-                new SystemCtlCommand("systemctl"),
-                new UsersCommand("_user"),
-                new ProcessCommand("process"),
-                new WgetCommand("wget"),
+                new ClearScreenCommand(new string[] { "clear", "cls" }),
+                new EchoCommand(new string[] { "echo" }),
+                new VerisonCommand(new string[] { "version", "ver" }),
+                new ShutdownCommand(new string[] { "shutdown", "power" }),
+                new IpConfigCommand(new string[] { "ipconfig" }),
+                new MakeFileCommand(new string[] { "mkfile" }),
+                new MakeDirCommand(new string[] { "mkdir" }),
+                new RmCommand(new string[] { "rm" }),
+                new ChangeDirectoryCommand(new string[] { "cd" }),
+                new DirCommand(new string[] { "dir", "ls" }),
+                new HelpCommand(new string[] { "help" }),
+                new ManCommand(new string[] { "man" }),
+                new TimeCommand(new string[] { "time" }),
+                new TouchCommand(new string[] { "touch" }),
+                new SudoCommand(new string[] { "sudo" }),
+                new WhoAmICommand(new string[] { "whoami" }),
+                new MivCommand(new string[] { "miv" }),
+                new CatUtilCommand(new string[] { "cat" }),
+                new SystemCtlCommand(new string[] { "systemctl" }),
+                new UsersCommand(new string[] { "user" }),
+                new ProcessCommand(new string[] { "process" }),
+                new WgetCommand(new string[] { "wget" }),
+                new Package(new string[] { "apt-get", "apt" })
             };
         }
 
@@ -77,71 +82,282 @@ namespace WinttOS.wSystem.Shell
             }
         }
 
-        public string ProcessInput(string input)
+        public void ProcessInput(string input)
         {
             WinttCallStack.RegisterCall(new("WinttOS.Sys.Shell.CommandManager.ProcessInput()",
                 "string(string)", "WinttOS.cs", 77));
 
-            List<String> parsedCmd = Misc.ParseCommandLine(input);
-
-            foreach (Command cmd in this._commands)
+            if (input.Length <= 0)
             {
-                if (cmd.CommandName == parsedCmd[0])
+                Console.WriteLine();
+                return;
+            }
+
+            #region Parse command
+
+            string[] parts = input.Split(new char[] { '>' }, 2);
+            string redirectionPart = parts.Length > 1 ? parts[1].Trim() : null;
+
+            input = parts[0].Trim();
+
+            if (!string.IsNullOrEmpty(redirectionPart))
+            {
+                _redirect = true;
+                _commandOutput = "";
+            }
+
+            List<string> arguments = Misc.ParseCommandLine(input);
+
+            string firstArg = arguments[0];
+
+            if (arguments.Count > 0)
+            {
+                arguments.RemoveAt(0);
+            }
+
+            #endregion
+
+            foreach (Command cmd in _commands)
+            {
+                if (cmd.ContainsCommand(firstArg))
                 {
-                    if(cmd.RequiredAccessLevel.Value <= WinttOS.UsersManager.CurrentUser.UserAccess.Value)
+                    ReturnInfo result;
+
+                    if (cmd.RequiredAccessLevel.Value > WinttOS.UsersManager.CurrentUser.UserAccess.Value)
                     {
-                        try
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine("You do not have permission to run this command!");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        return;
+                    }
+
+                    if (arguments.Count > 0 && (arguments[0] == "--help" || arguments[0] == "-h"))
+                    {
+                        showHelp(cmd);
+                        result = new ReturnInfo(cmd, ReturnCode.OK);
+                    }
+                    else
+                    {
+                        result = CheckCommand(cmd);
+
+                        if (result.Code == ReturnCode.OK)
                         {
-                            string result = cmd.Execute(parsedCmd.ToArray());
-                            WinttCallStack.RegisterReturn();
-                            return result;
-                        }
-                        catch (Exception e)
-                        {
-                            WinttCallStack.RegisterReturn();
-                            return $"Error: {e.GetType()} with message:\n{e.Message}";
+                            if (arguments.Count == 0)
+                            {
+                                result = cmd.Execute();
+                            }
+                            else
+                            {
+                                result = cmd.Execute(arguments);
+                            }
                         }
                     }
-                    WinttCallStack.RegisterReturn();
-                    return "You do not have permission to run this command!";
+
+                    ProcessCommandResult(result);
+
+                    if (_redirect)
+                    {
+                        _redirect = false;
+
+                        Console.WriteLine();
+
+                        HandleRedirection(redirectionPart, _commandOutput);
+
+                        _commandOutput = "";
+                    }
+
+                    return;
                 }
             }
-            WinttCallStack.RegisterReturn();
-            return "Command '" + parsedCmd[0] + "' not exist, please type man <command> or help or more details.";
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("Unknown command.");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.WriteLine();
+
+            if (_redirect)
+            {
+                _redirect = false;
+
+                HandleRedirection(redirectionPart, _commandOutput);
+
+                _commandOutput = "";
+            }
         }
 
-        public string ProcessInput(ref TempUser user, string input)
+        public void ProcessInput(ref TempUser user, string input)
         {
             WinttCallStack.RegisterCall(new("WinttOS.Sys.Shell.CommandManager.ProcessInput()",
-                "string(ref TempUser, string)", "WinttOS.cs", 121));
+                "string(string)", "WinttOS.cs", 77));
 
-            List<string> parsedCmd = Misc.ParseCommandLine(input);
-
-            foreach (Command cmd in this._commands)
+            if (input.Length <= 0)
             {
-                if (cmd.CommandName == parsedCmd[0])
+                Console.WriteLine();
+                return;
+            }
+
+            #region Parse command
+
+            string[] parts = input.Split(new char[] { '>' }, 2);
+            string redirectionPart = parts.Length > 1 ? parts[1].Trim() : null;
+
+            input = parts[0].Trim();
+
+            if (!string.IsNullOrEmpty(redirectionPart))
+            {
+                _redirect = true;
+                _commandOutput = "";
+            }
+
+            List<string> arguments = Misc.ParseCommandLine(input);
+
+            string firstArg = arguments[0];
+
+            if (arguments.Count > 0)
+            {
+                arguments.RemoveAt(0);
+            }
+
+            #endregion
+
+            foreach (Command cmd in _commands)
+            {
+                if (cmd.ContainsCommand(firstArg))
                 {
-                    if (cmd.RequiredAccessLevel.Value <= user.UserAccess.Value)
+                    ReturnInfo result;
+
+                    if (cmd.RequiredAccessLevel.Value > user.UserAccess.Value)
                     {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                        Console.WriteLine("You do not have permission to run this command!");
+                        Console.ForegroundColor = ConsoleColor.White;
                         user = null;
-                        try
+                        return;
+                    }
+
+                    if (arguments.Count > 0 && (arguments[0] == "--help" || arguments[0] == "-h"))
+                    {
+                        showHelp(cmd);
+                        result = new ReturnInfo(cmd, ReturnCode.OK);
+                    }
+                    else
+                    {
+                        result = CheckCommand(cmd);
+
+                        if (result.Code == ReturnCode.OK)
                         {
-                            string result = cmd.Execute(parsedCmd.ToArray());
-                            WinttCallStack.RegisterReturn();
-                            return result;
-                        }
-                        catch(Exception e)
-                        {
-                            WinttCallStack.RegisterReturn();
-                            return $"Error: {e.GetType()} with message:\n{e.Message}";
+                            if (arguments.Count == 0)
+                            {
+                                result = cmd.Execute();
+                            }
+                            else
+                            {
+                                result = cmd.Execute(arguments);
+                            }
                         }
                     }
-                    WinttCallStack.RegisterReturn();
-                    return "You do not have permission to run this command!";
+
+                    ProcessCommandResult(result);
+
+                    if (_redirect)
+                    {
+                        _redirect = false;
+
+                        Console.WriteLine();
+
+                        HandleRedirection(redirectionPart, _commandOutput);
+
+                        _commandOutput = "";
+                    }
+                    user = null;
+
+                    return;
                 }
             }
-            WinttCallStack.RegisterReturn();
-            return "Command '" + parsedCmd[0] + "' not exist, please type man <command> or help or more details.";
+
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.WriteLine("Unknown command.");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            Console.WriteLine();
+
+            if (_redirect)
+            {
+                _redirect = false;
+
+                HandleRedirection(redirectionPart, _commandOutput);
+
+                _commandOutput = "";
+            }
+        }
+
+        private void showHelp(Command cmd)
+        {
+            Console.WriteLine("Description: " + cmd.Description + '.');
+            Console.WriteLine();
+            if (cmd.CommandValues.Length > 1)
+            {
+                Console.Write("Aliases: ");
+                for (int i = 0; i < cmd.CommandValues.Length; i++)
+                {
+                    if (i != cmd.CommandValues.Length - 1)
+                    {
+                        Console.Write(cmd.CommandValues[i] + ", ");
+                    }
+                    else
+                    {
+                        Console.Write(cmd.CommandValues[i]);
+                    }
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+            cmd.PrintHelp();
+        }
+
+        private ReturnInfo CheckCommand(Command command)
+        {
+            if (command.Type == CommandType.Filesystem)
+            {
+                if (GlobalData.FileSystem == null || GlobalData.FileSystem.GetVolumes().Count == 0)
+                {
+                    return new ReturnInfo(command, ReturnCode.ERROR, "No volume detected!");
+                }
+            }
+            if (command.Type == CommandType.Network)
+            {
+                if (NetworkStack.ConfigEmpty())
+                {
+                    return new ReturnInfo(command, ReturnCode.ERROR, "No network configuration detected! Use ipconfig /set.");
+                }
+            }
+            return new ReturnInfo(command, ReturnCode.OK);
+        }
+
+        private void ProcessCommandResult(ReturnInfo result)
+        {
+            if (result.Code == ReturnCode.ERROR_ARG)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("Command arguments are incorrectly formatted.");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else if (result.Code == ReturnCode.ERROR)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("Error: " + result.Info);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+
+            Console.WriteLine();
+        }
+
+        private void HandleRedirection(string filePath, string commandOutput)
+        {
+            string fullPath = GlobalData.CurrentDirectory + filePath;
+
+            File.WriteAllText(fullPath, commandOutput);
         }
 
         public List<Command> GetCommandsListInstances() => 
@@ -161,7 +377,7 @@ namespace WinttOS.wSystem.Shell
                 if (_didRunCycle)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}$0:\{GlobalData.CurrentDirectory}> ");
+                    Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
                     Console.ForegroundColor = ConsoleColor.White;
                     _didRunCycle = false;
                 }
@@ -172,8 +388,7 @@ namespace WinttOS.wSystem.Shell
                     PowerManagerService.isIdling = false;
                     string[] split = input.Split(' ');
                     Console.ForegroundColor = ConsoleColor.Gray;
-                    string response = ProcessInput(input);
-                    Console.WriteLine(response);
+                    ProcessInput(input);
                     _didRunCycle = true;
                 }
                 else

@@ -1,4 +1,6 @@
-﻿using WinttOS.wSystem.Shell.Utils.Commands;
+﻿using System;
+using System.Collections.Generic;
+using WinttOS.wSystem.Shell.Utils.Commands;
 
 namespace WinttOS.wSystem.Shell.Programs.RunCommands
 {
@@ -7,15 +9,16 @@ namespace WinttOS.wSystem.Shell.Programs.RunCommands
     //
     public class CatUtilCommand : Command
     {
-        public CatUtilCommand(string name) : base(name, false)
+        public CatUtilCommand(string[] name) : base(name, false)
         {
             HelpCommandManager.AddCommandUsageStrToManager(@"cat <path\to\file> - reads all text from file (use 'man cat' for more info)");
         }
 
-        public override string Execute(string[] arguments)
+        public override ReturnInfo Execute(List<string> arguments)
         {
             CAT instance = new CAT();
-            return instance.Execute(arguments);
+            Console.WriteLine(instance.Execute(arguments.ToArray()));
+            return new(this, ReturnCode.OK);
         }
     }
 }

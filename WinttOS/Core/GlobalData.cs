@@ -19,7 +19,7 @@ namespace WinttOS.Core
         {
             get
             {
-                return 6 + CurrentDirectory.Length + wSystem.WinttOS.UsersManager.CurrentUser.Name.Length;
+                return 2 + CurrentDirectory.Length + wSystem.WinttOS.UsersManager.CurrentUser.Name.Length;
             }
         }
     }

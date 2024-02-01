@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.wSystem.Processing;
 using WinttOS.wSystem.Shell.Utils.Commands;
@@ -8,79 +9,90 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
 {
     public class ProcessCommand : Command
     {
-        public ProcessCommand(string name) : base(name, User.AccessLevel.Administrator)
+        public ProcessCommand(string[] name) : base(name, User.AccessLevel.Administrator)
         {
             HelpCommandManager.AddCommandUsageStrToManager("process [list|kill|_start|restart] - manages _processes");
         }
 
-        public override string Execute(string[] arguments)
+        public override ReturnInfo Execute(List<string> arguments)
         {
-            if (arguments.Length == 0)
-                return "Usage: process [list|kill|restart]";
-
-            if (arguments[0] == "list")
+            if (arguments[0] == "--list")
             {
                 WinttOS.ProcessManager.WriteLineProcessesList();
+                return new(this, ReturnCode.OK);
             }
-            else if (arguments[0] == "kill")
+            else if (arguments[0] == "--kill")
             {
-                if (arguments.Length < 2)
-                    return "Usage: process kill <process id> [-f|--force]";
+                if (arguments.Count < 2)
+                {
+                    PrintHelp();
+                    return new(this, ReturnCode.ERROR_ARG);
+                }    
 
                 if (uint.TryParse(arguments[1], out _))
                 {
                     if (WinttOS.ProcessManager.TryGetProcessInstance(out Process process, Convert.ToUInt32(arguments[1])))
                     {
-                        if (arguments.Length > 2 && (arguments[2] == "-f" || arguments[2] == "--force"))
+                        if (arguments.Count > 2 && (arguments[2] == "-f" || arguments[2] == "--force"))
                         {
                             WinttDebugger.Trace($"TryStopProcess() => {WinttOS.ProcessManager.TryStopProcess(Convert.ToUInt32(arguments[1]))}");
-                            return "Done.";
+                            Console.WriteLine("Done.");
+                            return new(this, ReturnCode.OK);
                         }
                         if (!process.IsProcessCritical)
                             WinttOS.ProcessManager.TryStopProcess(Convert.ToUInt32(arguments[1]));
                         else
-                            return "Permission denied";
-                        return "Done.";
+                        {
+                            Console.WriteLine("Permission denied");
+                            return new(this, ReturnCode.ERROR);
+                        }
+                        Console.WriteLine("Done.");
+                        return new(this, ReturnCode.OK);
                     }
-                    return "There is no such process!";
+                    Console.WriteLine("There is no such process!");
+                    return new(this, ReturnCode.ERROR);
                 }
                 else
                 {
-                    return "Process id must be number that equals or bigger then 0";
+                    Console.WriteLine("Process id must be number that equals or bigger then 0");
+                    return new(this, ReturnCode.ERROR_ARG);
                 }
             }
-            else if (arguments[0] == "_start")
+            else if (arguments[0] == "--restart")
             {
-                if (arguments.Length < 2)
-                    return "Usage: process _start <process id>";
-
-                if (uint.TryParse(arguments[1], out _))
+                if (arguments.Count < 2)
                 {
-                    WinttOS.ProcessManager.TryStartProcess(Convert.ToUInt32(arguments[1]));
-                    return "Done.";
+                    PrintHelp();
+                    return new(this, ReturnCode.ERROR_ARG);
                 }
-                else
-                {
-                    return "Process id must be number that equals or bigger then 0";
-                }
-            }
-            else if (arguments[0] == "restart")
-            {
-                if (arguments.Length < 2)
-                    return "Usage: process restart <process id>";
 
                 if (uint.TryParse(arguments[1], out _))
                 {
                     WinttOS.ProcessManager.TryStopProcess(Convert.ToUInt32(arguments[1]));
                     WinttOS.ProcessManager.TryStartProcess(Convert.ToUInt32(arguments[1]));
-                    return "Done.";
+                    Console.WriteLine("Done.");
+                    return new(this, ReturnCode.OK);
                 }
                 else
                 {
-                    return "Process id must be number that equals or bigger then 0";
+                    Console.WriteLine("Process id must be number that equals or bigger then 0");
+                    return new(this, ReturnCode.ERROR_ARG);
                 }
             }
-            return "process [list|kill|_start|restart] - manages _processes";
+            PrintHelp();
+            return new(this, ReturnCode.ERROR_ARG);
+        }
+
+        public override ReturnInfo Execute()
+        {
+            PrintHelp();
+            return new(this, ReturnCode.OK);
+        }
+
+        public override void PrintHelp()
+        {
+            Console.WriteLine("Usage: ");
+            Console.WriteLine("- process {--list|--kill|--restart} {PID}");
         }
     }
 }
