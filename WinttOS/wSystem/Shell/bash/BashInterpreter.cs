@@ -5,6 +5,7 @@ using WinttOS.wSystem.Shell.Utils;
 
 namespace WinttOS.wSystem.Shell.bash
 {
+    [Obsolete(message:"Class causes kernel panic on parse", error:true)]
     public class BashInterpreter
     {
         private List<BashFunction> _functions;

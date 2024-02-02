@@ -86,7 +86,6 @@
         <PackageReference Include="Cosmos.System2" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="CosmosHttp" Version="1.0.4" />
         <PackageReference Include="LunarParser" Version="1.1.5" />
-        <PackageReference Include="Spectre.Console" Version="0.47.0" />
         <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 		<PackageReference Include="Cosmos.Plugs" Version="0-*" NoWarn="NU1604" />
     </ItemGroup>

@@ -20,7 +20,7 @@ namespace WinttOS.wSystem.Shell.Utils
 
             for(int i = 0; i < cmdLine.Length; i++)
             {
-                if(cmdLine[i] == '"')
+                if (cmdLine[i] == '"' || cmdLine[i] == '\'') 
                 {
                     if (isInQuoted)
                     {

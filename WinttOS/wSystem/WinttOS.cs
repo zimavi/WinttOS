@@ -234,16 +234,7 @@ namespace WinttOS.wSystem
                 "void()", "WinttOS.cs", 165));
             if(File.Exists(@"0:\startup.sh"))
             {
-                BashInterpreter bash = new();
-                string message = bash.Parse(@"0:\startup.sh");
-                if (message != "Done.")
-                {
-                    Console.WriteLine($"WinttOS -> Failed to run 'startup.sh' ({message})");
-                }
-                else
-                {
-                    bash.Execute();
-                }
+                
             }
             while (!Kernel.IsFinishingKernel)
             {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.wSystem.Networking;
-using WinttOS.wSystem.Json;
 using LunarLabs.Parser.JSON;
 using LunarLabs.Parser;
 
@@ -32,9 +31,9 @@ namespace WinttOS.wSystem.Processing
                 {
                     Console.WriteLine($"Updating from '{repoUrl}'...");
 
-                    //string json = Http.DownloadFile(repoUrl);
+                    string json = Http.DownloadFile(repoUrl);
 
-                    string json = "[{\"name\":\"helloworld\",\"display-name\":\"Hello World\",\"description\":\"Test Lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"},{\"name\":\"hash\",\"display-name\":\"Hash\",\"description\":\"hash with lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"}]";
+                    //string json = "[{\"name\":\"helloworld\",\"display-name\":\"Hello World\",\"description\":\"Test Lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"},{\"name\":\"hash\",\"display-name\":\"Hash\",\"description\":\"hash with lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"}]";
 
                     WinttDebugger.Info($"Downloaded json '{json}'", this);
                     
@@ -148,7 +147,7 @@ namespace WinttOS.wSystem.Processing
         {
             if (url.StartsWith("https://"))
             {
-                Console.WriteLine("HTTPS is not suppoerted yet, please use HTTP");
+                Console.WriteLine("HTTPS is not supported yet, please use HTTP");
                 return;
             }
 
@@ -156,16 +155,15 @@ namespace WinttOS.wSystem.Processing
             Console.WriteLine("Done.");
         }
 
-        public void RemoveRepo(string url)
+        public void RemoveRepo(int id)
         {
-            if (url.StartsWith("https://"))
+            if(id < 0 || id > Repositories.Count - 1)
             {
-                Console.WriteLine("HTTPS is not suppoerted yet, please use HTTP");
+                Console.WriteLine("Error: id is out of bounce");
                 return;
             }
+            Repositories.RemoveAt(id);
 
-            if(Repositories.Contains(url))
-                Repositories.Remove(url);
             Console.WriteLine("Done.");
         }
 

@@ -18,6 +18,7 @@ using System.Linq;
 using Cosmos.System.Network;
 using System.Windows.Input;
 using System.IO;
+using WinttOS.wSystem.Shell.bash;
 
 namespace WinttOS.wSystem.Shell
 {
