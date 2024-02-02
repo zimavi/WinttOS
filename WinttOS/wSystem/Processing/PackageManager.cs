@@ -31,9 +31,9 @@ namespace WinttOS.wSystem.Processing
                 {
                     Console.WriteLine($"Updating from '{repoUrl}'...");
 
-                    string json = Http.DownloadFile(repoUrl);
+                    //string json = Http.DownloadFile(repoUrl);
 
-                    //string json = "[{\"name\":\"helloworld\",\"display-name\":\"Hello World\",\"description\":\"Test Lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"},{\"name\":\"hash\",\"display-name\":\"Hash\",\"description\":\"hash with lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"}]";
+                    string json = "[{\"name\":\"helloworld\",\"display-name\":\"Hello World\",\"description\":\"Test Lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"},{\"name\":\"hash\",\"display-name\":\"Hash\",\"description\":\"hash with lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"}]";
 
                     WinttDebugger.Info($"Downloaded json '{json}'", this);
                     

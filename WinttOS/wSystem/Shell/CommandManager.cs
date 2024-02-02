@@ -19,6 +19,8 @@ using Cosmos.System.Network;
 using System.Windows.Input;
 using System.IO;
 using WinttOS.wSystem.Shell.bash;
+using WinttOS.wSystem.Shell.commands.Misc;
+using WinttOS.wSystem.Shell.commands.Processing;
 
 namespace WinttOS.wSystem.Shell
 {
@@ -50,15 +52,29 @@ namespace WinttOS.wSystem.Shell
                 new TimeCommand(new string[] { "time" }),
                 new TouchCommand(new string[] { "touch" }),
                 new SudoCommand(new string[] { "sudo" }),
-                new WhoAmICommand(new string[] { "whoami" }),
                 new MivCommand(new string[] { "miv" }),
                 new CatUtilCommand(new string[] { "cat" }),
                 new SystemCtlCommand(new string[] { "systemctl" }),
                 new UsersCommand(new string[] { "user" }),
                 new ProcessCommand(new string[] { "process" }),
                 new WgetCommand(new string[] { "wget" }),
-                new Package(new string[] { "apt-get", "apt" }),
-                new PackageRepository(new string [] { "apt-get-repository", "apt-get-repo"})
+                new PackageCommand(new string[] { "apt-get", "apt" }),
+                new PackageRepository(new string [] { "apt-get-repository", "apt-get-repo"}),
+                new DnsCommand(new string[] { "dns" }),
+                new PingCommand(new string[] { "ping" }),
+                new EnvironmentCommand(new string[] { "export" }),
+                new RunCommand(new string[] {"run"}),
+
+                new CommandAction(new string[] { "whoami" }, User.AccessLevel.Guest, () =>
+                {
+                    Console.WriteLine(WinttOS.UsersManager.CurrentUser.Login);
+                }),
+                new CommandAction(new string[] { "bash" }, User.AccessLevel.Default, () =>
+                {
+                    BashInterpreter bash = new();
+                    Console.WriteLine(bash.Parse(@"0:\startup.sh"));
+                    bash.Execute();
+                })
             };
         }
 

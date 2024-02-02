@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using WinttOS.Core.Utils.Debugging;
+using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Shell.Utils;
 
 namespace WinttOS.wSystem.Shell.bash
 {
-    [Obsolete(message:"Class causes kernel panic on parse", error:true)]
+    //[Obsolete(message:"Class causes kernel panic on parse", error:true)]
     public class BashInterpreter
     {
         private List<BashFunction> _functions;
@@ -32,12 +34,13 @@ namespace WinttOS.wSystem.Shell.bash
 
         public string Parse(string path)
         {
+
             if (!File.Exists(path))
                 return "File does not exists!";
 
             foreach (var item in File.ReadAllLines(path))
             {
-                if (string.IsNullOrWhiteSpace(item))
+                if (item.IsNullOrWhiteSpace())
                     continue;
                 _rawCode.Add(item);
                 _endOfFile = _rawCode.Count - 1;
@@ -46,7 +49,7 @@ namespace WinttOS.wSystem.Shell.bash
 
             int line = 0;
 
-            if (_rawCode[line] != "#!/bin/bash")
+            if (_rawCode[line] != "#!/bin/bash/")
                 return "Files is not a bash script!";
 
             bool isSelectingFunc = false;
@@ -110,6 +113,8 @@ namespace WinttOS.wSystem.Shell.bash
 
         public void Execute()
         {
+            WinttDebugger.Trace("Begin to execute BASH", this);
+
             BashFunction current = null;
             BashCallFrame frame;
             bool isInFunc = false;
@@ -118,21 +123,25 @@ namespace WinttOS.wSystem.Shell.bash
 
             while (true)
             {
+                WinttDebugger.Trace("New call handle", this);
+
                 _executionPtr++;
 
                 if (isInFunc)
                 {
                     if (_callStack.Count == 0)
                     {
+                        WinttDebugger.Trace("Call stack is 0", this);
+
                         isInFunc = false;
                         continue;
                     }
                     else if (current.LineEnd == _executionPtr)
                     {
-                        _callStack.Pop();
+                        WinttDebugger.Trace("Reached end of function, poping call stack", this);
+
                         frame = _callStack.Pop();
                         _executionPtr = frame.CallLine;
-                        current = frame.Function;
                         continue;
                     }
                 }
@@ -140,33 +149,43 @@ namespace WinttOS.wSystem.Shell.bash
                 if (_executionPtr > _endOfFile)
                     break;
 
+                WinttDebugger.Trace("Going thorugh commands", this);
+
                 foreach (var cmd in _commands)
                 {
                     if (cmd.Line == _executionPtr)
                     {
+                        WinttDebugger.Trace("Found one with same line, checking if it's a function", this);
+
                         foreach (var func in _functions)
                         {
                             if (func.Name == cmd.Name)
                             {
+                                WinttDebugger.Trace("Executing function", this);
+
                                 _callStack.Push(new(_executionPtr, func));
                                 _executionPtr = func.LineStart;
                                 current = func;
                                 isInFunc = true;
+                                continue;
                             }
                         }
 
+                        WinttDebugger.Trace("Execution command", this);
+
                         if (cmd.Args.Count == 0)
                         {
-                            Console.WriteLine("Execution -> '{0}' (no args)", cmd.Name);
+                            WinttOS.CommandManager.ProcessInput(cmd.Name);
                         }
                         else
                         {
-                            Console.WriteLine("Execution -> '{0}' -> '{1}'", cmd.Name, string.Join(' ', cmd.Args.ToArray()));
+                            WinttOS.CommandManager.ProcessInput(cmd.Name + " " + string.Join(' ', cmd.Args.ToArray()));
                         }
                         break;
                     }
                 }
             }
+            WinttDebugger.Trace("Execution ended!", this);
         }
     }
 }

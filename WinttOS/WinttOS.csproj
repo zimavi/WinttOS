@@ -52,6 +52,7 @@
     }
 }]]>
 		</WinttRevision>
+		<Nullable>annotations</Nullable>
 	</PropertyGroup>
 
     <ItemGroup>
@@ -95,6 +96,7 @@
 	</ItemGroup>
 
     <ItemGroup>
+      <Folder Include="wSystem\Shell\bash\" />
       <Folder Include="wSystem\Shell\Programs\ProgramsExecutables\" />
     </ItemGroup>
 
@@ -110,7 +112,7 @@
       <EmbeddedResource Include="Core\resources\startup.wav" />
     </ItemGroup>
 
-	<Target Name="GetVersion">
+	<Target Name="GetVersion" BeforeTargets="PreBuildEvent">
 		<WriteLinesToFile File="wSystem\Properies\VersionInfo.cs" Lines="$(WinttRevision)" Overwrite="true" />
 	</Target>
 

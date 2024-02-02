@@ -10,7 +10,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
 
         public override ReturnInfo Execute()
         {
-            Console.WriteLine($"{Kernel.KernelVersion}\n{WinttOS.WinttVersion}\nPowered by Cosmos Kernel");
+            Console.WriteLine($"{Kernel.KernelVersion}\n{WinttOS.WinttVersion}:{WinttOS.WinttRevision}\nPowered by Cosmos Kernel");
             return new(this, ReturnCode.OK);
         }
 

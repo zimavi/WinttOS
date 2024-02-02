@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
 {
-    public class Package : Command
+    public class PackageCommand : Command
     {
-        public Package(string[] commandValues) : base(commandValues, Users.User.AccessLevel.Administrator)
+        public PackageCommand(string[] commandValues) : base(commandValues, Users.User.AccessLevel.Administrator)
         { }
 
         public override ReturnInfo Execute()

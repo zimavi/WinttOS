@@ -54,6 +54,24 @@ namespace WinttOS.Core.Utils.Sys
 
         #endregion
 
+        #region String
+
+        public static bool IsNullOrWhiteSpace(this string str)
+        {
+            if (str.IsNull() || str == "")
+                return true;
+            foreach(char c in str)
+            {
+                if (c != ' ' && c != '\n' && c != '\t' && c != '\r')
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        #endregion
+
         #region "Extesions" for static classes
 
         [Obsolete("This method returns wrong string (for some reason)")]

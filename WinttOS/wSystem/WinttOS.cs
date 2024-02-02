@@ -27,8 +27,8 @@ namespace WinttOS.wSystem
         private static WinttOS instance => new();
 
 
-        public const string WinttVersion = "WinttOS v1.0.0 dev. build 2345";
-
+        public static readonly string WinttVersion = "WinttOS v1.0.0 dev. build 2345";
+        public static readonly string WinttRevision = VersionInfo.revision;
 
         public static WinttServiceManager ServiceManager { get; private set; } = null;
         public static UsersManager UsersManager { get; private set; } = new(null);
@@ -97,6 +97,13 @@ namespace WinttOS.wSystem
             }
 
             Heap.Collect();
+
+            if(File.Exists(@"0:\startup.sh"))
+            {
+                BashInterpreter bash = new();
+                bash.Parse(@"0:\startup.sh");
+                bash.Execute();
+            }
 
             CoroutinePool.Main.PerformHeapCollection = false;
 

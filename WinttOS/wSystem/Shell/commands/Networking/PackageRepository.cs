@@ -49,8 +49,14 @@ namespace WinttOS.wSystem.Shell.commands.Networking
                     {
                         return new(this, ReturnCode.ERROR_ARG);
                     }
-
-                    WinttOS.PackageManager.RemoveRepo(arguments[1]);
+                    if (int.TryParse(arguments[1], out int id))
+                    {
+                        WinttOS.PackageManager.RemoveRepo(id);
+                    }
+                    else
+                    {
+                        return new ReturnInfo(this, ReturnCode.ERROR, "Invalid Integer");
+                    }
                     return new ReturnInfo(this, ReturnCode.OK);
                 }
                 return new ReturnInfo(this, ReturnCode.ERROR_ARG);
