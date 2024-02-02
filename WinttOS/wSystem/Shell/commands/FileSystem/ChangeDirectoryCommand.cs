@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using WinttOS.wSystem.Filesystem;
-using WinttOS.wSystem.Shell.Utils.Commands;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
@@ -9,9 +8,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
     internal class ChangeDirectoryCommand : Command
     {
         public ChangeDirectoryCommand(string[] name) : base(name, User.AccessLevel.Guest)
-        {
-            HelpCommandManager.AddCommandUsageStrToManager(@"cd <path\to\folder> - change directory");
-        }
+        { }
 
         public override ReturnInfo Execute(List<string> arguments)
         {
@@ -20,6 +17,12 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
                 return new(this, ReturnCode.ERROR, error);
             }
             return new(this, ReturnCode.OK);
+        }
+
+        public override void PrintHelp()
+        {
+            Console.WriteLine("Usage:");
+            Console.WriteLine("- cd {directory}");
         }
     }
 }

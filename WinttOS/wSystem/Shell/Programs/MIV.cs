@@ -6,10 +6,38 @@ namespace WinttOS.wSystem.Shell.Programs
 {
     public class MIV
     {
-
-        public static string stringCopy(string value)
+        public static void printMIVStartScreen()
         {
-            string newString = string.Empty;
+            Console.Clear();
+            Console.WriteLine("~");
+            Console.WriteLine("~");
+            Console.WriteLine("~");
+            Console.WriteLine("~");
+            Console.WriteLine("~");
+            Console.WriteLine("~");
+            Console.WriteLine("~");
+            Console.WriteLine("~                               MIV - MInimalistic Vi");
+            Console.WriteLine("~");
+            Console.WriteLine("~                                  version 1.2");
+            Console.WriteLine("~                             by Denis Bartashevich");
+            Console.WriteLine("~                            Minor additions by CaveSponge");
+            Console.WriteLine("~                    MIV is open source and freely distributable");
+            Console.WriteLine("~");
+            Console.WriteLine("~                     type :help<Enter>          for information");
+            Console.WriteLine("~                     type :q<Enter>             to exit");
+            Console.WriteLine("~                     type :wq<Enter>            save to file and exit");
+            Console.WriteLine("~                     press i                    to write");
+            Console.WriteLine("~");
+            Console.WriteLine("~");
+            Console.WriteLine("~");
+            Console.WriteLine("~");
+            Console.WriteLine("~");
+            Console.WriteLine("~");
+            Console.Write("~");
+        }
+        public static String stringCopy(String value)
+        {
+            String newString = String.Empty;
 
             for (int i = 0; i < value.Length - 1; i++)
             {
@@ -19,11 +47,11 @@ namespace WinttOS.wSystem.Shell.Programs
             return newString;
         }
 
-        public static void printMIVScreen(char[] chars, int pos, string infoBar, bool editMode)
+        public static void printMIVScreen(char[] chars, int pos, String infoBar, Boolean editMode)
         {
             int countNewLine = 0;
             int countChars = 0;
-            //delay(10000000);
+            delay(10000000);
             Console.Clear();
 
             for (int i = 0; i < pos; i++)
@@ -74,21 +102,27 @@ namespace WinttOS.wSystem.Shell.Programs
 
         }
 
-        public static string miv(string start)
+        public static String miv(String start)
         {
-            bool editMode = false;
+            Boolean editMode = false;
             int pos = 0;
             char[] chars = new char[2000];
-            string infoBar = string.Empty;
+            String infoBar = String.Empty;
 
-
-            pos = start.Length;
-
-            for (int i = 0; i < start.Length; i++)
+            if (start == null)
             {
-                chars[i] = start[i];
+                printMIVStartScreen();
             }
-            printMIVScreen(chars, pos, infoBar, editMode);
+            else
+            {
+                pos = start.Length;
+
+                for (int i = 0; i < start.Length; i++)
+                {
+                    chars[i] = start[i];
+                }
+                printMIVScreen(chars, pos, infoBar, editMode);
+            }
 
             ConsoleKeyInfo keyInfo;
 
@@ -109,7 +143,7 @@ namespace WinttOS.wSystem.Shell.Programs
                         {
                             if (infoBar == ":wq")
                             {
-                                string returnString = string.Empty;
+                                String returnString = String.Empty;
                                 for (int i = 0; i < pos; i++)
                                 {
                                     returnString += chars[i];
@@ -123,6 +157,7 @@ namespace WinttOS.wSystem.Shell.Programs
                             }
                             else if (infoBar == ":help")
                             {
+                                printMIVStartScreen();
                                 break;
                             }
                             else
@@ -179,7 +214,7 @@ namespace WinttOS.wSystem.Shell.Programs
                 else if (keyInfo.Key == ConsoleKey.Escape)
                 {
                     editMode = false;
-                    infoBar = string.Empty;
+                    infoBar = String.Empty;
                     printMIVScreen(chars, pos, infoBar, editMode);
                     continue;
                 }
@@ -231,9 +266,9 @@ namespace WinttOS.wSystem.Shell.Programs
         {
             for (int i = 0; i < time; i++) ;
         }
-        public static void StartMIV(string file)
+        public static void StartMIV(string path)
         {
-            GlobalData.FileToEdit = file;
+            GlobalData.FileToEdit = path;
             try
             {
                 if (File.Exists(GlobalData.CurrentDirectory + GlobalData.FileToEdit))
@@ -245,17 +280,16 @@ namespace WinttOS.wSystem.Shell.Programs
                     Console.WriteLine("Creating file!");
                     File.Create(GlobalData.CurrentDirectory + GlobalData.FileToEdit);
                 }
-                //Console.Clear();
+                Console.Clear();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
 
-            string text = string.Empty;
+            String text = String.Empty;
             Console.WriteLine("Do you want to open " + GlobalData.FileToEdit + " content? (Yes/No)");
-            string input = Console.ReadLine().ToLower();
-            if (input == "yes" || input == "y")
+            if (Console.ReadLine().ToLower() == "yes" || Console.ReadLine().ToLower() == "y")
             {
                 text = miv(File.ReadAllText(GlobalData.CurrentDirectory + GlobalData.FileToEdit));
             }
@@ -268,22 +302,9 @@ namespace WinttOS.wSystem.Shell.Programs
 
             if (text != null)
             {
-                if (!Kernel.ReadonlyFiles.Contains(GlobalData.CurrentDirectory + GlobalData.FileToEdit))
-                {
-                    File.WriteAllText(GlobalData.CurrentDirectory + GlobalData.FileToEdit, text);
-                    Console.WriteLine(@"Content has been saved to " + GlobalData.CurrentDirectory + GlobalData.FileToEdit);
-                }
-                else
-                {
-                    Console.WriteLine("Unable to save. Files is readonly!");
-                }
+                File.WriteAllText(GlobalData.CurrentDirectory + GlobalData.FileToEdit, text);
+                Console.WriteLine("Content has been saved to " + GlobalData.FileToEdit);
             }
-        }
-
-        public string Execute(string[] args)
-        {
-            StartMIV(args[0]);
-            return null;
         }
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using WinttOS.Core;
-using WinttOS.wSystem.Shell.Utils.Commands;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
@@ -10,9 +9,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
     public class MakeFileCommand : Command
     {
         public MakeFileCommand(string[] name) : base(name, User.AccessLevel.Guest)
-        {
-            HelpCommandManager.AddCommandUsageStrToManager(@"mkfile <new.file> - creates new file");
-        }
+        { }
 
         public override ReturnInfo Execute(List<string> arguments)
         {
@@ -23,13 +20,10 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
             return new(this, ReturnCode.OK);
         }
 
-        public override ReturnInfo Execute()
+        public override void PrintHelp()
         {
-            Console.Write("Enter file name: ");
-            string file = Console.ReadLine();
-            // Added replacement of spaces in names into _ for preventing unopenable files
-            var file_stream = File.Create(GlobalData.CurrentDirectory + @"\" + string.Join('\n', file.Split(' ')));
-            return new(this, ReturnCode.OK);
+            Console.WriteLine("Usage:");
+            Console.WriteLine("- mkfile {file}");
         }
     }
 }

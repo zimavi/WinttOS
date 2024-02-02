@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using WinttOS.Core;
-using WinttOS.wSystem.Shell.Utils.Commands;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
@@ -9,9 +8,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
     public class MakeDirCommand : Command
     {
         public MakeDirCommand(string[] name) : base(name, User.AccessLevel.Guest)
-        {
-            HelpCommandManager.AddCommandUsageStrToManager(@"mkdir <dir> - creates new directory in current one");
-        }
+        { }
 
         public override ReturnInfo Execute(List<string> arguments)
         {
@@ -27,6 +24,12 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
             // Added replacment of spaces in names into _ for preventing unopenable folders
             GlobalData.FileSystem.CreateDirectory(GlobalData.CurrentDirectory + string.Join('_', dir.Split(' ')));
             return new(this, ReturnCode.OK);
+        }
+
+        public override void PrintHelp()
+        {
+            Console.WriteLine("Usage:");
+            Console.WriteLine("- mkdir {directory}");
         }
     }
 }

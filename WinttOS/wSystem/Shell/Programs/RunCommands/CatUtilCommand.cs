@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using WinttOS.wSystem.Shell.Utils.Commands;
 
 namespace WinttOS.wSystem.Shell.Programs.RunCommands
 {
@@ -11,7 +10,6 @@ namespace WinttOS.wSystem.Shell.Programs.RunCommands
     {
         public CatUtilCommand(string[] name) : base(name, false)
         {
-            HelpCommandManager.AddCommandUsageStrToManager(@"cat <path\to\file> - reads all text from file (use 'man cat' for more info)");
         }
 
         public override ReturnInfo Execute(List<string> arguments)
@@ -19,6 +17,12 @@ namespace WinttOS.wSystem.Shell.Programs.RunCommands
             CAT instance = new CAT();
             Console.WriteLine(instance.Execute(arguments.ToArray()));
             return new(this, ReturnCode.OK);
+        }
+
+        public override void PrintHelp()
+        {
+            Console.WriteLine("Usage:");
+            Console.WriteLine("- cat {file}");
         }
     }
 }

@@ -5,7 +5,6 @@ using Cosmos.System.Network.IPv4;
 using Cosmos.System.Network.IPv4.UDP.DHCP;
 using System;
 using System.Collections.Generic;
-using WinttOS.wSystem.Shell.Utils.Commands;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Networking
@@ -15,7 +14,6 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
 
         public IpConfigCommand(string[] name) : base(name, User.AccessLevel.Guest)
         {
-            HelpCommandManager.AddCommandUsageStrToManager(@"ipconfig - gets list of network devices");
             CommandManual = new()
             {
                 "Available commands:",
@@ -197,6 +195,11 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                 return new(this, ReturnCode.OK);
             }
             return new(this, ReturnCode.OK);
+        }
+
+        public override void PrintHelp()
+        {
+            Console.WriteLine("Please type 'man ipconfig'!");
         }
     }
 }

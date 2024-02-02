@@ -1,8 +1,6 @@
 ﻿using System;
-using WinttOS.Core;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Users;
-using WinttOS.wSystem.Shell.Utils.Commands;
 using System.Collections.Generic;
 using Cosmos.System.Coroutines;
 
@@ -11,9 +9,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
     internal class SudoCommand : Command
     {
         public SudoCommand(string[] name) : base(name)
-        {
-            HelpCommandManager.AddCommandUsageStrToManager("sudo [command] [command args] - give root permissions");
-        }
+        { }
 
         private string _passwrd;
 
@@ -69,6 +65,12 @@ namespace WinttOS.wSystem.Shell.Commands.Users
             }
             */
             yield break;
+        }
+
+        public override void PrintHelp()
+        {
+            Console.WriteLine("Usage:");
+            Console.WriteLine("- sudo [command]");
         }
     }
 }

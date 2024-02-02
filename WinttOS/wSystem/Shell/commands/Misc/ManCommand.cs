@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WinttOS.wSystem.Shell.Utils.Commands;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
@@ -9,9 +8,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
     public class ManCommand : Command
     {
         public ManCommand(string[] name) : base(name, User.AccessLevel.Guest)
-        {
-            HelpCommandManager.AddCommandUsageStrToManager("man [command name] - shows list of manuals or command manual");
-        }
+        { }
 
         public override ReturnInfo Execute(List<string> arguments)
         {
@@ -44,6 +41,12 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
             returnStr += string.Join('\n', commandsWithManuals.ToArray()[0]);
             Console.WriteLine(returnStr);
             return new(this, ReturnCode.OK);
+        }
+
+        public override void PrintHelp()
+        {
+            Console.WriteLine("Usage:");
+            Console.WriteLine("- man [command name]");
         }
     }
 }

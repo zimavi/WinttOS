@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using WinttOS.wSystem.Shell.Utils.Commands;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
@@ -9,7 +8,6 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
     {
         public EchoCommand(string[] name) : base(name, User.AccessLevel.Guest)
         {
-            HelpCommandManager.AddCommandUsageStrToManager(@"echo <message> - repeats message");
             CommandManual = new List<string>()
             {
                 "Echo command return all text that was gave after 'echo'",
@@ -71,6 +69,12 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
         {
             Console.WriteLine("ECHO is off by default.");
             return new(this, ReturnCode.OK);
+        }
+
+        public override void PrintHelp()
+        {
+            Console.WriteLine("Usage:");
+            Console.WriteLine("- echo {message}");
         }
     }
 }

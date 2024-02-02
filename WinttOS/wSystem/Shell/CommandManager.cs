@@ -56,7 +56,8 @@ namespace WinttOS.wSystem.Shell
                 new UsersCommand(new string[] { "user" }),
                 new ProcessCommand(new string[] { "process" }),
                 new WgetCommand(new string[] { "wget" }),
-                new Package(new string[] { "apt-get", "apt" })
+                new Package(new string[] { "apt-get", "apt" }),
+                new PackageRepository(new string [] { "apt-get-repository", "apt-get-repo"})
             };
         }
 

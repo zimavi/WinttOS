@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using WinttOS.wSystem.Services;
-using WinttOS.wSystem.Shell.Utils.Commands;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Processing
@@ -10,11 +8,12 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
     {
         public SystemCtlCommand(string[] name) : base(name, User.AccessLevel.Administrator) 
         {
-            HelpCommandManager.AddCommandUsageStrToManager("systemctl [--help|-h] - get usage str (or use 'man systemctl')");
             CommandManual = new()
             {
-                "  systemctl list - get list of _services",
-                "  systemctl _status <service.name> - get service _status"
+                "Avaiable commands:",
+                "- systemctl --list - get list of _services",
+                //"- systemctl status <service.name> - get service status"
+
             };
         }
 
@@ -58,6 +57,11 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
                 */
             }
             return new(this, ReturnCode.OK);
+        }
+
+        public override void PrintHelp()
+        {
+            Console.WriteLine("Please use 'man systemctl'!");
         }
     }
 }

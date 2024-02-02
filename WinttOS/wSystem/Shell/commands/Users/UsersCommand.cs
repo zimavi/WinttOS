@@ -4,16 +4,13 @@ using System.Linq;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Users;
-using WinttOS.wSystem.Shell.Utils.Commands;
 
 namespace WinttOS.wSystem.Shell.Commands.Users
 {
     public class UsersCommand : Command
     {
         public UsersCommand(string[] name) : base(name, User.AccessLevel.Administrator)
-        {
-            HelpCommandManager.AddCommandUsageStrToManager("_user [list,add,remove,change] - manipulate with users (Please read manual before using)");
-        }
+        { }
 
         public override ReturnInfo Execute(List<string> arguments)
         {
@@ -84,7 +81,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                                                                            .Build());
                 }
             }
-            else if (arguments[0] == "--remove")
+            else if (arguments[0] == "--remove" || arguments[0] == "-rm")
             {
                 return new(this, ReturnCode.CRASH, "NotImplementedYet!");
 
@@ -105,7 +102,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                     return new(this, ReturnCode.ERROR, "No such a user!");
                 }
             }
-            else if (arguments[0] == "--change")
+            else if (arguments[0] == "--change" || arguments[0] == "-ch")
             {
                 return new(this, ReturnCode.CRASH, "NotImplementedYet!");
 
@@ -151,7 +148,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                     }
                 }
             }
-            else if (arguments[0] == "--set-password")
+            else if (arguments[0] == "--update-password" || arguments[0] == "-udps")
             {
                 if (arguments.Count > 3)
                 {
@@ -179,6 +176,12 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                 }
             }
             return new(this, ReturnCode.OK);
+        }
+
+        public override void PrintHelp()
+        {
+            Console.WriteLine("Usage:");
+            Console.WriteLine("- user {--list|--add|--remove|--change|--update-password}");
         }
     }
 }
