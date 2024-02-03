@@ -27,7 +27,7 @@ namespace WinttOS.wSystem
         private static WinttOS instance => new();
 
 
-        public static readonly string WinttVersion = "WinttOS v1.0.0 dev. build 2345";
+        public static readonly string WinttVersion = "WinttOS v1.0.0 dev.";
         public static readonly string WinttRevision = VersionInfo.revision;
 
         public static WinttServiceManager ServiceManager { get; private set; } = null;
