@@ -58,15 +58,15 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                     returnData += '\n';
                 }
 
-                returnData += "MAC Address          : " + config.Device.MACAddress.ToString();
-                returnData += "IP Address           : " + config.IPConfig.IPAddress.ToString();
-                returnData += "Subnet mask          : " + config.IPConfig.SubnetMask.ToString();
-                returnData += "Default Gateway      : " + config.IPConfig.DefaultGateway.ToString();
-                returnData += "DNS Nameservers      : ";
+                returnData += "MAC Address          : " + config.Device.MACAddress.ToString() + '\n';
+                returnData += "IP Address           : " + config.IPConfig.IPAddress.ToString() + '\n';
+                returnData += "Subnet mask          : " + config.IPConfig.SubnetMask.ToString() + '\n';
+                returnData += "Default Gateway      : " + config.IPConfig.DefaultGateway.ToString() + '\n';
+                returnData += "DNS Nameservers      : " + '\n';
 
                 foreach (Address nameServer in DNSConfig.DNSNameservers)
                 {
-                    returnData += "                       " + nameServer.ToString();
+                    returnData += "                       " + nameServer.ToString() + '\n';
                 }
             }
 

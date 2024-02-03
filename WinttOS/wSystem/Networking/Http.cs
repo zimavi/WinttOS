@@ -3,11 +3,7 @@ using Cosmos.System.Network.IPv4;
 using Cosmos.System.Network.IPv4.UDP.DNS;
 using CosmosHttp.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using WinttOS.Core.Utils.Debugging;
 
 namespace WinttOS.wSystem.Networking
@@ -21,24 +17,49 @@ namespace WinttOS.wSystem.Networking
                 throw new WebException("HTTPS currently not supported, please use HTTP");
             }
 
-            string path = extractPathFromUrl(url);
-            string domainName = extractDomainNameFromUrl(url);
+            try
+            {
 
-            DnsClient dnsClient = new();
+                WinttDebugger.Trace("Http -> Preprocessing url");
 
-            dnsClient.Connect(DNSConfig.DNSNameservers[0]);
-            dnsClient.SendAsk(domainName);
-            Address address = dnsClient.Receive();
-            dnsClient.Close();
+                string path = extractPathFromUrl(url);
+                string domainName = extractDomainNameFromUrl(url);
 
-            HttpRequest req = new();
-            req.IP = address.ToString();
-            req.Domain = domainName;
-            req.Path = path;
-            req.Method = "GET";
-            req.Send();
+                WinttDebugger.Trace("Http -> Sending DNS request");
 
-            return req.Response.GetStream();
+                DnsClient dnsClient = new();
+
+                dnsClient.Connect(DNSConfig.DNSNameservers[0]);
+                dnsClient.SendAsk(domainName);
+                Address address = dnsClient.Receive();
+                dnsClient.Close();
+
+                if(address == null)
+                {
+                    Console.WriteLine("Error: Invalid received address (Is it null?)");
+                    return null;
+                }
+
+                WinttDebugger.Trace("Http -> Sending GET request");
+
+                HttpRequest req = new()
+                {
+                    IP = address.ToString(),
+                    Domain = domainName,
+                    Path = path,
+                    Method = "GET"
+                };
+                req.Send();
+
+                WinttDebugger.Trace("Http -> Sent request");
+
+                return req.Response.GetStream();
+            }
+            catch(Exception ex)
+            {
+                WinttDebugger.Critical("Http -> " + ex.Message, true);
+                return null;
+            }
         }
         public static string DownloadFile(string url)
         {
@@ -59,11 +80,13 @@ namespace WinttOS.wSystem.Networking
                 Address address = dnsClient.Receive();
                 dnsClient.Close();
 
-                HttpRequest req = new();
-                req.IP = address.ToString();
-                req.Domain = domainName;
-                req.Path = path;
-                req.Method = "GET";
+                HttpRequest req = new()
+                {
+                    IP = address.ToString(),
+                    Domain = domainName,
+                    Path = path,
+                    Method = "GET"
+                };
                 req.Send();
 
                 return req.Response.Content;

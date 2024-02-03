@@ -21,7 +21,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
 
         public override ReturnInfo Execute(List<string> arguments)
         {
-            if (arguments[0] == "/alias")
+            if (arguments[0] == "--alias" || arguments[0] == "-a")
             {
                 return ExecuteHelp(true);
             }
@@ -30,21 +30,36 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                 return ExecuteHelp(false);
             }
         }
-        /*
-        public IEnumerator<CoroutineControlPoint> PrintHelpStrAsync()
+        
+        public IEnumerator<CoroutineControlPoint> PrintHelpStrAsync(bool showAliases)
         {
-            List<string> helpStrs = HelpCommandManager.GetCommandsUsageStringsAsList();
-            int index = 0;
+            int idx = 0;
 
-            for (; index < 22 && index < helpStrs.Count; index++)
+            var commandsList = WinttOS.CommandManager.GetCommandsListInstances();
+
+            for (; idx < 22 && idx < commandsList.Count; idx++)
             {
-                Console.WriteLine(helpStrs[index]);
+                if (showAliases)
+                {
+                    foreach (var value in commandsList[idx].CommandValues)
+                    {
+                        if (idx != commandsList[idx].CommandValues.Length - 1)
+                            Console.Write(value + ", ");
+                        else
+                            Console.Write(value);
+                    }
+                }
+                else
+                {
+                    Console.Write(commandsList[idx].CommandValues[0]);
+                }
+                Console.WriteLine(" (" + commandsList[idx].Description + ")");
             }
 
-            if (index >= helpStrs.Count)
+            if (idx >= commandsList.Count)
                 yield break;
 
-            Console.Write($"Press Space-bar to continue list ({index + 1}/{helpStrs.Count})...");
+            Console.Write($"Press Space-bar to continue list ({idx + 1}/{commandsList.Count})...");
 
             while (true)
             {
@@ -53,53 +68,44 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                     ConsoleKeyInfo key = Console.ReadKey(true);
                     if (key.Key != ConsoleKey.Spacebar && key.Key != ConsoleKey.Enter)
                         continue;
-                    if (index >= helpStrs.Count)
-                        yield break;
+                    if (idx >= commandsList.Count)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine("You can see more information about a specific command by typing: {command} /help");
+                        break;
+                    }
 
                     ShellUtils.ClearCurrentConsoleLine();
-                    ShellUtils.MoveCursorUp(1);
-                    WinttDebugger.Debug($"Index: {index}; List count: {helpStrs.Count})", this);
-                    Console.WriteLine(helpStrs[index++]);
+                    //ShellUtils.MoveCursorUp(1);
+                    WinttDebugger.Debug($"Index: {idx}; List count: {commandsList.Count})", this);
+                    if (showAliases)
+                    {
+                        foreach (var value in commandsList[idx].CommandValues)
+                        {
+                            if (idx != commandsList[idx].CommandValues.Length - 1)
+                                Console.Write(value + ", ");
+                            else
+                                Console.Write(value);
+                        }
+                    }
+                    else
+                    {
+                        Console.Write(commandsList[idx].CommandValues[0]);
+                    }
+                    Console.WriteLine(" (" + commandsList[idx++].Description + ")");
 
-                    if (index < helpStrs.Count)
-                        Console.Write($"Press Enter to continue list ({index + 1}/{helpStrs.Count})");
+                    if (idx < commandsList.Count)
+                        Console.Write($"Press Enter to continue list ({idx + 1}/{commandsList.Count})");
                 }
                 yield return null;
             }
         } 
-        */
+        
 
 
         private ReturnInfo ExecuteHelp(bool showaliases)
         {
-            int count = 0;
-            foreach (var command in WinttOS.CommandManager.GetCommandsListInstances())
-            {
-                Console.Write("- ");
-                if (showaliases)
-                {
-                    for (int i = 0; i < command.CommandValues.Length; i++)
-                    {
-                        if (i != command.CommandValues.Length - 1)
-                        {
-                            Console.Write(command.CommandValues[i] + ", ");
-                        }
-                        else
-                        {
-                            Console.Write(command.CommandValues[i]);
-                        }
-                    }
-                }
-                else
-                {
-                    Console.Write(command.CommandValues[0]);
-                }
-                Console.WriteLine(" (" + command.Description + ")");
-
-                count++;
-            }
-            Console.WriteLine();
-            Console.WriteLine("You can see more information about a specific command by typing: {command} /help");
+            CoroutinePool.Main.AddCoroutine(new(PrintHelpStrAsync(showaliases)));
             return new ReturnInfo(this, ReturnCode.OK);
         }
 

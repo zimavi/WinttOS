@@ -74,6 +74,11 @@ namespace WinttOS.wSystem.Shell
                     BashInterpreter bash = new();
                     Console.WriteLine(bash.Parse(@"0:\startup.sh"));
                     bash.Execute();
+                }),
+                new CommandAction(new string[] { "crash" }, User.AccessLevel.Administrator, () =>
+                {
+                    Kernel.WinttRaiseHardError(Core.Utils.Kernel.WinttStatus.MANUALLY_INITIATED_CRASH1,
+                        this, Core.Utils.Kernel.HardErrorResponseOption.OptionShutdownSystem);
                 })
             };
         }

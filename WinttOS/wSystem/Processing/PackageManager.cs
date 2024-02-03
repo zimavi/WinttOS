@@ -169,13 +169,22 @@ namespace WinttOS.wSystem.Processing
 
         public void Install(string packageName)
         {
+            WinttDebugger.Trace($"Installing package '{packageName}'");
             foreach(var package in LocalRepository)
             {
                 if (package.Name == packageName)
                 {
+                    WinttDebugger.Trace("Found package, processing to install");
+                    package.Download();
+                    if(package.Executable == null)
+                    {
+                        Console.WriteLine("Unable to install package (Is it null?)");
+                        return;
+                    }
                     package.Installed = true;
                     Packages.Add(package);
-                    package.Download();
+
+                    WinttDebugger.Trace("Installed!");
 
                     Console.WriteLine($"{packageName}  added.");
 
