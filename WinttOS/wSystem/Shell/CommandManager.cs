@@ -14,9 +14,7 @@ using WinttOS.wSystem.Shell.Utils;
 using WinttOS.wSystem.Shell.Commands.Networking;
 using WinttOS.wSystem.Shell.Commands.Users;
 using WinttOS.wSystem.Shell.commands.Networking;
-using System.Linq;
 using Cosmos.System.Network;
-using System.Windows.Input;
 using System.IO;
 using WinttOS.wSystem.Shell.bash;
 using WinttOS.wSystem.Shell.commands.Misc;
@@ -31,6 +29,8 @@ namespace WinttOS.wSystem.Shell
         private bool _didRunCycle = true;
         private bool _redirect = false;
         private string _commandOutput = "";
+        private bool _hasShellFired = false;
+        public bool IsInputTaken = false;
 
 
         public CommandManager() : base("WoshDaemon", "WoshManagerDaemon")
@@ -165,6 +165,7 @@ namespace WinttOS.wSystem.Shell
 
                         if (result.Code == ReturnCode.OK)
                         {
+                            _hasShellFired = false;
                             if (arguments.Count == 0)
                             {
                                 result = cmd.Execute();
@@ -270,6 +271,7 @@ namespace WinttOS.wSystem.Shell
 
                         if (result.Code == ReturnCode.OK)
                         {
+                            _hasShellFired = false;
                             if (arguments.Count == 0)
                             {
                                 result = cmd.Execute();
@@ -397,12 +399,20 @@ namespace WinttOS.wSystem.Shell
                     WinttCallStack.RegisterReturn();
                     return;
                 }
-                if (_didRunCycle)
+                if (_didRunCycle && !IsInputTaken)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                     Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
                     Console.ForegroundColor = ConsoleColor.White;
                     _didRunCycle = false;
+                }
+                else if (!IsInputTaken && !_hasShellFired)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    _didRunCycle = false;
+                    _hasShellFired = true;
                 }
                 string input = "";
                 bool hasKey = ShellUtils.ProcessExtendedInput(ref input);

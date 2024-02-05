@@ -72,6 +72,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                     {
                         Console.WriteLine();
                         Console.WriteLine("You can see more information about a specific command by typing: {command} /help");
+                        WinttOS.CommandManager.IsInputTaken = false;
                         break;
                     }
 
@@ -106,6 +107,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
         private ReturnInfo ExecuteHelp(bool showaliases)
         {
             CoroutinePool.Main.AddCoroutine(new(PrintHelpStrAsync(showaliases)));
+            WinttOS.CommandManager.IsInputTaken = true;
             return new ReturnInfo(this, ReturnCode.OK);
         }
 
