@@ -1,46 +1,55 @@
-﻿using Cosmos.Core.Memory;
+﻿using System;
+using System.IO;
+using System.Collections.Generic;
 using Cosmos.HAL;
+using Cosmos.Core.Memory;
 using Cosmos.System.Coroutines;
 using Cosmos.System.Network.IPv4.UDP.DHCP;
-using System;
-using System.Collections.Generic;
-using WinttOS.Core.Utils.Debugging;
+using Cosmos.System.Graphics;
+using Sys = Cosmos.System;
+using WinttOS.Core;
 using WinttOS.Core.Utils.Sys;
-using WinttOS.wSystem.Processing;
-using WinttOS.wSystem.Services;
+using WinttOS.Core.Utils.Kernel;
+using WinttOS.Core.Utils.Debugging;
+using WinttOS.wSystem.wAPI;
 using WinttOS.wSystem.Users;
 using WinttOS.wSystem.Shell;
-using WinttOS.wSystem.Shell.Commands.Misc;
-using Sys = Cosmos.System;
-using WinttOS.Core.Utils.Kernel;
-using Cosmos.System.Graphics;
-using WinttOS.Core;
+using WinttOS.wSystem.Services;
+using WinttOS.wSystem.Processing;
 using WinttOS.wSystem.Shell.bash;
-using System.IO;
+using WinttOS.wSystem.Scheduling;
+using WinttOS.wSystem.Shell.Commands.Misc;
+using Cosmos.Core;
+
 
 namespace WinttOS.wSystem
 {
+    using PS = PrivilegesSystem;
+
     public class WinttOS
     {
+
         #region Fields
 
         private static WinttOS instance => new();
 
+        public static PS.PrivilegesSet CurrentExecutionSet { get; internal set; } = PS.PrivilegesSet.HIGHEST;
 
-        public static readonly string WinttVersion = "WinttOS v1.0.0 dev.";
+        public static readonly string WinttVersion = "WinttOS v1.1.0 dev.";
         public static readonly string WinttRevision = VersionInfo.revision;
 
-        public static WinttServiceManager ServiceManager { get; private set; } = null;
-        public static UsersManager UsersManager { get; private set; } = new(null);
-        public static ProcessManager ProcessManager { get; private set; } = new();
-        public static CommandManager CommandManager { get; private set; } = new();
+        public static WinttServiceManager ServiceManager { get; private set; }
+        public static TaskScheduler SystemTaskScheduler { get; private set; }
+        public static UsersManager UsersManager { get; private set; }
+        public static ProcessManager ProcessManager { get; private set; }
+        public static CommandManager CommandManager { get; private set; }
         public static PackageManager PackageManager { get; private set; }
-        public static Memory MemoryManager { get; private set; } = new();
+        public static Memory MemoryManager { get; private set; }
         public static bool IsSleeping { get; set; } = false;
-        private static List<Action> OnSystemSleep = new();
+        private static List<Action> OnSystemSleep;
 
 
-        private static WinttServiceManager serviceManager = new();
+        private static WinttServiceManager serviceManager;
         private static uint serviceProviderProcessID;
 
 
@@ -57,15 +66,24 @@ namespace WinttOS.wSystem
                 "void()", "WinttOS.cs", 40));
             try
             {
+                serviceManager = new WinttServiceManager();
+                SystemTaskScheduler = new TaskScheduler();
+                UsersManager = new UsersManager(null);
+                ProcessManager = new ProcessManager();
+                CommandManager = new CommandManager();
+                PackageManager = new PackageManager();
+                MemoryManager = new Memory();
+
+                serviceManager.Initialize();
+                PackageManager.Initialize();
+
+                OnSystemSleep = new List<Action>();
+
                 Kernel.OnKernelFinish.Add(SystemFinish);
                 InitNetwork();
                 InitUsers();
-                InitServiceProvider();
 
                 ProcessManager.TryRegisterProcess(serviceManager, out serviceProviderProcessID);
-                
-                PackageManager = new();
-                PackageManager.Initialize();
 
                 Process srv;
                 if(!ProcessManager.TryGetProcessInstance(out srv, serviceProviderProcessID))
@@ -74,6 +92,11 @@ namespace WinttOS.wSystem
                 }
 
                 ServiceManager = (WinttServiceManager)srv;
+
+                unsafe
+                {
+                    GCImplementation.DecRootCount((ushort*)&srv);
+                }
 
                 ServiceManager.AddService(CommandManager);
 
@@ -128,36 +151,27 @@ namespace WinttOS.wSystem
             WinttCallStack.RegisterReturn();
         }
 
-        private static void InitServiceProvider()
-        {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.InitServiceProvider()",
-                "void()", "WinttOS.cs", 75));
-            serviceManager.Initialize();
-
-            serviceManager.AddService(new PowerManagerService());
-
-            WinttCallStack.RegisterReturn();
-        }
-
         private static void InitUsers()
         {
             WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.InitUSers()",
                 "void()", "WinttOS.cs", 86));
+
             if (!UsersManager.TryLoadUsersData())
             {
                 UsersManager.AddUser(new User.UserBuilder().SetUserName("root")
                                                            .SetAccess(User.AccessLevel.Administrator)
                                                            .Build());
-                UsersManager.LoginIntoUserAccount("root", null);
+                UsersManager.TryLoginIntoUserAccount("root", null);
             }
             if(UsersManager.RootUser.HasPassword)
             {
                 tryMore:
-                Console.Write("Please enter password from _user 'root': ");
-                if (!UsersManager.LoginIntoUserAccount("root", Console.ReadLine()))
+                Console.Write("Please enter password from user 'root': ");
+                if (!UsersManager.TryLoginIntoUserAccount("root", Console.ReadLine()))
                     goto tryMore;
 
             }
+
             WinttCallStack.RegisterReturn();
         }
 
@@ -222,13 +236,19 @@ namespace WinttOS.wSystem
             WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.FinishOS()",
                 "IEnumerator<CoroutineControlPoint>()", "WinttOS.cs", 148));
 
-            WinttDebugger.Trace("3 seconds elapsed, finishing running coroutines!", instance);
+            WinttDebugger.Trace("3 seconds elapsed, running shutdown tasks, and finishing running coroutines!", instance);
+
+            SystemTaskScheduler.CallShutdownSchedule();
+
             foreach (var coroutine in CoroutinePool.Main.RunningCoroutines)
             {
                 coroutine.Stop();
             }
+
             WinttDebugger.Info("Finishing Kernel!", instance);
+
             Console.WriteLine("Is now safe to turn off your computer!");
+
             if (Kernel.IsRebooting)
                 Sys.Power.Reboot();
             else
@@ -249,7 +269,7 @@ namespace WinttOS.wSystem
                 {
                     if (process.IsProcessCritical && !process.IsProcessRunning)
                     {
-                        if (process.CurrentSet == API.PrivilegesSystem.PrivilegesSet.NONE || process.HasOwnerProcess)
+                        if (process.CurrentSet == wAPI.PrivilegesSystem.PrivilegesSet.NONE || process.HasOwnerProcess)
                             continue;
                         WinttDebugger.Error($"Critical process died => {process.ProcessName}", true, instance);
                         Kernel.WinttRaiseHardError(WinttStatus.CRITICAL_PROCESS_DIED, instance, HardErrorResponseOption.OptionShutdownSystem);

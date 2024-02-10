@@ -1,14 +1,12 @@
 ﻿using Cosmos.System.Coroutines;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using WinttOS;
 using WinttOS.Core.Utils.Debugging;
-using WinttOS.Core.Utils.Kernel;
 using WinttOS.wSystem.Shell.Utils;
 
 namespace WinttOS.wSystem.Processing
 {
+
     public class ProcessManager
     {
         private List<Process> _processes = new();
@@ -31,6 +29,7 @@ namespace WinttOS.wSystem.Processing
             }
             _processes.Add(process);
             _processes[_processes.Count - 1].SetProcessID((uint)_processes.Count - 1);
+            _processes[_processes.Count - 1].CurrentSet = WinttOS.UsersManager.CurrentUser.UserAccess.PrivilegeSet;
             _processes[_processes.Count - 1].Initialize();
             WinttCallStack.RegisterReturn();
             return true;
@@ -50,6 +49,7 @@ namespace WinttOS.wSystem.Processing
             }
             _processes.Add(process);
             _processes[_processes.Count - 1].SetProcessID((uint)_processes.Count - 1);
+            _processes[_processes.Count - 1].CurrentSet = WinttOS.UsersManager.CurrentUser.UserAccess.PrivilegeSet;
             _processes[_processes.Count - 1].Initialize();
             newProcessID = (uint)_processes.Count - 1;
             WinttCallStack.RegisterReturn();
@@ -204,13 +204,13 @@ namespace WinttOS.wSystem.Processing
                         {
                             if (process.Type == Process.ProcessType.FromValue(i) && process.IsProcessRunning)
                             {
-                                process.Update();
+                                WinttOS.CurrentExecutionSet = process.CurrentSet;
 
-                                if(process.TaskQueue.Count > 0)
-                                {
-                                    Action task = process.TaskQueue.Dequeue();
-                                    task();
-                                }
+                                process.Update();
+                                 
+                                process.TaskQueue.Dequeue().Callback();
+
+                                WinttOS.CurrentExecutionSet = wAPI.PrivilegesSystem.PrivilegesSet.HIGHEST;
                             }
                         }
                         catch(Exception e)

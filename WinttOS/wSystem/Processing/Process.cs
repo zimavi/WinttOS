@@ -6,8 +6,8 @@
 
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
-using WinttOS.wSystem.API;
-using static WinttOS.wSystem.API.PrivilegesSystem;
+using WinttOS.wSystem.wAPI;
+using static WinttOS.wSystem.wAPI.PrivilegesSystem;
 using WinttOS.wSystem.Users;
 using System.Collections.Generic;
 using System;
@@ -31,14 +31,14 @@ namespace WinttOS.wSystem.Processing
         public uint ProcessID { get; private set; }
         public ProcessType Type { get; private set; }
             = ProcessType.Program;
-        public PrivilegesSet CurrentSet { get; private set; } 
+        public PrivilegesSet CurrentSet { get; internal set; } 
             = PrivilegesSet.DEFAULT;
         public bool IsProcessInitialized { get; private set; }
         public bool IsProcessRunning { get; private set; }
         public bool IsProcessCritical { get; set; } = false;
         public Process OwnerProcess { get; private set; }
         public bool HasOwnerProcess => !OwnerProcess.IsNull();
-        public Queue<Action> TaskQueue { get; private set; } = new Queue<Action>();
+        public Queue<Task> TaskQueue { get; private set; } = new Queue<Task>();
 
         protected Process(string name, ProcessType type)
         {

@@ -7,7 +7,7 @@ using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Users;
 
-namespace WinttOS.wSystem.API
+namespace WinttOS.wSystem.wAPI
 {
     public static class PrivilegesSystem
     {
@@ -26,7 +26,7 @@ namespace WinttOS.wSystem.API
             public static readonly PrivilegesSet NONE
                 = new ("NONE", 0, Privileges.NONE);
             public static readonly PrivilegesSet DEFAULT 
-                = new ("DEFAULT", 1, (Privileges.FILE_READ | Privileges.FILE_WRITE));
+                = new ("DEFAULT", 1, (Privileges.FILE_READ | Privileges.FILE_WRITE | Privileges.START_NEW_PROCESS));
             public static readonly PrivilegesSet RAISED 
                 = new ("RAISED", 2, (Privileges.FILE_READ | Privileges.FILE_WRITE | Privileges.SYSTEM_MODIFY | Privileges.START_NEW_PROCESS));
             public static readonly PrivilegesSet HIGHEST 
@@ -38,6 +38,15 @@ namespace WinttOS.wSystem.API
             }
 
             public readonly Privileges Privileges;
+
+            
+        }
+
+        public static bool HasFlag(PrivilegesSet set, Privileges flag)
+        {
+            if (((Privileges)set.Value & flag) != 0)
+                return true;
+            return false;
         }
     }
 }

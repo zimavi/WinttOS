@@ -18,7 +18,7 @@ namespace WinttOS.wSystem.Shell.Programs
         {
             base.Start();
 
-            if (TryRisePrivileges(API.PrivilegesSystem.PrivilegesSet.RAISED))
+            if (TryRisePrivileges(wAPI.PrivilegesSystem.PrivilegesSet.RAISED))
                 WinttDebugger.Debug("SandboxTest -> Raised >:3");
             else
                 WinttDebugger.Debug("SandboxTest -> Not raised ;3");

@@ -119,12 +119,12 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                         {
                             Console.Write("Enter password: ");
                             string pass = Console.ReadLine();
-                            if (WinttOS.UsersManager.LoginIntoUserAccount(user.Name, pass))
+                            if (WinttOS.UsersManager.TryLoginIntoUserAccount(user.Name, pass))
                                 WinttOS.UsersManager.LogoutFromUserAccount(WinttOS.UsersManager.CurrentUser);
                         }
                         else
                         {
-                            WinttOS.UsersManager.LoginIntoUserAccount(user.Name, null);
+                            WinttOS.UsersManager.TryLoginIntoUserAccount(user.Name, null);
                             WinttOS.UsersManager.LogoutFromUserAccount(WinttOS.UsersManager.CurrentUser);
                         }
                     }
@@ -139,11 +139,11 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                         {
                             Console.Write("Enter password: ");
                             string pass = Console.ReadLine();
-                            WinttOS.UsersManager.LoginIntoUserAccount(user.Name, pass);
+                            WinttOS.UsersManager.TryLoginIntoUserAccount(user.Name, pass);
                         }
                         else
                         {
-                            WinttOS.UsersManager.LoginIntoUserAccount(user.Name, null);
+                            WinttOS.UsersManager.TryLoginIntoUserAccount(user.Name, null);
                         }
                     }
                 }

@@ -11,6 +11,7 @@ namespace WinttOS.wSystem.Filesystem
     {
         public static bool ForceRemove(string fullPath)
         {
+
             if (File.Exists(fullPath))
             {
                 File.Delete(fullPath);

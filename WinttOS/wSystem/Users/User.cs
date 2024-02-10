@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using WinttOS.Core.Utils.Cryptography;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
-using static WinttOS.wSystem.API.PrivilegesSystem;
+using static WinttOS.wSystem.wAPI.PrivilegesSystem;
 
 namespace WinttOS.wSystem.Users
 {
@@ -54,7 +54,7 @@ namespace WinttOS.wSystem.Users
         {
             get
             {
-                return $@"0:\Users\{Login}\";
+                return $@"0:\home\{Login}\";
             }
         }
 

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WinttOS.wSystem.API
+namespace WinttOS.wSystem.wAPI
 {
     public static class Time
     {

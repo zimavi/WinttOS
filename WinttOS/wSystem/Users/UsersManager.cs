@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using WinttOS.Core.Utils.Cryptography;
+using WinttOS.wSystem.wAPI;
 using WinttOS.wSystem.Serialization;
 
 namespace WinttOS.wSystem.Users
@@ -67,6 +65,9 @@ namespace WinttOS.wSystem.Users
 
         public void SaveUsersData()
         {
+            PrivilegesSystem.PrivilegesSet set = WinttOS.CurrentExecutionSet;
+            WinttOS.CurrentExecutionSet = PrivilegesSystem.PrivilegesSet.HIGHEST;
+
             var serializer = new WinttUserSerializer();
             if (!Directory.Exists(@"0:\WinttOS"))
             {
@@ -80,13 +81,15 @@ namespace WinttOS.wSystem.Users
             
             File.WriteAllBytes(@"0:\WinttOS\System32\users.dat",
                 Encoding.ASCII.GetBytes(serializer.SerializeList(users)));
+
+            WinttOS.CurrentExecutionSet = set;
         }
 
         public bool TryLoadUsersData()
         {
             try
             {
-                byte[] UsersBytes = File.ReadAllBytes(@"0:\WinttOS\System32\users.dat");
+                byte[] UsersBytes = File.ReadAllBytes(@"0:\etc\users.dat");
                 var serializer = new WinttUserSerializer();
                 users = serializer.DeserializeList(Encoding.ASCII.GetString(UsersBytes));
                 return true;
@@ -98,7 +101,7 @@ namespace WinttOS.wSystem.Users
             }
         }
 
-        public bool LoginIntoUserAccount(string Login, string Password)
+        public bool TryLoginIntoUserAccount(string Login, string Password)
         {
             if (users.Count == 0)
                 return false;

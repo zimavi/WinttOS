@@ -22,7 +22,7 @@
         <TraceMode>User</TraceMode>
         <Timeout></Timeout>
         <BinFormat>Elf</BinFormat>
-        <ExtractMapFile>False</ExtractMapFile>
+        <ExtractMapFile>True</ExtractMapFile>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <EnableBochsDebug>True</EnableBochsDebug>
         <StartBochsDebugGui>True</StartBochsDebugGui>
@@ -54,6 +54,12 @@
 		</WinttRevision>
 		<Nullable>annotations</Nullable>
 	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="wSystem\Properties\**" />
+	  <EmbeddedResource Remove="wSystem\Properties\**" />
+	  <None Remove="wSystem\Properties\**" />
+	</ItemGroup>
 
     <ItemGroup>
       <None Remove="Core\resources\button_power_off.bmp" />
@@ -96,7 +102,6 @@
 	</ItemGroup>
 
     <ItemGroup>
-      <Folder Include="wSystem\Properties\" />
       <Folder Include="wSystem\Shell\bash\" />
       <Folder Include="wSystem\Shell\Programs\ProgramsExecutables\" />
     </ItemGroup>

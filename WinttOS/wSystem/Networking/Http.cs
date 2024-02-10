@@ -22,8 +22,8 @@ namespace WinttOS.wSystem.Networking
 
                 WinttDebugger.Trace("Http -> Preprocessing url");
 
-                string path = extractPathFromUrl(url);
-                string domainName = extractDomainNameFromUrl(url);
+                string path = ExtractPathFromUrl(url);
+                string domainName = ExtractDomainNameFromUrl(url);
 
                 WinttDebugger.Trace("Http -> Sending DNS request");
 
@@ -70,8 +70,8 @@ namespace WinttOS.wSystem.Networking
                     throw new WebException("HTTPS currently not supported, please use HTTP");
                 }
 
-                string path = extractPathFromUrl(url);
-                string domainName = extractDomainNameFromUrl(url);
+                string path = ExtractPathFromUrl(url);
+                string domainName = ExtractDomainNameFromUrl(url);
 
                 DnsClient dnsClient = new();
 
@@ -100,7 +100,7 @@ namespace WinttOS.wSystem.Networking
             }
         }
 
-        private static string extractPathFromUrl(string url)
+        public static string ExtractPathFromUrl(string url)
         {
             int start = 0;
             if (url.Contains("://"))
@@ -116,7 +116,7 @@ namespace WinttOS.wSystem.Networking
             return "/";
         }
 
-        private static string extractDomainNameFromUrl(string url)
+        public static string ExtractDomainNameFromUrl(string url)
         {
             int start = 0;
             if (url.Contains("://"))

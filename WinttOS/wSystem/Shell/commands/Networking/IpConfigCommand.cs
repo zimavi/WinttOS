@@ -85,7 +85,7 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
 
                 NetworkConfiguration.ClearConfigs();
 
-                API.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", false);
+                wAPI.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", false);
             }
             else if (arguments[0] == "--ask")
             {
@@ -93,7 +93,7 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                 if (xClient.SendDiscoverPacket() != -1)
                 {
                     xClient.Close();
-                    API.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", true);
+                    wAPI.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", true);
                     Console.WriteLine("Configuration applied! Your local IPv4 Address is " + NetworkConfiguration.CurrentAddress + ".");
                     return new(this, ReturnCode.OK); 
                 }
@@ -152,14 +152,14 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                     if (ip != null && subnet != null && gw != null)
                     {
                         IPConfig.Enable(nic, ip, subnet, gw);
-                        API.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", true);
+                        wAPI.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", true);
                         Console.WriteLine("Config OK!");
                         return new(this, ReturnCode.OK);
                     }
                     else if (ip != null && subnet != null)
                     {
                         IPConfig.Enable(nic, ip, subnet, ip);
-                        API.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", true);
+                        wAPI.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", true);
                         Console.WriteLine("Config OK!");
                         return new(this, ReturnCode.OK);
                     }

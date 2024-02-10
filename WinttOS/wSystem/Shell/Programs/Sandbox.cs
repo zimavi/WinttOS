@@ -27,7 +27,7 @@ namespace WinttOS.wSystem.Shell.Programs
 
             SetChild(target);
 
-            if(!TrySetChildPrivileges(target, API.PrivilegesSystem.PrivilegesSet.NONE))
+            if(!TrySetChildPrivileges(target, wAPI.PrivilegesSystem.PrivilegesSet.NONE))
             {
                 WinttOS.ProcessManager.TryStopProcess(ProcessID);
             }

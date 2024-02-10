@@ -31,7 +31,7 @@ namespace WinttOS.wSystem.Shell
         private string _commandOutput = "";
         private bool _hasShellFired = false;
         public bool IsInputTaken = false;
-
+        public bool _executeNewCommand = false;
 
         public CommandManager() : base("WoshDaemon", "WoshManagerDaemon")
         {
@@ -121,6 +121,7 @@ namespace WinttOS.wSystem.Shell
             string[] parts = input.Split(new char[] { '>' }, 2);
             string redirectionPart = parts.Length > 1 ? parts[1].Trim() : null;
 
+
             input = parts[0].Trim();
 
             if (!string.IsNullOrEmpty(redirectionPart))
@@ -129,7 +130,17 @@ namespace WinttOS.wSystem.Shell
                 _commandOutput = "";
             }
 
-            List<string> arguments = Misc.ParseCommandLine(input);
+            parts = input.Split("&&");
+            if(parts.Length > 1)
+            {
+                _executeNewCommand = true;
+            }
+
+            int i = 0;
+
+            executeNew:
+
+            List<string> arguments = Misc.ParseCommandLine(parts[i]);
 
             string firstArg = arguments[0];
 
@@ -208,6 +219,16 @@ namespace WinttOS.wSystem.Shell
 
                 _commandOutput = "";
             }
+
+            if(_executeNewCommand)
+            {
+                i++;
+                if (parts.Length == i)
+                    goto executionEnd;
+                goto executeNew;
+            }
+
+            executionEnd:;
         }
 
         public void ProcessInput(ref TempUser user, string input)

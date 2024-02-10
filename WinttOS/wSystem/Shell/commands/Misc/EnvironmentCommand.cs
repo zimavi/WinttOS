@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WinttOS.wSystem.API;
+using WinttOS.wSystem.wAPI;
 
 namespace WinttOS.wSystem.Shell.commands.Misc
 {
@@ -24,7 +24,7 @@ namespace WinttOS.wSystem.Shell.commands.Misc
             string var = exportcmd[0];
             string value = exportcmd[1];
 
-            API.Environment.SetEnvironmentVariable(var, value);
+            wAPI.Environment.SetEnvironmentVariable(var, value);
 
             return new ReturnInfo(this, ReturnCode.OK);
         }
