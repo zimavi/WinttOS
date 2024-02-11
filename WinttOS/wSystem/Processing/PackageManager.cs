@@ -4,6 +4,7 @@ using WinttOS.Core.Utils.Debugging;
 using WinttOS.wSystem.Networking;
 using LunarLabs.Parser.JSON;
 using LunarLabs.Parser;
+using WinttOS.wSystem.Benchmark;
 
 namespace WinttOS.wSystem.Processing
 {
@@ -31,6 +32,9 @@ namespace WinttOS.wSystem.Processing
                 {
                     Console.WriteLine($"Updating from '{repoUrl}'...");
 
+                    Stopwatch sw = new();
+
+                    sw.Start();
                     //string json = Http.DownloadFile(repoUrl);
 
                     string json = "[{\"name\":\"helloworld\",\"display-name\":\"Hello World\",\"description\":\"Test Lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"},{\"name\":\"hash\",\"display-name\":\"Hash\",\"description\":\"hash with lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"}]";
@@ -111,6 +115,8 @@ namespace WinttOS.wSystem.Processing
 
                         LocalRepository.Add(package);
                     }
+                    sw.Stop();
+                    Console.WriteLine($"Done, took {sw.TimeElapsed}");
                 }
 
                 Console.WriteLine("Done.");
@@ -127,12 +133,17 @@ namespace WinttOS.wSystem.Processing
             Console.WriteLine("Upgrading packages...");
 
             bool upgraded = false;
-
+            
             foreach(var package in Packages)
             {
+                Stopwatch sw = new();
+                sw.Start();
+
                 Console.Write($"- '{package.Link}' ");
                 package.Download();
-                Console.WriteLine("[OK]");
+
+                sw.Stop();
+                Console.WriteLine($"[OK] (took {sw.TimeElapsed})");
 
                 upgraded = true;
             }
@@ -174,19 +185,25 @@ namespace WinttOS.wSystem.Processing
             {
                 if (package.Name == packageName)
                 {
-                    WinttDebugger.Trace("Found package, processing to install");
+                    Stopwatch sw = new();
+                    sw.Start();
+
                     package.Download();
+
                     if(package.Executable == null)
                     {
-                        Console.WriteLine("Unable to install package (Is it null?)");
                         return;
                     }
+
                     package.Installed = true;
+
                     Packages.Add(package);
+
+                    sw.Stop();
 
                     WinttDebugger.Trace("Installed!");
 
-                    Console.WriteLine($"{packageName}  added.");
+                    Console.WriteLine($"{packageName} installed (took {sw.TimeElapsed})");
 
                     return;
                 }

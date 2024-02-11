@@ -208,7 +208,8 @@ namespace WinttOS.wSystem.Processing
 
                                 process.Update();
                                  
-                                process.TaskQueue.Dequeue().Callback();
+                                if(process.TaskQueue.Count > 1)
+                                    process.TaskQueue.Dequeue().Callback();
 
                                 WinttOS.CurrentExecutionSet = wAPI.PrivilegesSystem.PrivilegesSet.HIGHEST;
                             }

@@ -9,7 +9,7 @@ namespace WinttOS.wSystem.Services
     public class PowerManagerService : Service
     {
         public static bool isIdling = false;
-        private Timer _timer = new();
+        //private Stopwatch _timer = new();
 
         public PowerManagerService() : base("pwrmgr", "PowerManagerDaemon")
         { 
@@ -41,13 +41,14 @@ namespace WinttOS.wSystem.Services
 
             if(!isIdling)
             {
-                _timer.RestartTimer();
+                //_timer.Stop();
+                //_timer.Start();
                 WinttCallStack.RegisterReturn();
                 return;
             }
 
-            if (_timer.GetElapsedTime().TotalMinutes >= 1)
-                WinttOS.SystemSleep();
+            //if (_timer.TimeElapsed.TotalMinutes >= 1)
+            //    WinttOS.SystemSleep();
 
             WinttCallStack.RegisterReturn();
         }
