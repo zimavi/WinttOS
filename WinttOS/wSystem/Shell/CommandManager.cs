@@ -79,6 +79,13 @@ namespace WinttOS.wSystem.Shell
                 {
                     Kernel.WinttRaiseHardError(Core.Utils.Kernel.WinttStatus.MANUALLY_INITIATED_CRASH1,
                         this, Core.Utils.Kernel.HardErrorResponseOption.OptionShutdownSystem);
+                }),
+                new CommandAction(new string[] { "memory", "mem" }, User.AccessLevel.Guest, () =>
+                {
+                    Console.WriteLine($"Available memory: {WinttOS.MemoryManager.FreeMemory} MB");
+                    Console.WriteLine($"Used memory: {Memory.GetUsedMemory()} MB");
+                    Console.WriteLine($"Used memory (%): {100 - WinttOS.MemoryManager.FreePercentage}%");
+                    Console.WriteLine($"Total memory: {Memory.TotalMemory} MB");
                 })
             };
         }
