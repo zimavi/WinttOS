@@ -426,6 +426,7 @@ namespace WinttOS.wSystem.Shell
                     Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
                     Console.ForegroundColor = ConsoleColor.White;
                     _didRunCycle = false;
+                    _hasShellFired = true;
                 }
                 else if (!IsInputTaken && !_hasShellFired)
                 {

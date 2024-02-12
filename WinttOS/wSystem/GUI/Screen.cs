@@ -24,7 +24,7 @@ namespace WinttOS.wSystem.GUI
         public Screen(Mouse mouse) 
         {
             _screen = FullScreenCanvas.GetFullScreenCanvas();
-            this._mouse = mouse;
+            _mouse = mouse;
             _screens.Add(_screen);
         }
 
