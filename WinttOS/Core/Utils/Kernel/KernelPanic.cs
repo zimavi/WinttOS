@@ -1,96 +1,35 @@
 ﻿using Cosmos.System;
-using Cosmos.System.Coroutines;
 using Cosmos.System.Graphics;
-using Cosmos.System.Graphics.Fonts;
-using Cosmos.System.Network.IPv4.TCP;
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using WinttOS.Core.Utils.Debugging;
-using WinttOS.Core.Utils.System;
+using WinttOS.Core.Utils.Sys;
 
 namespace WinttOS.Core.Utils.Kernel
 {
-    internal class KernelPanic
+    internal sealed class KernelPanic
     {
-        static Canvas canvas;
-        private static WinttStatus status;
-        static double completePercentage = 0;
-        private KernelPanic(WinttStatus message, object sender, Exception exception)
+        private static Canvas _canvas;
+        private static WinttStatus _status;
+        private static double _completePercentage = 0;
+        
+        internal KernelPanic(WinttStatus message, HALException exception)
         {
-            panic(message, sender, exception);
+            panic(message, exception);
         }
 
         internal KernelPanic(WinttStatus message, object sender)
         {
-            Panic(message, sender);
+            panic(message, sender);
         }
-        private static void panic(WinttStatus message, object sender, Exception exception)
+        private static void panic(WinttStatus message, object sender)
         {
-            /*
-            if (FullScreenCanvas.IsInUse)
-                FullScreenCanvas.Disable();
-            canvas = FullScreenCanvas.GetFullScreenCanvas(new(640, 480, ColorDepth.ColorDepth32)); // 1024, 768
+            _canvas = FullScreenCanvas.GetFullScreenCanvas(new(1024, 768, ColorDepth.ColorDepth32)); // 1024, 768 | 640, 480
 
-            canvas.Clear(Color.Red);
-            printCentered("WinttOS has been unexpectedly stopped!", -6);
-            printCentered("If you see this message for the first time,", -3);
-            printCentered("try to reboot you computer, or contact devs.", -2);
-            printCentered("Details:", 0);
-            printCentered(message, 1);
-            printCentered(exception.Message, 2);
-            printCentered($"Collecting core dump...", 3);
-            canvas.Display();
+            _status = message;
 
-            List<string> textToWrite = new()
-            {
-                "CALL_STACK:",
-                WinttCallStack.GetCallStack(),
-                "LAST_MESSAGES:"
-            };
-
-            textToWrite.AddRange(WinttDebugger.ErrorMessages);
-
-            canvas.Clear(Color.Red);
-            printCentered("WinttOS has been unexpectedly stopped!", -6);
-            printCentered("If you see this message for the first time,", -3);
-            printCentered("try to reboot you computer, or contact devs.", -2);
-            printCentered("Details:", 0);
-            printCentered(message, 1);
-            printCentered(exception.Message, 2);
-            printCentered($"Saving core dump...", 3);
-            canvas.Display();
-
-            if (!File.Exists(@"0:\core_dump.log"))
-                File.Create(@"0:\core_dump.log");
-
-            File.WriteAllText(@"0:\core_dump.log", string.Join('\n', textToWrite.ToArray()));
-
-            for (int i = 5; i > 0; i--)
-            {
-                canvas.Clear(Color.Red);
-                printCentered(":(", -6);
-                printCentered("If you see this message for the first time,", -3);
-                printCentered("try to reboot you computer, or contact devs.", -2);
-                printCentered("Details:", 0);
-                printCentered(message, 1);
-                printCentered(exception.Message, 2);
-                printCentered($"In '{sender.GetType().Name}'", 3);
-                printCentered($"Computer will automatically reboot in {i}s", 4);
-                canvas.Display();
-                Cosmos.HAL.Global.PIT.Wait(1000);
-            }
-            Power.Reboot();
-            */
-        }
-        private static void Panic(WinttStatus message, object sender)
-        {
-            canvas = FullScreenCanvas.GetFullScreenCanvas(new(1024, 768, ColorDepth.ColorDepth32)); // 1024, 768 | 640, 480
-
-            status = message;
-
-            UpdateText();
+            updateText();
             
             List<string> textToWrite = new()
             {
@@ -99,34 +38,55 @@ namespace WinttOS.Core.Utils.Kernel
                 "LAST_MESSAGES:"
             };
 
-            completePercentage = 0.5;
-            UpdateText();
+            _completePercentage = 0.5;
+            updateText();
 
             textToWrite.AddRange(WinttDebugger.ErrorMessages);
 
-            completePercentage = 0.9;
-            UpdateText();
+            _completePercentage = 0.9;
+            updateText();
 
             File.WriteAllText(@"0:\core_dump.log", string.Join('\n', textToWrite.ToArray()));
 
-            completePercentage = 1;
-            UpdateText();
+            _completePercentage = 1;
+            updateText();
 
             Cosmos.HAL.Global.PIT.Wait(1000);
 
             Power.Reboot();
         }
 
-        private static void UpdateText()
+        private static void updateText()
         {
-            canvas.Clear(Color.Red);
-            canvas.DrawString(":(", Files.Fonts.Font18, Color.White, 10, 10);
-            canvas.DrawString("WinttOS ran into problem and needs to restart.", Files.Fonts.Font18, Color.White, 10, 30);
-            canvas.DrawString("We're just collecting some error info, and then", Files.Fonts.Font18, Color.White, 10, 55);
-            canvas.DrawString("we'll restart for you.", Files.Fonts.Font18, Color.White, 10, 80);
-            canvas.DrawString($"{completePercentage:P0} complete", Files.Fonts.Font18, Color.White, 10, 110);
-            canvas.DrawString($"Stop code: {status.Name} (0x{status.Value:X8})", Files.Fonts.Font18, Color.White, 10, 150);
-            canvas.Display();
+            _canvas.Clear(Color.Red);
+            _canvas.DrawString(":(", Files.Fonts.Font18, Color.White, 10, 10);
+            _canvas.DrawString("WinttOS ran into problem and needs to restart.", Files.Fonts.Font18, Color.White, 10, 30);
+            _canvas.DrawString("We're just collecting some error info, and then", Files.Fonts.Font18, Color.White, 10, 55);
+            _canvas.DrawString("we'll restart for you.", Files.Fonts.Font18, Color.White, 10, 80);
+            _canvas.DrawString($"{_completePercentage:P0} complete", Files.Fonts.Font18, Color.White, 10, 110);
+            _canvas.DrawString($"Stop code: {_status.Name} (0x{_status.Value:X8})", Files.Fonts.Font18, Color.White, 10, 150);
+            _canvas.Display();
+        }
+        private static void panic(WinttStatus message, HALException exception)
+        {
+            _canvas = FullScreenCanvas.GetFullScreenCanvas(new(1024, 768, ColorDepth.ColorDepth32)); // 1024, 768 | 640, 480
+
+            _canvas.Clear(Color.Black);
+            _canvas.DrawString($"CPU Exception x{exception.CTXInterrupt} occurred in WinttOS", Files.Fonts.Font18, Color.White, 10, 10);
+            _canvas.DrawString($"Exception: {exception.Exception}", Files.Fonts.Font18, Color.White, 10, 30);
+            _canvas.DrawString($"Description: {exception.Description}", Files.Fonts.Font18, Color.White, 10, 55);
+            _canvas.DrawString($"Wintt version: {wSystem.WinttOS.WinttVersion}", Files.Fonts.Font18, Color.White, 10, 80);
+            _canvas.DrawString($"Wintt revision: ", Files.Fonts.Font18, Color.White, 10, 110);
+            if(exception.LastKnownAddress != "")
+            {
+                _canvas.DrawString($"Last known address: 0x{exception.LastKnownAddress}", Files.Fonts.Font18, Color.White, 10, 125);
+            }
+            _canvas.DrawString($"Press any key to reboot...", Files.Fonts.Font18, Color.White, 10, 175);
+            _canvas.Display();
+
+            System.Console.ReadKey(true);
+
+            Power.Reboot();
         }
     }
 }

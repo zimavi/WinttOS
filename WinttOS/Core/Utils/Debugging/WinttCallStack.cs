@@ -1,29 +1,29 @@
 ﻿using System.Collections.Generic;
-using WinttOS.Core.Utils.System;
+using WinttOS.Core.Utils.Sys;
 
 namespace WinttOS.Core.Utils.Debugging
 {
     public static class WinttCallStack
     {
-        private static System.Stack<MethodCallInfo> callStack = new();
+        private static Sys.Stack<MethodCallInfo> _callStack = new();
 
-        public static System.Stack<MethodCallInfo> CallStack => callStack;
+        public static Sys.Stack<MethodCallInfo> CallStack => _callStack;
 
         public static void RegisterCall(MethodCallInfo info)
         {
-            callStack.Push(info);
+            _callStack.Push(info);
         }
 
-        public static void RegisterReturn() => callStack.Pop();
+        public static void RegisterReturn() => _callStack.Pop();
 
         internal static string GetCallStack()
         {
-            MethodCallInfo lastCall = callStack.Peek();
+            MethodCallInfo lastCall = _callStack.Peek();
             List<string> toReturn = new()
             {
                 $"Last call: {lastCall.MethodFullPath} in {lastCall.FileName}:{lastCall.FileLineNumber}"
             };
-            foreach (MethodCallInfo info in callStack.ToList())
+            foreach (MethodCallInfo info in _callStack.ToList())
             {
                 if (info == lastCall)
                     continue;

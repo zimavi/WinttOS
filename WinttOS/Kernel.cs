@@ -4,10 +4,11 @@ using Sys = Cosmos.System;
 using WinttOS.Core.Utils.Debugging;
 using System.Collections.Specialized;
 using System.Collections.Generic;
-using WinttOS.Core.Utils.System;
+using WinttOS.Core.Utils.Sys;
 using WinttOS.Core.Utils.Kernel;
-using WinttOS.System.Users;
-using WinttOS.System.Processing;
+using WinttOS.wSystem.Users;
+using WinttOS.wSystem.Processing;
+using Cosmos.System.Network;
 
 namespace WinttOS
 {
@@ -22,7 +23,7 @@ namespace WinttOS
         public static bool IsRebooting { get; private set; } = false;
 
         public static readonly List<Action> OnKernelFinish = new();
-        private static Kernel instance = null;
+        private static Kernel _instance = null;
 
         #endregion
 
@@ -49,7 +50,7 @@ namespace WinttOS
 
                 ShellUtils.MoveCursorUp(-1);
 
-                ShellUtils.PrintTaskResult("Registration File System", ShellTaskResult.DOING);
+                ShellUtils.PrintTaskResult("Registration Files Sys", ShellTaskResult.DOING);
 
                 WinttDebugger.Debug("Registering filesystem", this);
                 GlobalData.FileSystem = new Sys.FileSystem.CosmosVFS();
@@ -57,10 +58,10 @@ namespace WinttOS
                 GlobalData.FileSystem.Initialize(true);
 
                 ShellUtils.MoveCursorUp();
-                ShellUtils.PrintTaskResult("Registration File System", ShellTaskResult.OK);
+                ShellUtils.PrintTaskResult("Registration Files Sys", ShellTaskResult.OK);
 
                 WinttDebugger.Trace("Kernel initialize complete! Coming to system");
-                System.WinttOS.InitializeSystem();
+                wSystem.WinttOS.InitializeSystem();
                 
 
             } catch (Exception ex)
@@ -105,7 +106,7 @@ namespace WinttOS
             catch (Exception ex)
             {
                 WinttDebugger.Error("Something happened on shutdown!", true);
-                WinttRaiseHardError(WinttStatus.SYSTEM_THREAD_EXCEPTION_NOT_HANDLED, instance, HardErrorResponseOption.OptionShutdownSystem);
+                WinttRaiseHardError(WinttStatus.SYSTEM_THREAD_EXCEPTION_NOT_HANDLED, _instance, HardErrorResponseOption.OptionShutdownSystem);
             }
             finally
             {
@@ -134,6 +135,16 @@ namespace WinttOS
                 return WinttStatus.STATUS_FAILURE;
 
             _ = new KernelPanic(WinttStatus, sender);
+
+            return WinttStatus.STATUS_SUCCESS;
+        }
+
+        public static WinttStatus WinttRaiseHardError(WinttStatus WinttStatus, HALException exception)
+        {
+            if (!WinttStatus.IsStopCode)
+                return WinttStatus.STATUS_FAILURE;
+
+            _ = new KernelPanic(WinttStatus, exception);
 
             return WinttStatus.STATUS_SUCCESS;
         }

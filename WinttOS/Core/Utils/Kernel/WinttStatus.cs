@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WinttOS.Core.Utils.System;
+﻿using WinttOS.Core.Utils.Sys;
 
 namespace WinttOS.Core.Utils.Kernel
 {
-    public class WinttStatus : SmartEnum<WinttStatus, uint>
+    public sealed class WinttStatus : SmartEnum<WinttStatus, uint>
     {
 
         // Crash codes
@@ -37,15 +32,16 @@ namespace WinttOS.Core.Utils.Kernel
         public static readonly WinttStatus ATTEMPTED_WRITE_TO_READONLY_MEMORY   = new("ATTEMPTED_WRITE_TO_READONLY_MEMORY", 0x00000017);
         public static readonly WinttStatus BAD_POOL_CALLER                      = new("BAD_POOL_CALLER", 0x00000018);
         public static readonly WinttStatus MANUALLY_INITIATED_CRASH             = new("MANUALLY_INITIATED_CRASH", 0x00000019);
-        public static readonly WinttStatus THREAD_STUCK                         = new("THREAD_STUCK", 0x00000020);
-        public static readonly WinttStatus STATUS_CANNOT_LOAD_REGISTRY_FILE     = new("STATUS_CANNOT_LOAD_REGISTRY_FILE0", 0x00000021);
-        public static readonly WinttStatus STATUS_SYSTEM_PROCESS_TERMINATED     = new("STATUS_SYSTEM_PROCESS_TERMINATED", 0x00000022);
+        public static readonly WinttStatus THREAD_STUCK                         = new("THREAD_STUCK", 0x0000001A);
+        public static readonly WinttStatus STATUS_CANNOT_LOAD_REGISTRY_FILE     = new("STATUS_CANNOT_LOAD_REGISTRY_FILE0", 0x0000001B);
+        public static readonly WinttStatus STATUS_SYSTEM_PROCESS_TERMINATED     = new("STATUS_SYSTEM_PROCESS_TERMINATED", 0x0000001C);
+        public static readonly WinttStatus HAL_INITIALIZATION_FAILED            = new("HAL_INITIALIZATION_FAILED", 0x0000001D);
         public static readonly WinttStatus MANUALLY_INITIATED_CRASH1            = new("MANUALLY_INITIATED_CRASH1", 0xDEADDEAD);
         
         // API returns codes
 
-        public static readonly WinttStatus STATUS_SUCCESS                       = new ("STATUS_SUCESS", 0x00000023, false);
-        public static readonly WinttStatus STATUS_FAILURE                       = new("STATUS_FAILURE", 0x00000024, false);
+        public static readonly WinttStatus STATUS_SUCCESS                       = new ("STATUS_SUCESS", 0x0000001E, false);
+        public static readonly WinttStatus STATUS_FAILURE                       = new("STATUS_FAILURE", 0x0000001F, false);
 
         private WinttStatus(string name, uint value, bool isStopCode = true) : base(name, value)
         {

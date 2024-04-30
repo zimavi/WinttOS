@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WinttOS.Core.Utils.Debugging
 {
@@ -16,6 +17,13 @@ namespace WinttOS.Core.Utils.Debugging
             FileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
             FileLineNumber = fileLineNumber;
         }
+        public MethodCallInfo(string methodFullPath)
+        {
+            MethodFullPath = methodFullPath ?? throw new ArgumentNullException(nameof(methodFullPath));
+            MethodSignature = "N/A";
+            FileName = "N/A";
+            FileLineNumber = 0;
+        }
 
         public static bool operator ==(MethodCallInfo left, MethodCallInfo right) =>
             left.MethodFullPath.Equals(right.MethodFullPath) &&
@@ -25,5 +33,14 @@ namespace WinttOS.Core.Utils.Debugging
 
         public static bool operator !=(MethodCallInfo left, MethodCallInfo right) =>
             !(left == right);
+
+        public override readonly bool Equals([NotNullWhen(true)] object? obj)
+        {
+            if(obj is MethodCallInfo info)
+            {
+                return info == this;
+            }
+            return false;
+        }
     }
 }

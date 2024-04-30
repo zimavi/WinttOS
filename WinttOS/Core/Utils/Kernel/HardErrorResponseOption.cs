@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WinttOS.Core.Utils.System;
+﻿using WinttOS.Core.Utils.Sys;
 
 namespace WinttOS.Core.Utils.Kernel
 {
-    public class HardErrorResponseOption : SmartEnum<HardErrorResponseOption>
+    public sealed class HardErrorResponseOption : SmartEnum<HardErrorResponseOption>
     {
+        /**
+         * Currently only option 6 in use, but other's will be used when GUI is implemented
+         */
         public static readonly HardErrorResponseOption OptionAbortRetryIgnore   = new("OptionAbortRetryIgnore", 0);
         public static readonly HardErrorResponseOption OptionOk                 = new("OptionOk", 1);
         public static readonly HardErrorResponseOption OptionOkCancel           = new("OptionOkCancel", 2);
