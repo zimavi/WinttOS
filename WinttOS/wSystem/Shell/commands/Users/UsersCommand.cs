@@ -7,7 +7,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Users
 {
-    public class UsersCommand : Command
+    public sealed class UsersCommand : Command
     {
         public UsersCommand(string[] name) : base(name, User.AccessLevel.Administrator)
         { }
@@ -46,9 +46,9 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                 if (arguments.Count > 1)
                 {
                     string Username = arguments[1];
-                    Console.Write("Enter new _user password: ");
+                    Console.Write("Enter new user password: ");
                     string pass = Console.ReadLine();
-                    Console.Write("Enter new _user access level\n(g - guest, d - default, a - admin):");
+                    Console.Write("Enter new user access level\n(g - guest, d - default, a - admin):");
                     char access = Console.ReadKey().KeyChar;
                     byte accessToCreate;
                     switch (access)
@@ -157,7 +157,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                         if (WinttOS.UsersManager.Users[i].Name.Equals(arguments[1]))
                         {
                             User u = WinttOS.UsersManager.Users[i];
-                            bool result = WinttOS.UsersManager.Users[i].ChangePassword(
+                            bool result = User.ChangePassword(
                                 ref u, arguments[2], arguments[3]);
                             WinttOS.UsersManager.Users[i] = u;
 

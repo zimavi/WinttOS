@@ -6,7 +6,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Serialization
 {
-    public class WinttUserSerializer : IWinttSerializer<User>
+    public sealed class WinttUserSerializer : IWinttSerializer<User>
     {
         public string Serialize(User user)
         {

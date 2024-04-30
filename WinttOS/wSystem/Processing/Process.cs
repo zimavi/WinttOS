@@ -1,16 +1,13 @@
 ﻿//
 // ORIGINAL CODE: https://github.com/aura-systems/Aura-Operating-System/tree/master
-// I ONLY MODIFIED IT 
-//
+// 
 
-
+using System;
+using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
-using WinttOS.wSystem.wAPI;
-using static WinttOS.wSystem.wAPI.PrivilegesSystem;
 using WinttOS.wSystem.Users;
-using System.Collections.Generic;
-using System;
+using WinttOS.wSystem.wAPI.PrivilegesSystem;
 
 namespace WinttOS.wSystem.Processing
 {

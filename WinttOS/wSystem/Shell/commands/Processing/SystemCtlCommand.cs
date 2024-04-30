@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.Services;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Processing
 {
-    public class SystemCtlCommand : Command
+    public sealed class SystemCtlCommand : Command
     {
         public SystemCtlCommand(string[] name) : base(name, User.AccessLevel.Administrator) 
         {
             CommandManual = new()
             {
                 "Avaiable commands:",
-                "- systemctl --list - get list of _services",
-                //"- systemctl status <service.name> - get service status"
+                "- systemctl {--list|-l} - get list of services",
+                "- systemctl {--status|-s} <service.name> - get service status"
 
             };
         }
 
         public override ReturnInfo Execute(List<string> arguments)
         {
-            if (arguments[0] == "--list")
+            if (arguments[0] == "--list" || arguments[0] == "-l")
             {
                 List<string> result = new();
                 foreach (var service in WinttOS.ServiceManager.Services)
@@ -28,33 +29,28 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
             }
             if (arguments[0] == "-h" || arguments[0] == "--help")
                 Console.WriteLine(string.Join('\n', CommandManual.ToArray()));
-            if (arguments.Count == 2 || arguments[0] == "--status")
+            if (arguments.Count == 2 && (arguments[0] == "--status" || arguments[0] == "-s"))
             {
-                return new(this, ReturnCode.ERROR, "NotImplemented!");
-                /*
-                string errorMsg = null;
-                ServiceStatus status = ServiceStatus.no_data;
+                string errorMsg;
+                ServiceStatus status;
                 (status, errorMsg) = WinttOS.ServiceManager.GetServiceStatus(arguments[1]);
                 if (status == ServiceStatus.no_data)
-                    return "Service not found!";
+                    return new(this, ReturnCode.ERROR, "Service not found!");
                 if (string.IsNullOrEmpty(errorMsg))
                 {
-                    string statusOperator = status == ServiceStatus.OK ? "[X]" : "[ ]";
-                    string res =
-                        arguments[1] +
-                        $"  {statusOperator} Status: {status}";
-                    return res;
+                    string statusOperator = (status == ServiceStatus.OK) ? "[X] Online" : "[ ] Offline";
+                    Console.WriteLine(arguments[1] + "  " + statusOperator + "\nStatus: " +
+                        ServiceStatusFormatter.ToStringEnum(status));
+                    return new(this, ReturnCode.OK);
                 }   
                 else
                 {
-                    string statusOperator = status == ServiceStatus.OK ? "[X]" : "[ ]";
-                    string res =
-                        arguments[1] +
-                        $"  {statusOperator} Status: {status}" +
-                        $"  {errorMsg}";
-                    return res;
+                    string statusOperator = (status == ServiceStatus.OK) ? "[X] Online" : "[ ] Offline";
+                    Console.WriteLine(arguments[1] + "  " + statusOperator + "\nStatus: " + 
+                        ServiceStatusFormatter.ToStringEnum(status) + "\nError: " + errorMsg);
+                    return new(this, ReturnCode.OK);
                 }
-                */
+                
             }
             return new(this, ReturnCode.OK);
         }

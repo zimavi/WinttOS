@@ -1,11 +1,11 @@
 ﻿using Cosmos.System.Graphics;
-using WinttOS.Core.Utils.Debugging;
-using System.Drawing;
 using System;
+using System.Drawing;
+using WinttOS.Core.Utils.Debugging;
 
 namespace WinttOS.wSystem.Services
 {
-    public class PowerManagerService : Service
+    public sealed class PowerManagerService : Service
     {
         public static bool isIdling = false;
         //private Stopwatch _timer = new();

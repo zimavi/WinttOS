@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WinttOS.Core.Utils.Debugging;
+﻿using WinttOS.Core.Utils.Debugging;
 using WinttOS.wSystem.Networking;
 
 namespace WinttOS.wSystem.Processing
 {
-    public class Package
+    public sealed class Package
     {
         public string Name { get; set; }
         public string DisplayName { get; set; }

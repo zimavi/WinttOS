@@ -46,7 +46,7 @@
 			    <![CDATA[
         namespace WinttOS.wSystem
 {
-    public class VersionInfo
+    public sealed class VersionInfo
     {
         public static readonly string revision = "$(Date)$(Month)$(Year)$(Time)"%3b
     }

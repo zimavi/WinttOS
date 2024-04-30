@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WinttOS.wSystem.Shell.bash
+﻿namespace WinttOS.wSystem.Shell.bash
 {
-    public class BashCallFrame
+    public sealed class BashCallFrame
     {
         public readonly int CallLine;
         public readonly BashFunction Function;

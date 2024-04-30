@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace WinttOS.wSystem.Shell.Utils
 {
-    public class Misc
+    public static class Misc
     {
         public static List<string> ParseCommandLine(string cmdLine)
         {

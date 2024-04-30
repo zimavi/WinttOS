@@ -2,7 +2,7 @@
 
 namespace WinttOS.wSystem.Shell.Utils
 {
-    public class ConsoleColumnFormatter
+    public sealed class ConsoleColumnFormatter
     {
         private byte columnWidth;
         private byte columnsInRow;

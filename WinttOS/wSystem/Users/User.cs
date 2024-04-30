@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using WinttOS.Core.Utils.Cryptography;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
-using static WinttOS.wSystem.wAPI.PrivilegesSystem;
+using WinttOS.wSystem.wAPI.PrivilegesSystem;
 
 namespace WinttOS.wSystem.Users
 {
-    public class User
+    public sealed class User
     {
 
         public sealed class AccessLevel : SmartEnum<AccessLevel, byte>
@@ -93,9 +88,9 @@ namespace WinttOS.wSystem.Users
                              .SetAccess(AccessLevel.Guest)
                              .Build();
         public static User CreateEmptyUser() => 
-            new User();
+            new();
 
-        public bool ChangePassword(ref User user, string OldPassword, string NewPassword)
+        public static bool ChangePassword(ref User user, string OldPassword, string NewPassword)
         {
             WinttCallStack.RegisterCall(new("WinttOS.Sys.Users.User.ChangePassword()",
                 "bool(ref User, string, string)", "User.cs", 86));
@@ -119,7 +114,7 @@ namespace WinttOS.wSystem.Users
 
         #endregion
 
-        public class UserBuilder
+        public sealed class UserBuilder
         {
             private User _user;
 
@@ -176,7 +171,7 @@ namespace WinttOS.wSystem.Users
             /// Build User
             /// </summary>
             /// <returns><see cref="User"/> object , or <see langword="null"/> if incorrect <see cref="User"/> was built</returns>
-            public User Build()
+            public User? Build()
             {
                 if(string.IsNullOrEmpty(_user.Name))
                     return null;
@@ -193,7 +188,7 @@ namespace WinttOS.wSystem.Users
         }
     }
 
-    public class TempUser
+    public sealed class TempUser
     {
         #region Fields
         public string Login
@@ -229,7 +224,7 @@ namespace WinttOS.wSystem.Users
 
         private TempUser() { }
 
-        public class TempUserBuilder
+        public sealed class TempUserBuilder
         {
             private TempUser _user;
             public TempUserBuilder() => 

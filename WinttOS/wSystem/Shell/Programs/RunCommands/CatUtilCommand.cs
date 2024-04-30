@@ -6,7 +6,7 @@ namespace WinttOS.wSystem.Shell.Programs.RunCommands
     //
     // CAT VERISON 0.1.0
     //
-    public class CatUtilCommand : Command
+    public sealed class CatUtilCommand : Command
     {
         public CatUtilCommand(string[] name) : base(name, false)
         {

@@ -6,7 +6,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Processing
 {
-    public class ProcessCommand : Command
+    public sealed class ProcessCommand : Command
     {
         public ProcessCommand(string[] name) : base(name, User.AccessLevel.Administrator)
         { }
@@ -22,8 +22,7 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
             {
                 if (arguments.Count < 2)
                 {
-                    PrintHelp();
-                    return new(this, ReturnCode.ERROR_ARG);
+                    return new(this, ReturnCode.ERROR_ARG, "Expected process id!");
                 }    
 
                 if (uint.TryParse(arguments[1], out uint num))
@@ -40,19 +39,16 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
                             WinttOS.ProcessManager.TryStopProcess(num);
                         else
                         {
-                            Console.WriteLine("Permission denied");
-                            return new(this, ReturnCode.ERROR);
+                            return new(this, ReturnCode.ERROR, "Permission denied");
                         }
                         Console.WriteLine("Done.");
                         return new(this, ReturnCode.OK);
                     }
-                    Console.WriteLine("There is no such process!");
-                    return new(this, ReturnCode.ERROR);
+                    return new(this, ReturnCode.ERROR, "There is no such process!");
                 }
                 else
                 {
-                    Console.WriteLine("Process id must be number that equals or bigger then 0");
-                    return new(this, ReturnCode.ERROR_ARG);
+                    return new(this, ReturnCode.ERROR_ARG, "Process id must be number that equals or bigger then 0");
                 }
             }
             else if (arguments[0] == "--restart")
@@ -72,12 +68,10 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
                 }
                 else
                 {
-                    Console.WriteLine("Process id must be number that equals or bigger then 0");
-                    return new(this, ReturnCode.ERROR_ARG);
+                    return new(this, ReturnCode.ERROR_ARG, "Process id must be number that equals or bigger then 0");
                 }
             }
-            PrintHelp();
-            return new(this, ReturnCode.ERROR_ARG);
+            return new(this, ReturnCode.ERROR_ARG, "Flag expected!");
         }
 
         public override ReturnInfo Execute()

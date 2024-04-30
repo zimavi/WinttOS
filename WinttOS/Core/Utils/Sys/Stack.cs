@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace WinttOS.Core.Utils.Sys
 {
@@ -49,7 +44,7 @@ namespace WinttOS.Core.Utils.Sys
         {
             if(!hasValues)
             {
-                return default(T);
+                return default;
             }
             T popedValue = _stack[0];
             if (Count == 1)

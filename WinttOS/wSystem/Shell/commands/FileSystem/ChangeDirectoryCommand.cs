@@ -5,7 +5,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
 {
-    internal class ChangeDirectoryCommand : Command
+    internal sealed class ChangeDirectoryCommand : Command
     {
         public ChangeDirectoryCommand(string[] name) : base(name, User.AccessLevel.Guest)
         { }

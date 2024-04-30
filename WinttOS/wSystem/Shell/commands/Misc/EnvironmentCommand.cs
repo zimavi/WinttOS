@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WinttOS.wSystem.wAPI;
 
 namespace WinttOS.wSystem.Shell.commands.Misc
 {
-    public class EnvironmentCommand : Command
+    public sealed class EnvironmentCommand : Command
     {
         public EnvironmentCommand(string[] commandValues) : base(commandValues)
         { }
@@ -18,7 +14,7 @@ namespace WinttOS.wSystem.Shell.commands.Misc
 
             if (exportcmd.Length != 2)
             {
-                return new ReturnInfo(this, ReturnCode.ERROR);
+                return new ReturnInfo(this, ReturnCode.ERROR_ARG, "Expected 2 values!");
             }
 
             string var = exportcmd[0];

@@ -1,29 +1,28 @@
-﻿using System;
+﻿using Cosmos.System.Network;
+using System;
 using System.Collections.Generic;
-using WinttOS.Core.Utils.Sys;
-using WinttOS.Core;
-using WinttOS.wSystem.Users;
-using WinttOS.wSystem.Shell.Commands.FileSystem;
-using WinttOS.wSystem.Shell.Commands.Misc;
-using WinttOS.wSystem.Shell.Commands.Screen;
-using WinttOS.wSystem.Shell.Programs.RunCommands;
-using WinttOS.wSystem.Shell.Commands.Processing;
-using WinttOS.wSystem.Services;
-using WinttOS.Core.Utils.Debugging;
-using WinttOS.wSystem.Shell.Utils;
-using WinttOS.wSystem.Shell.Commands.Networking;
-using WinttOS.wSystem.Shell.Commands.Users;
-using WinttOS.wSystem.Shell.commands.Networking;
-using Cosmos.System.Network;
 using System.IO;
+using WinttOS.Core;
+using WinttOS.Core.Utils.Debugging;
+using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem.Services;
 using WinttOS.wSystem.Shell.bash;
 using WinttOS.wSystem.Shell.commands.Misc;
-using WinttOS.wSystem.Shell.commands.Processing;
+using WinttOS.wSystem.Shell.commands.Networking;
+using WinttOS.wSystem.Shell.Commands.FileSystem;
+using WinttOS.wSystem.Shell.Commands.Misc;
+using WinttOS.wSystem.Shell.Commands.Networking;
+using WinttOS.wSystem.Shell.Commands.Processing;
+using WinttOS.wSystem.Shell.Commands.Screen;
+using WinttOS.wSystem.Shell.Commands.Users;
+using WinttOS.wSystem.Shell.Programs.RunCommands;
+using WinttOS.wSystem.Shell.Utils;
+using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell
 {
 
-    public class CommandManager : Service
+    public sealed class CommandManager : Service
     {
         private List<Command> _commands;
         private bool _didRunCycle = true;
@@ -33,7 +32,7 @@ namespace WinttOS.wSystem.Shell
         public bool IsInputTaken = false;
         public bool _executeNewCommand = false;
 
-        public CommandManager() : base("WoshDaemon", "WoshManagerDaemon")
+        public CommandManager() : base("ShellDaemon", "ShellManagerDaemon")
         {
             _commands = new List<Command>
             {
@@ -58,12 +57,12 @@ namespace WinttOS.wSystem.Shell
                 new UsersCommand(new string[] { "user" }),
                 new ProcessCommand(new string[] { "process" }),
                 new WgetCommand(new string[] { "wget" }),
-                new PackageCommand(new string[] { "apt-get", "apt" }),
-                new PackageRepository(new string [] { "apt-get-repository", "apt-get-repo"}),
+                //new PackageCommand(new string[] { "apt-get", "apt" }),
+                //new PackageRepository(new string [] { "apt-get-repository", "apt-get-repo"}),
                 new DnsCommand(new string[] { "dns" }),
                 new PingCommand(new string[] { "ping" }),
                 new EnvironmentCommand(new string[] { "export" }),
-                new RunCommand(new string[] {"run"}),
+                //new RunCommand(new string[] {"run"}),
 
                 new CommandAction(new string[] { "whoami" }, User.AccessLevel.Guest, () =>
                 {

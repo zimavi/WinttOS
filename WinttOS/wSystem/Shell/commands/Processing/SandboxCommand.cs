@@ -4,7 +4,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Processing
 {
-    internal class SandboxCommand : Command
+    internal sealed class SandboxCommand : Command
     {
         public SandboxCommand(string[] name) : base(name, User.AccessLevel.Guest)
         { }

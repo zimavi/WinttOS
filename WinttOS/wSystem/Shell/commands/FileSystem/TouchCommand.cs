@@ -6,7 +6,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
 {
-    public class TouchCommand : Command
+    public sealed class TouchCommand : Command
     {
         public TouchCommand(string[] name) : base(name, User.AccessLevel.Guest)
         { }

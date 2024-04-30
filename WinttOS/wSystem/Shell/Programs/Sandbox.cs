@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WinttOS.wSystem.Processing;
+﻿using WinttOS.wSystem.Processing;
 
 namespace WinttOS.wSystem.Shell.Programs
 {
-    internal class Sandbox : Process
+    internal sealed class Sandbox : Process
     {
 
         private string targetName;
@@ -27,7 +22,7 @@ namespace WinttOS.wSystem.Shell.Programs
 
             SetChild(target);
 
-            if(!TrySetChildPrivileges(target, wAPI.PrivilegesSystem.PrivilegesSet.NONE))
+            if (!TrySetChildPrivileges(target, wAPI.PrivilegesSystem.PrivilegesSet.NONE))
             {
                 WinttOS.ProcessManager.TryStopProcess(ProcessID);
             }

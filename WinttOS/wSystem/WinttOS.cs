@@ -1,30 +1,30 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using Cosmos.HAL;
+﻿using Cosmos.Core;
 using Cosmos.Core.Memory;
+using Cosmos.HAL;
 using Cosmos.System.Coroutines;
-using Cosmos.System.Network.IPv4.UDP.DHCP;
 using Cosmos.System.Graphics;
-using Sys = Cosmos.System;
+using Cosmos.System.Network.IPv4.UDP.DHCP;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using WinttOS.Core;
-using WinttOS.Core.Utils.Sys;
-using WinttOS.Core.Utils.Kernel;
 using WinttOS.Core.Utils.Debugging;
-using WinttOS.wSystem.wAPI;
-using WinttOS.wSystem.Users;
-using WinttOS.wSystem.Shell;
-using WinttOS.wSystem.Services;
+using WinttOS.Core.Utils.Kernel;
+using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Processing;
-using WinttOS.wSystem.Shell.bash;
 using WinttOS.wSystem.Scheduling;
+using WinttOS.wSystem.Services;
+using WinttOS.wSystem.Shell;
+using WinttOS.wSystem.Shell.bash;
 using WinttOS.wSystem.Shell.Commands.Misc;
-using Cosmos.Core;
+using WinttOS.wSystem.Users;
+using WinttOS.wSystem.wAPI.Events;
+using WinttOS.wSystem.wAPI.PrivilegesSystem;
+using Sys = Cosmos.System;
 
 
 namespace WinttOS.wSystem
 {
-    using PS = PrivilegesSystem;
 
     public class WinttOS
     {
@@ -33,7 +33,7 @@ namespace WinttOS.wSystem
 
         private static WinttOS instance => new();
 
-        public static PS.PrivilegesSet CurrentExecutionSet { get; internal set; } = PS.PrivilegesSet.HIGHEST;
+        public static PrivilegesSet CurrentExecutionSet { get; internal set; } = PrivilegesSet.HIGHEST;
 
         public static readonly string WinttVersion = "WinttOS v1.1.0 dev.";
         public static readonly string WinttRevision = VersionInfo.revision;
@@ -51,6 +51,8 @@ namespace WinttOS.wSystem
 
         private static WinttServiceManager serviceManager;
         private static uint serviceProviderProcessID;
+
+        private static EventBus _globalEventBus;
 
 
         public static Canvas SystemCanvas { get; private set; }
@@ -214,6 +216,8 @@ namespace WinttOS.wSystem
                 eventHandler();
             }
         }
+
+        public static IEventBus GetGlobalEventBus() => _globalEventBus;
         public static void SystemFinish()
         {
             WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.SystemFinish()",
@@ -269,7 +273,7 @@ namespace WinttOS.wSystem
                 {
                     if (process.IsProcessCritical && !process.IsProcessRunning)
                     {
-                        if (process.CurrentSet == wAPI.PrivilegesSystem.PrivilegesSet.NONE || process.HasOwnerProcess)
+                        if (process.CurrentSet == PrivilegesSet.NONE || process.HasOwnerProcess)
                             continue;
                         WinttDebugger.Error($"Critical process died => {process.ProcessName}", true, instance);
                         Kernel.WinttRaiseHardError(WinttStatus.CRITICAL_PROCESS_DIED, instance, HardErrorResponseOption.OptionShutdownSystem);

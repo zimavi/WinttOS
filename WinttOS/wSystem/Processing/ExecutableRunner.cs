@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UniLua;
 
 namespace WinttOS.wSystem.Processing
 {
-    public class ExecutableRunner
+    public sealed class ExecutableRunner
     {
 
         public void Run(Executable executable, List<string> args)

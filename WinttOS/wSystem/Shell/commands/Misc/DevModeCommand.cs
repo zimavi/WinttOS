@@ -4,7 +4,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
 {
-    public class DevModeCommand : Command
+    public sealed class DevModeCommand : Command
     {
         public static bool IsInDebugMode { get; private set; }
         public DevModeCommand(string[] name) : base(name, User.AccessLevel.Administrator)
@@ -25,7 +25,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                 Console.WriteLine(IsInDebugMode ? "In debug mode" : "Not in debug mode");
                 return new(this, ReturnCode.OK);
             }
-            return new(this, ReturnCode.ERROR_ARG);
+            return new(this, ReturnCode.ERROR_ARG, "Flag expected!");
         }
 
         public override ReturnInfo Execute()

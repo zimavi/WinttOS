@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WinttOS.Core;
 using WinttOS.wSystem.Networking;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
 {
-    public class WgetCommand : Command
+    public sealed class WgetCommand : Command
     {
         public WgetCommand(string[] name) : base(name)
         { }

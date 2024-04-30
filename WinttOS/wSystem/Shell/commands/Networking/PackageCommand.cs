@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
 {
-    public class PackageCommand : Command
+    public sealed class PackageCommand : Command
     {
         public PackageCommand(string[] commandValues) : base(commandValues, Users.User.AccessLevel.Administrator)
         { }
@@ -21,7 +18,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
         {
             if (arguments.Count == 0 || arguments.Count > 2)
             {
-                return new ReturnInfo(this, ReturnCode.ERROR_ARG);
+                return new ReturnInfo(this, ReturnCode.ERROR_ARG, "Expected 2 values!");
             }
 
             try
@@ -64,7 +61,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
                 {
                     if (arguments.Count != 2)
                     {
-                        return new ReturnInfo(this, ReturnCode.ERROR_ARG);
+                        return new ReturnInfo(this, ReturnCode.ERROR_ARG, "Expected 2 values!");
                     }
 
                     var packageName = arguments[1];
@@ -77,7 +74,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
                 {
                     if (arguments.Count != 2)
                     {
-                        return new ReturnInfo(this, ReturnCode.ERROR_ARG);
+                        return new ReturnInfo(this, ReturnCode.ERROR_ARG, "Expected 2 values!");
                     }
 
                     var packageName = arguments[1];
@@ -93,7 +90,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
             }
             catch (Exception ex)
             {
-                return new ReturnInfo(this, ReturnCode.ERROR_ARG, ex.ToString());
+                return new ReturnInfo(this, ReturnCode.ERROR, ex.ToString());
             }
         }
     }

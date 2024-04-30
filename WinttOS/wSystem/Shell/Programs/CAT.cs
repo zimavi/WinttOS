@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WinttOS.Core;
 
 namespace WinttOS.wSystem.Shell.Programs
 {
-    public class CAT
+    public sealed class CAT
     {
         public string Execute(string[] arguments)
         {

@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell
@@ -23,7 +19,7 @@ namespace WinttOS.wSystem.Shell
         CRASH,
         OK
     }
-    public class ReturnInfo
+    public sealed class ReturnInfo
     {
         private Command _command;
         internal Command Command => _command;

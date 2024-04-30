@@ -4,7 +4,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
 {
-    public class EchoCommand : Command
+    public sealed class EchoCommand : Command
     {
         public EchoCommand(string[] name) : base(name, User.AccessLevel.Guest)
         {

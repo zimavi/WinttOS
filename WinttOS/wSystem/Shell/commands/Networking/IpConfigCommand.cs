@@ -9,7 +9,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Networking
 {
-    public class IpConfigCommand : Command
+    public sealed class IpConfigCommand : Command
     {
 
         public IpConfigCommand(string[] name) : base(name, User.AccessLevel.Guest)

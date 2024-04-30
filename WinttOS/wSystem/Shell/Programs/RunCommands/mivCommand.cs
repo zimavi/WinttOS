@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WinttOS.wSystem.Shell.Programs.RunCommands
 {
-    public class MivCommand : Command
+    public sealed class MivCommand : Command
     {
         public MivCommand(string[] name) : base(name, false)
         { }

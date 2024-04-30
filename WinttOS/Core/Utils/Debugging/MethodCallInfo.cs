@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace WinttOS.Core.Utils.Debugging
 {
@@ -32,5 +33,14 @@ namespace WinttOS.Core.Utils.Debugging
 
         public static bool operator !=(MethodCallInfo left, MethodCallInfo right) =>
             !(left == right);
+
+        public override readonly bool Equals([NotNullWhen(true)] object? obj)
+        {
+            if(obj is MethodCallInfo info)
+            {
+                return info == this;
+            }
+            return false;
+        }
     }
 }

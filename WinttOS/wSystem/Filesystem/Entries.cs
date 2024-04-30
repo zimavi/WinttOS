@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WinttOS.wSystem.Filesystem
 {
-    public class Entries
+    public sealed class Entries
     {
         public static bool ForceRemove(string fullPath)
         {

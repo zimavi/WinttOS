@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Cosmos.System.FileSystem.Listing;
+﻿using Cosmos.System.FileSystem.Listing;
+using System;
 using WinttOS.Core;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
 {
-    public class DirCommand : Command
+    public sealed class DirCommand : Command
     {
         public DirCommand(string[] name) : base(name, User.AccessLevel.Guest)
         { }

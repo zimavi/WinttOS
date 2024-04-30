@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
 {
-    public class PackageRepository : Command
+    public sealed class PackageRepository : Command
     {
         public PackageRepository(string[] commandValues) : base(commandValues, Users.User.AccessLevel.Administrator)
         { }
@@ -27,7 +24,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
                 {
                     if (arguments.Count != 2)
                     {
-                        return new(this, ReturnCode.ERROR_ARG);
+                        return new(this, ReturnCode.ERROR_ARG, "Expected 2 values!");
                     }
 
                     WinttOS.PackageManager.AddRepo(arguments[1]);
@@ -47,7 +44,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
                 {
                     if (arguments.Count != 2)
                     {
-                        return new(this, ReturnCode.ERROR_ARG);
+                        return new(this, ReturnCode.ERROR_ARG, "Expected 2 values!");
                     }
                     if (int.TryParse(arguments[1], out int id))
                     {
@@ -59,7 +56,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
                     }
                     return new ReturnInfo(this, ReturnCode.OK);
                 }
-                return new ReturnInfo(this, ReturnCode.ERROR_ARG);
+                return new ReturnInfo(this, ReturnCode.ERROR_ARG, "Unknown operation!");
             }
             catch(Exception ex)
             {

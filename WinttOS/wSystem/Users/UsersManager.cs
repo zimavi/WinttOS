@@ -2,18 +2,17 @@
 using System.IO;
 using System.Text;
 using WinttOS.Core.Utils.Cryptography;
-using WinttOS.wSystem.wAPI;
 using WinttOS.wSystem.Serialization;
 
 namespace WinttOS.wSystem.Users
 {
-    public class UsersManager
+    public sealed class UsersManager
     {
         #region Fields
 
-        private List<User> users;
+        private List<User> _users;
 
-        public List<User> Users => users;
+        public List<User> Users => _users;
 
         public User CurrentUser { get; private set; } = User.CreateEmptyUser();
 
@@ -26,7 +25,7 @@ namespace WinttOS.wSystem.Users
         {
             get
             {
-                User user = users[0];
+                User user = _users[0];
                 if (user.Login == "root" && user.UserAccess == User.AccessLevel.Administrator)
                     return user;
                 return null;
@@ -38,22 +37,22 @@ namespace WinttOS.wSystem.Users
         public UsersManager(List<User>? Users)
         {
             if (Users == null)
-                this.users = new();
+                this._users = new();
             else
-                this.users = Users;
+                this._users = Users;
         }
 
         #region Methods
 
         public void AddUser(User User)
         {
-            if (users.Contains(User))
+            if (_users.Contains(User))
                 return;
-            users.Add(User);
+            _users.Add(User);
         }
 
-        public bool DeleteUser(User User) => 
-            users.Remove(User);
+        public bool DeleteUser(User User) =>
+            _users.Remove(User);
 
         public User GetUserByName(string name)
         {
@@ -65,8 +64,8 @@ namespace WinttOS.wSystem.Users
 
         public void SaveUsersData()
         {
-            PrivilegesSystem.PrivilegesSet set = WinttOS.CurrentExecutionSet;
-            WinttOS.CurrentExecutionSet = PrivilegesSystem.PrivilegesSet.HIGHEST;
+            wAPI.PrivilegesSystem.PrivilegesSet set = WinttOS.CurrentExecutionSet;
+            WinttOS.CurrentExecutionSet = wAPI.PrivilegesSystem.PrivilegesSet.HIGHEST;
 
             var serializer = new WinttUserSerializer();
             if (!Directory.Exists(@"0:\WinttOS"))
@@ -80,7 +79,7 @@ namespace WinttOS.wSystem.Users
             }
             
             File.WriteAllBytes(@"0:\WinttOS\System32\users.dat",
-                Encoding.ASCII.GetBytes(serializer.SerializeList(users)));
+                Encoding.ASCII.GetBytes(serializer.SerializeList(_users)));
 
             WinttOS.CurrentExecutionSet = set;
         }
@@ -91,22 +90,22 @@ namespace WinttOS.wSystem.Users
             {
                 byte[] UsersBytes = File.ReadAllBytes(@"0:\etc\users.dat");
                 var serializer = new WinttUserSerializer();
-                users = serializer.DeserializeList(Encoding.ASCII.GetString(UsersBytes));
+                _users = serializer.DeserializeList(Encoding.ASCII.GetString(UsersBytes));
                 return true;
             }
             catch
             {
-                users = new();
+                _users = new();
                 return false;
             }
         }
 
         public bool TryLoginIntoUserAccount(string Login, string Password)
         {
-            if (users.Count == 0)
+            if (_users.Count == 0)
                 return false;
 
-            foreach (User user in users)
+            foreach (User user in _users)
             {
                 if (!user.Name.Equals(Login))
                     return false;
@@ -174,7 +173,7 @@ namespace WinttOS.wSystem.Users
 
         public TempUser? RequestAdminAccount(string Login, string Password)
         {
-            foreach (User user in users)
+            foreach (User user in _users)
             {
                 if (user.Name == Login && user.UserAccess == User.AccessLevel.Administrator
                     && (!user.HasPassword

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace WinttOS.wSystem.wAPI
 {
     public static class Environment
     {
-        private static Dictionary<string, string> EnvironmentVariables = new()
+        private static Dictionary<string, string> _envVars = new()
         {
             { "WINTT_DEBUG", "false" },
             { "HAS_NETWORK_CONNECTION", "false" }
@@ -21,17 +17,17 @@ namespace WinttOS.wSystem.wAPI
         /// <returns></returns>
         public static string GetEnvironmentVariable(string key)
         {
-            if (EnvironmentVariables.ContainsKey(key))
-                return EnvironmentVariables[key];
+            if (_envVars.ContainsKey(key))
+                return _envVars[key];
 
             return null;
         }
 
         public static bool TryGetEnvironmentVariable(string key, out string value)
         {
-            if (EnvironmentVariables.ContainsKey(key))
+            if (_envVars.ContainsKey(key))
             {
-                value = EnvironmentVariables[key];
+                value = _envVars[key];
                 return true;
             }
 
@@ -41,13 +37,13 @@ namespace WinttOS.wSystem.wAPI
 
         public static void SetEnvironmentVariable(string key, object value)
         {
-            if(EnvironmentVariables.ContainsKey(key))
+            if(_envVars.ContainsKey(key))
             {
-                EnvironmentVariables[key] = value.ToString();
+                _envVars[key] = value.ToString();
             }
             else
             {
-                EnvironmentVariables.Add(key, value.ToString());
+                _envVars.Add(key, value.ToString());
             }
         }
     }

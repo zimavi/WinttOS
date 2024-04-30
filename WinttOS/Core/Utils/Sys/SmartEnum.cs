@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace WinttOS.Core.Utils.Sys
 {
@@ -46,7 +41,7 @@ namespace WinttOS.Core.Utils.Sys
             return Equals((TEnum)obj);
         }
 
-        public static TEnum FromValue(TValue value)
+        public static TEnum? FromValue(TValue value)
         {
             foreach (var item in _fromValue.Keys)
             {
@@ -57,7 +52,7 @@ namespace WinttOS.Core.Utils.Sys
             return null;
         }
 
-        public static TEnum FromName(string name)
+        public static TEnum? FromName(string name)
         {
             foreach (var item in _fromName.Keys)
             {

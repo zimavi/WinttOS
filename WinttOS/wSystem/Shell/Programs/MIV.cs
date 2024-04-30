@@ -4,7 +4,7 @@ using WinttOS.Core;
 
 namespace WinttOS.wSystem.Shell.Programs
 {
-    public class MIV
+    public sealed class MIV
     {
         public static void printMIVStartScreen()
         {

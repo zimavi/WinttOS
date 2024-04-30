@@ -6,7 +6,7 @@ using Cosmos.System.Coroutines;
 
 namespace WinttOS.wSystem.Shell.Commands.Users
 {
-    internal class SudoCommand : Command
+    internal sealed class SudoCommand : Command
     {
         public SudoCommand(string[] name) : base(name)
         { }
@@ -15,26 +15,14 @@ namespace WinttOS.wSystem.Shell.Commands.Users
 
         public override ReturnInfo Execute(List<string> arguments)
         {
-            if (arguments.Count == 0)
-            {
-                Console.Write("Enter password: ");
-                _passwrd = Console.ReadLine();
+            Console.Write("Enter password: ");
+            string pass = Console.ReadLine();
+            TempUser u = WinttOS.UsersManager.RequestAdminAccount("root", pass);
 
-                CoroutinePool.Main.AddCoroutine(new(HandleSudoShellAsync()));
-                
-                Console.ForegroundColor = ConsoleColor.Gray;
-            }
-            else
-            {
-                Console.Write("Enter password: ");
-                string pass = Console.ReadLine();
-                TempUser u = WinttOS.UsersManager.RequestAdminAccount("root", pass);
+            if (u.IsNull())
+                goto WrongPasswordMsg;
 
-                if (u.IsNull())
-                    goto WrongPasswordMsg;
-
-                WinttOS.CommandManager.ProcessInput(ref u, string.Join(' ', arguments));
-            }
+            WinttOS.CommandManager.ProcessInput(ref u, string.Join(' ', arguments));
             return new(this, ReturnCode.OK);
 
         WrongPasswordMsg:

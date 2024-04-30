@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Cosmos.System.Coroutines;
+using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Users;
-using Cosmos.System.Coroutines;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
 {
-    public class HelpCommand : Command
+    public sealed class HelpCommand : Command
     {
         public HelpCommand(string[] name) : base(name, User.AccessLevel.Guest)
         {

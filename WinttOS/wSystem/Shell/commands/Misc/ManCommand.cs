@@ -5,7 +5,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
 {
-    public class ManCommand : Command
+    public sealed class ManCommand : Command
     {
         public ManCommand(string[] name) : base(name, User.AccessLevel.Guest)
         { }

@@ -4,7 +4,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
 {
-    public class ShutdownCommand : Command
+    public sealed class ShutdownCommand : Command
     {
 
         public ShutdownCommand(string[] name) : base(name, User.AccessLevel.Guest)
@@ -31,7 +31,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
             }
             else
             {
-                return new(this, ReturnCode.OK, "Unknown argument!");
+                return new(this, ReturnCode.OK, "Flag expected!");
             }
         }
 

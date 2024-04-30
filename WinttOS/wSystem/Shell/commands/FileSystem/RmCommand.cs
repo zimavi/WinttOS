@@ -6,7 +6,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
 {
-    public class RmCommand : Command
+    public sealed class RmCommand : Command
     {
         public RmCommand(string[] name) : base(name, User.AccessLevel.Guest)
         { }

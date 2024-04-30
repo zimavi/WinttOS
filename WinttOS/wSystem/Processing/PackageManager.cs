@@ -1,13 +1,13 @@
-﻿using System;
+﻿using LunarLabs.Parser;
+using LunarLabs.Parser.JSON;
+using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
-using LunarLabs.Parser.JSON;
-using LunarLabs.Parser;
 using WinttOS.wSystem.Benchmark;
 
 namespace WinttOS.wSystem.Processing
 {
-    public class PackageManager
+    public sealed class PackageManager
     {
         public List<string> Repositories;
         public List<Package> LocalRepository;
@@ -40,59 +40,6 @@ namespace WinttOS.wSystem.Processing
 
                     WinttDebugger.Info($"Downloaded json '{json}'", this);
                     
-                    /*
-                    JsonArray array = null;
-
-                    using (var rdr = new JsonReader(json))
-                    {
-                        rdr.Parse();
-
-                        WinttDebugger.Info("Parsed JSON", this);
-
-                        array = rdr.GetArray();
-                    }
-
-                    for (int i = 0; i < array.Objects.Count; i++)
-                    {
-                        WinttDebugger.Info("Handling other package!", this);
-
-                        var package = new Package();
-                        package.Installed = false;
-
-                        for(int j = 0; j < array[i].Count; i++)
-                        {
-                            WinttDebugger.Info("Handling properties", this);
-
-                            string propertyName, propertyValue;
-
-                            (propertyName, propertyValue) = array[i][j];
-
-                            switch (propertyName)
-                            {
-                                case "name":
-                                    package.Name = propertyValue;
-                                    break;
-                                case "display-name":
-                                    package.DisplayName = propertyValue;
-                                    break;
-                                case "description":
-                                    package.Description = propertyValue;
-                                    break;
-                                case "author":
-                                    package.Author = propertyValue;
-                                    break;
-                                case "link":
-                                    package.Link = propertyValue;
-                                    break;
-                                case "version":
-                                    package.Version = propertyValue;
-                                    break;
-                            }
-                        }
-
-                        LocalRepository.Add(package);
-                    }
-                    */
 
                     var root = JSONReader.ReadFromString(json);
                     
@@ -100,8 +47,10 @@ namespace WinttOS.wSystem.Processing
                     {
                         WinttDebugger.Info("Handling other package!", this);
 
-                        var package = new Package();
-                        package.Installed = false;
+                        var package = new Package
+                        {
+                            Installed = false
+                        };
 
                         WinttDebugger.Info("Assinging variables!", this);
 

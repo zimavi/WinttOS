@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WinttOS.Core.Utils.Kernel
+﻿namespace WinttOS.Core.Utils.Kernel
 {
-    public class HALException
+    public sealed class HALException
     {
         public readonly string Exception;
         public readonly string Description;

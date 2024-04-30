@@ -3,7 +3,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
 {
-    public class VerisonCommand : Command
+    public sealed class VerisonCommand : Command
     {
         public VerisonCommand(string[] name) : base(name, User.AccessLevel.Guest)
         { }

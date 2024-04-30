@@ -1,21 +1,17 @@
-﻿using Cosmos.Core.Memory;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WinttOS.Core.Utils.Kernel;
-using WinttOS.Core.Utils.Sys;
 
 namespace WinttOS.Core.Utils.Debugging
 {
+    using WDLL = WinttDebugLogLevel;
+
     /// <summary>
     /// WinttOS to COM debugger
     /// </summary>
-    public class WinttDebugger
+    public sealed class WinttDebugger
     {
-        public static List<string> ErrorMessages { get;} = new(); 
+        public static List<string> ErrorMessages { get; } = new();
+        public static WDLL LogLevel { get; set; } = WDLL.Trace;
 
         /// <summary>
         /// Send trace log to COM debugger
@@ -26,6 +22,10 @@ namespace WinttOS.Core.Utils.Debugging
         {
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Trace()",
                 "void(string, object)", "WinttDebugger.cs", 22));
+            if(LogLevel > WDLL.Trace)
+            {
+                WinttCallStack.RegisterReturn();
+            }
             if (sender != null)
             {
                 Cosmos.System.Global.Debugger.Send($"[Trace] From {sender.GetType().Name}: {message}");
@@ -47,6 +47,10 @@ namespace WinttOS.Core.Utils.Debugging
         {
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Debug()",
                 "void(string, object)", "WinttDebugger.cs", 37));
+            if (LogLevel > WDLL.Debug)
+            {
+                WinttCallStack.RegisterReturn();
+            }
             if (sender != null)
             {
                 Cosmos.System.Global.Debugger.Send($"[Debug] From {sender.GetType().Name}: {message}");
@@ -68,6 +72,10 @@ namespace WinttOS.Core.Utils.Debugging
         {
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Info()",
                 "void(string, object)", "WinttDebugger.cs", 52));
+            if (LogLevel > WDLL.Info)
+            {
+                WinttCallStack.RegisterReturn();
+            }
             if (sender != null)
             {
                 Cosmos.System.Global.Debugger.Send($"[Info] From {sender.GetType().Name}: {message}");
@@ -89,6 +97,10 @@ namespace WinttOS.Core.Utils.Debugging
         {
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Debugging.WinttDebugger.Warning()",
                 "void(string, object)", "WinttDebugger.cs", 67));
+            if (LogLevel > WDLL.Warning)
+            {
+                WinttCallStack.RegisterReturn();
+            }
             if (sender != null)
             {
                 Cosmos.System.Global.Debugger.Send($"[Warn] From {sender.GetType().Name}: {message}");

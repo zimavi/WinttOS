@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using WinttOS.Core;
 
 namespace WinttOS.wSystem.Filesystem
 {
-    public class Utils
+    public sealed class Utils
     {
         public static string GetParentPath(string path)
         {

@@ -1,12 +1,9 @@
-﻿using WinttOS.Core.Utils;
-using Cosmos.System.Graphics.Fonts;
+﻿using Cosmos.System.Graphics.Fonts;
 using IL2CPU.API.Attribs;
-
-using WinttOS.wSystem;
 
 namespace WinttOS.Core
 {
-    public class GlobalData
+    public sealed class GlobalData
     {
         [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.zap-ext-light18.psf")]
         private static byte[] _fallbackFont;

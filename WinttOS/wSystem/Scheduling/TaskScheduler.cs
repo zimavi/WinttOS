@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 namespace WinttOS.wSystem.Scheduling
 {
-    using PS = wAPI.PrivilegesSystem;
-
     public class TaskScheduler
     {
 
@@ -43,7 +41,7 @@ namespace WinttOS.wSystem.Scheduling
             {
                 if (task.NeedHighPrivilege)
                 {
-                    WinttOS.CurrentExecutionSet = PS.PrivilegesSet.HIGHEST;
+                    WinttOS.CurrentExecutionSet = wAPI.PrivilegesSystem.PrivilegesSet.HIGHEST;
 
                     task.Callback();
 
@@ -55,7 +53,7 @@ namespace WinttOS.wSystem.Scheduling
                 }
             }
 
-            WinttOS.CurrentExecutionSet = PS.PrivilegesSet.HIGHEST;
+            WinttOS.CurrentExecutionSet = wAPI.PrivilegesSystem.PrivilegesSet.HIGHEST;
         }
     }
 }

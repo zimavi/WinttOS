@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
@@ -7,16 +6,15 @@ using WinttOS.wSystem.Shell.Utils;
 
 namespace WinttOS.wSystem.Shell.bash
 {
-    //[Obsolete(message:"Class causes kernel panic on parse", error:true)]
-    public class BashInterpreter
+    public sealed class BashInterpreter
     {
-        private List<BashFunction> _functions;
-        private List<BashCommand> _commands;
+        private readonly List<BashFunction> _functions;
+        private readonly List<BashCommand> _commands;
 
         private int _executionPtr; // used for current execution
-        private Core.Utils.Sys.Stack<BashCallFrame> _callStack;
+        private readonly Core.Utils.Sys.Stack<BashCallFrame> _callStack;
         private int _entryPoint;
-        private List<string> _rawCode;
+        private readonly List<string> _rawCode;
         private int _endOfFile;
         private string _path;
 
@@ -43,9 +41,8 @@ namespace WinttOS.wSystem.Shell.bash
                 if (item.IsNullOrWhiteSpace())
                     continue;
                 _rawCode.Add(item);
-                _endOfFile = _rawCode.Count - 1;
             }
-
+            _endOfFile = _rawCode.Count - 1;
 
             int line = 0;
 
@@ -89,9 +86,11 @@ namespace WinttOS.wSystem.Shell.bash
                     {
                         if (tokens[2] != "{")
                             return $"Invalid syntax on line {line + 1}";
-                        func = new();
-                        func.Name = tokens[0];
-                        func.LineStart = line;
+                        func = new()
+                        {
+                            Name = tokens[0],
+                            LineStart = line
+                        };
 
                         isSelectingFunc = true;
                     }

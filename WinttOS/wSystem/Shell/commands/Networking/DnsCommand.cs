@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
 {
-    public class DnsCommand : Command
+    public sealed class DnsCommand : Command
     {
         public DnsCommand(string[] commandValues) : base(commandValues)
         { }

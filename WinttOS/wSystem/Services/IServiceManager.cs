@@ -1,6 +1,4 @@
-﻿
-
-namespace WinttOS.wSystem.Services
+﻿namespace WinttOS.wSystem.Services
 {
     public interface IServiceManager
     {

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using WinttOS.Core.Utils.Sys;
+﻿using WinttOS.Core.Utils.Sys;
 
 namespace WinttOS.Core.Utils.Kernel
 {
-    public class WinttStatus : SmartEnum<WinttStatus, uint>
+    public sealed class WinttStatus : SmartEnum<WinttStatus, uint>
     {
 
         // Crash codes

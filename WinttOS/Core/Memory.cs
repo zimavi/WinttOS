@@ -3,15 +3,10 @@
 //
 
 using Cosmos.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WinttOS.Core
 {
-    public class Memory
+    public sealed class Memory
     {
         public static uint TotalMemory = CPU.GetAmountOfRAM();
         public uint FreePercentage;

@@ -1,5 +1,3 @@
-using Cosmos.HAL;
-using Cosmos.System.Graphics;
 using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
@@ -7,7 +5,7 @@ using WinttOS.wSystem.Shell.Programs;
 
 namespace WinttOS.Core.Utils.Sys
 {
-    public class ShellUtils
+    public sealed class ShellUtils
     {
         #region Variables
 

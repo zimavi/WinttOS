@@ -8,7 +8,7 @@ using WinttOS.wSystem.Shell.bash;
 
 namespace WinttOS.wSystem.Shell.commands.Processing
 {
-    public class RunCommand : Command
+    public sealed class RunCommand : Command
     {
         public RunCommand(string[] commandValues) : base(commandValues)
         { }

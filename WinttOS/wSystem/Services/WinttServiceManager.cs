@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
-using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Processing;
 
 namespace WinttOS.wSystem.Services
 {
-    public class WinttServiceManager : Process, IServiceManager
+    public sealed class WinttServiceManager : Process, IServiceManager
     {
         #region Interface implementation
 

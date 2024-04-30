@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.wSystem.Shell.Programs;
 
@@ -74,7 +71,7 @@ namespace WinttOS.Core.Utils.Sys
 
         #region "Extesions" for static classes
 
-        [Obsolete("This method returns wrong string (for some reason)")]
+        [Obsolete("This method returns wrong string (for some reason)", error: true)]
         public static string ReadLineWithInterception()
         {
             string returnStr = "";

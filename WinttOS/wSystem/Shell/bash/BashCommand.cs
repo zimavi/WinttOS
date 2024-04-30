@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace WinttOS.wSystem.Shell.bash
 {
-    public class BashCommand
+    public sealed class BashCommand
     {
         public string Name;
         public int Line;

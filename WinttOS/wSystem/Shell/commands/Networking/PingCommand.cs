@@ -1,12 +1,12 @@
 ﻿using Cosmos.System.Network.Config;
-using Cosmos.System.Network.IPv4.UDP.DNS;
 using Cosmos.System.Network.IPv4;
+using Cosmos.System.Network.IPv4.UDP.DNS;
 using System;
 using System.Collections.Generic;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
 {
-    public class PingCommand : Command
+    public sealed class PingCommand : Command
     {
         public PingCommand(string[] commandValues) : base(commandValues)
         { }

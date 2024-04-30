@@ -7,7 +7,7 @@ using WinttOS.wSystem.Shell.Utils;
 namespace WinttOS.wSystem.Processing
 {
 
-    public class ProcessManager
+    public sealed class ProcessManager
     {
         private List<Process> _processes = new();
 

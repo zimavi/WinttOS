@@ -5,7 +5,7 @@ using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
 {
-    public class MakeDirCommand : Command
+    public sealed class MakeDirCommand : Command
     {
         public MakeDirCommand(string[] name) : base(name, User.AccessLevel.Guest)
         { }
