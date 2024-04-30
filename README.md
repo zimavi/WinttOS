@@ -1,3 +1,4 @@
+![GitHub Tag](https://img.shields.io/github/v/tag/zimavi/WinttOS?logo=github&label=latest)
 # WinttOS
 
 Test C# OS. Latest download [link](https://github.com/zimavi/WinttOS/releases/tag/latest).
