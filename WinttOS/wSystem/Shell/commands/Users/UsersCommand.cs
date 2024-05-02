@@ -68,7 +68,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                         default:
                             return new(this, ReturnCode.ERROR_ARG, "Invalid access!");
                     }
-                    if (string.IsNullOrEmpty(pass) || string.IsNullOrWhiteSpace(pass))
+                    if (string.IsNullOrWhiteSpace(pass))
                     {
                         WinttOS.UsersManager.AddUser(new User.UserBuilder().SetUserName(Username)
                                                                            .SetAccess(User.AccessLevel.FromValue(accessToCreate))

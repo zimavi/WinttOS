@@ -3,15 +3,15 @@
 namespace WinttPlugs.Syscalls
 {
     using System.IO;
-    using PS = WinttOS.wSystem.wAPI.PrivilegesSystem;
     using WinttOS.wSystem.wAPI.Exceptions;
+    using WinttOS.wSystem.wAPI.PrivilegesSystem;
 
     [Plug(Target = typeof(FileStream))]
     public static class FileStreamSyscallsImpl
     {
         public static void Write(this FileStream fileStream, byte[] buffer, int offset, int count)
         {
-            if (!PS.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, PS.Privileges.FILE_WRITE))
+            if (!PrivilegesSet.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, Privileges.FILE_WRITE))
             {
                 throw new FileModifyPermissionException("FileStream");
             }
@@ -20,7 +20,7 @@ namespace WinttPlugs.Syscalls
 
         public static void WriteByte(this FileStream fileStream, byte value)
         {
-            if (!PS.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, PS.Privileges.FILE_WRITE))
+            if (!PrivilegesSet.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, Privileges.FILE_WRITE))
             {
                 throw new FileModifyPermissionException("FileStream");
             }
@@ -33,7 +33,7 @@ namespace WinttPlugs.Syscalls
         }
         public static void Flush(this FileStream fileStream, bool flushToDisk)
         {
-            if (!PS.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, PS.Privileges.FILE_WRITE))
+            if (!PrivilegesSet.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, Privileges.FILE_WRITE))
             {
                 throw new FileModifyPermissionException("FileStream");
             }

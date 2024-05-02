@@ -5,13 +5,14 @@ namespace WinttPlugs.Syscalls
     using PS = WinttOS.wSystem.wAPI.PrivilegesSystem;
     using System.IO;
     using WinttOS.wSystem.wAPI.Exceptions;
+    using WinttOS.wSystem.wAPI.PrivilegesSystem;
 
     [Plug(Target = typeof(System.IO.File))]
     public class FileSyscallsImpl
     {
         public static void WriteAllText(string path, string? contents)
         {
-            if (!PS.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, PS.Privileges.FILE_WRITE))
+            if (!PrivilegesSet.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, Privileges.FILE_WRITE))
             {
                 throw new FileModifyPermissionException(path);
             }
@@ -19,7 +20,7 @@ namespace WinttPlugs.Syscalls
         }
         public static void AppendAllText(string path, string? contents)
         {
-            if (!PS.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, PS.Privileges.FILE_WRITE))
+            if (!PrivilegesSet.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, Privileges.FILE_WRITE))
             {
                 throw new FileModifyPermissionException(path);
             }
@@ -27,7 +28,7 @@ namespace WinttPlugs.Syscalls
         }
         public static void WriteAllBytes(string path, byte[] bytes)
         {
-            if (!PS.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, PS.Privileges.FILE_WRITE))
+            if (!PrivilegesSet.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, Privileges.FILE_WRITE))
             {
                 throw new FileModifyPermissionException(path);
             }
@@ -48,7 +49,7 @@ namespace WinttPlugs.Syscalls
             if(mode == (FileMode.Truncate | FileMode.CreateNew | FileMode.Create | FileMode.OpenOrCreate | FileMode.Truncate | FileMode.Append) ||
                 access == (FileAccess.ReadWrite | FileAccess.Write))
             {
-                if (!PS.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, PS.Privileges.FILE_WRITE))
+                if (!PrivilegesSet.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, Privileges.FILE_WRITE))
                 {
                     throw new FileModifyPermissionException(path);
                 }
@@ -58,7 +59,7 @@ namespace WinttPlugs.Syscalls
 
         public static void Delete(string path)
         {
-            if(!PS.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, PS.Privileges.FILE_WRITE))
+            if(!PrivilegesSet.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, Privileges.FILE_WRITE))
             {
                 throw new FileModifyPermissionException(path);
             }
@@ -67,7 +68,7 @@ namespace WinttPlugs.Syscalls
 
         public static FileStream Create(string path)
         {
-            if (!PS.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, PS.Privileges.FILE_WRITE))
+            if (!PrivilegesSet.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, Privileges.FILE_WRITE))
             {
                 throw new FileModifyPermissionException(path);
             }
@@ -75,7 +76,7 @@ namespace WinttPlugs.Syscalls
         }
         public static FileStream Create(string path, int bufferSize)
         {
-            if (!PS.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, PS.Privileges.FILE_WRITE))
+            if (!PrivilegesSet.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, Privileges.FILE_WRITE))
             {
                 throw new FileModifyPermissionException(path);
             }

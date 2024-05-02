@@ -4,14 +4,14 @@ namespace WinttPlugs.Syscalls
 {
     using System.IO;
     using WinttOS.wSystem.wAPI.Exceptions;
-    using PS = WinttOS.wSystem.wAPI.PrivilegesSystem;
+    using WinttOS.wSystem.wAPI.PrivilegesSystem;
 
     [Plug(Target = typeof(Directory))]
     public class DirectorySyscallsImpl
     {
         public static DirectoryInfo CreateDirectory(string path)
         {
-            if (!PS.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, PS.Privileges.FILE_WRITE))
+            if (!PrivilegesSet.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, Privileges.FILE_WRITE))
             {
                 throw new FileModifyPermissionException(path);
             }
@@ -24,7 +24,7 @@ namespace WinttPlugs.Syscalls
 
         public static void Delete(string path, bool recursive)
         {
-            if (!PS.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, PS.Privileges.FILE_WRITE))
+            if (!!PrivilegesSet.HasFlag(WinttOS.wSystem.WinttOS.CurrentExecutionSet, Privileges.FILE_WRITE))
             {
                 throw new FileModifyPermissionException(path);
             }
