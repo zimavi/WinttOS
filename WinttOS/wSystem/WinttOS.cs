@@ -121,10 +121,38 @@ namespace WinttOS.wSystem
                 CommandManager.RegisterCommand(new DevModeCommand(new string[] { "dev-mode" }));
                 CommandManager.RegisterCommand(new CommandAction(new string[] { "crash" }, User.AccessLevel.Administrator, () =>
                 {
-                    WinttCallStack.RegisterCall(new("WinttOS.wSystem,WinttOS.Execute()"));
+                    WinttCallStack.RegisterCall(new("WinttOS.wSystem.WinttOS.Execute()"));
 
                     Kernel.WinttRaiseHardError(WinttStatus.MANUALLY_INITIATED_CRASH, instance,
                         HardErrorResponseOption.OptionShutdownSystem);
+
+                    WinttCallStack.RegisterReturn();
+                }));
+                CommandManager.RegisterCommand(new CommandAction(new string[] { "tty" }, User.AccessLevel.Administrator, () =>
+                {
+                    WinttCallStack.RegisterCall(new("WinttOS.wSystem.WinttOS.Execute()"));
+
+                    if (IsTty)
+                    {
+                        SystemIO.STDOUT = new ConsoleIO();
+                        SystemIO.STDERR = new ConsoleIO();
+                        SystemIO.STDIN = new ConsoleIO();
+
+                        if (FullScreenCanvas.IsInUse)
+                            FullScreenCanvas.Disable();
+
+                        Tty = default;
+                        IsTty = false;
+                    }
+                    else
+                    {
+                        SystemIO.STDOUT = new TtyIO();
+                        SystemIO.STDERR = new TtyIO();
+                        SystemIO.STDIN = new TtyIO();
+
+                        Tty = new(1920, 1080);
+                        IsTty = true;
+                    }
 
                     WinttCallStack.RegisterReturn();
                 }));
@@ -159,6 +187,8 @@ namespace WinttOS.wSystem
                 // All after-init code which only runs once goes here.
 
                 SystemIO.STDOUT.PutLine("\n\nWelcome to WinttOS!\n"); // welcome message
+                SystemIO.STDOUT.PutLine("To switch to VGA console type 'tty'");
+                SystemIO.STDOUT.PutLine("BEWARE: All text on screen will be erased on switch");
 
                 CoroutinePool.Main.StartPool();
             }
