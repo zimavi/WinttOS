@@ -31,7 +31,7 @@ namespace WinttOS.Core.Utils.Sys
             {
                 int y = Sys.Tty.Y;
                 Sys.Tty.X = startPos;
-                Sys.Tty.Write(new string('\0', Sys.Tty.Cols - startPos));
+                Sys.Tty.Write(new string('\0', Sys.Tty.Cols - startPos - 1));
                 Sys.Tty.X = startPos;
                 Sys.Tty.Y = y;
             }
@@ -39,7 +39,7 @@ namespace WinttOS.Core.Utils.Sys
             {
                 int currLineCursor = Console.CursorTop;
                 Console.SetCursorPosition(startPos, Console.CursorTop);
-                Console.Write(new string(' ', Console.WindowWidth - startPos - 1));
+                Console.Write(new string('\0', Console.WindowWidth - startPos - 1));
                 //Console.Write("\r" + new string(' ', Console.WindowWidth - 1 - startPos) + "\r");
                 Console.SetCursorPosition(startPos, currLineCursor);
             }
