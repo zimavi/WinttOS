@@ -273,6 +273,21 @@ namespace WinttOS.wSystem.GUI
             Update();
         }
 
+        private void WriteNoUpdate(char @char)
+        {
+            int idx = GetIndex(Y, X);
+            _text[idx] = new Cell()
+            {
+                Char = @char,
+                Foreground = (uint)ForegroundColor.ToArgb(),
+                Background = (uint)BackgroundColor.ToArgb(),
+            };
+
+            X++;
+            if (X == Cols)
+                NextLine();
+        }
+
         public void Write(string text)
         {
             for(int i = 0; i < text.Length; i++)
@@ -290,10 +305,12 @@ namespace WinttOS.wSystem.GUI
                         break;
 
                     default:
-                        Write(text[i]); 
+                        WriteNoUpdate(text[i]); 
                         break;
                 }
             }
+
+            Update();
         }
 
         public void Write(uint value) => Write(value.ToString());

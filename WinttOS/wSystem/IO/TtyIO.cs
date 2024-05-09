@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.ConstrainedExecution;
 
 namespace WinttOS.wSystem.IO
 {
@@ -72,9 +73,9 @@ namespace WinttOS.wSystem.IO
 
         public void Put(string str)
         {
-            for(int i = 0; i < str.Length; i++)
+            if (WinttOS.IsTty)
             {
-                Put(str[i]);
+                WinttOS.Tty.Write(str);
             }
         }
 
