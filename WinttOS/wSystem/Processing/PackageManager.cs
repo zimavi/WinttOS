@@ -3,6 +3,7 @@ using LunarLabs.Parser.JSON;
 using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Benchmark;
 using WinttOS.wSystem.IO;
 
@@ -22,6 +23,7 @@ namespace WinttOS.wSystem.Processing
             };
             LocalRepository = new();
             Packages = new();
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "PackageManager");
         }
 
         public void Update()

@@ -33,7 +33,7 @@ namespace WinttOS.wSystem.Shell
         public bool IsInputTaken = false;
         public bool _executeNewCommand = false;
 
-        public CommandManager() : base("ShellDaemon", "ShellManagerDaemon")
+        public CommandManager() : base("shelld", "shell.service")
         {
             _commands = new List<Command>
             {

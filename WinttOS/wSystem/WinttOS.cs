@@ -50,6 +50,7 @@ namespace WinttOS.wSystem
         public static bool IsTty { get; set; } = false;
         public static Tty Tty { get; set; }
         public static bool IsSleeping { get; set; } = false;
+        public static bool KernelPrint { get; private set; } = true;
         private static List<Action> OnSystemSleep;
 
 
@@ -72,18 +73,21 @@ namespace WinttOS.wSystem
                 "void()", "WinttOS.cs", 40));
             try
             {
+                ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "Standard IO");
 
                 SystemIO.STDOUT = new TtyIO();
                 SystemIO.STDERR = new TtyIO();
                 SystemIO.STDIN = new TtyIO();
 
+                ShellUtils.PrintTaskResult("Starting", ShellTaskResult.NONE, "TTY");
+
                 Tty = new(1920, 1080);
                 IsTty = true;
 
-                serviceManager = new WinttServiceManager();
                 SystemTaskScheduler = new TaskScheduler();
                 UsersManager = new UsersManager(null);
                 ProcessManager = new ProcessManager();
+                serviceManager = new WinttServiceManager();
                 CommandManager = new CommandManager();
                 PackageManager = new PackageManager();
                 MemoryManager = new Memory();
@@ -135,6 +139,8 @@ namespace WinttOS.wSystem
 
             Heap.Collect();
 
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "Threads");
+
             CoroutinePool.Main.PerformHeapCollection = false;
 
             CoroutinePool.Main.AddCoroutine(new(SystemThread()));
@@ -146,6 +152,14 @@ namespace WinttOS.wSystem
             Console.Clear();
             try
             {
+                ShellUtils.PrintTaskResult("Starting", ShellTaskResult.NONE, "ThreadPool");
+
+                KernelPrint = false;
+
+                // All after-init code which only runs once goes here.
+
+                SystemIO.STDOUT.PutLine("\n\nWelcome to WinttOS!\n"); // welcome message
+
                 CoroutinePool.Main.StartPool();
             }
             catch(Exception e)

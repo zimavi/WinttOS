@@ -51,7 +51,7 @@ namespace WinttOS
 
                 ShellUtils.MoveCursorUp(-1);
 
-                ShellUtils.PrintTaskResult("Registration Files Sys", ShellTaskResult.DOING);
+                ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.DOING, "VFS Filesystem");
 
                 WinttDebugger.Debug("Registering filesystem", this);
                 GlobalData.FileSystem = new Sys.FileSystem.CosmosVFS();
@@ -59,7 +59,7 @@ namespace WinttOS
                 GlobalData.FileSystem.Initialize(true);
 
                 ShellUtils.MoveCursorUp();
-                ShellUtils.PrintTaskResult("Registration Files Sys", ShellTaskResult.OK);
+                ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.OK, "VFS Filesystem");
 
                 WinttDebugger.Trace("Kernel initialize complete! Coming to system");
                 wSystem.WinttOS.InitializeSystem();

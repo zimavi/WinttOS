@@ -59,10 +59,27 @@ namespace WinttOS.wSystem.Processing
             if (IsProcessInitialized)
                 return;
 
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, ProcessName);
+
             IsProcessInitialized = true;
         }
-        public virtual void Start() { if (!IsProcessInitialized) return; if(IsProcessRunning) return; IsProcessRunning = true; }
-        public virtual void Stop() { if (!IsProcessInitialized) return; if (!IsProcessRunning) return; IsProcessRunning = false; }
+        public virtual void Start() 
+        { 
+            if (!IsProcessInitialized) return; 
+            if(IsProcessRunning) return;
+
+            ShellUtils.PrintTaskResult("Starting", ShellTaskResult.NONE, ProcessName);
+
+            IsProcessRunning = true; 
+        }
+        public virtual void Stop() 
+        { 
+            if (!IsProcessInitialized) return; 
+            if (!IsProcessRunning) return; 
+
+            IsProcessRunning = false; 
+
+        }
         public virtual void Update() { if (!IsProcessInitialized) return; }
 
         public void SetName(string name) => 

@@ -66,6 +66,8 @@ namespace WinttOS.Core.Utils.Sys
         {
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Sys.ShellUtils.PrintTaskResult",
                 "void(string, ShellTaskResult, string)", "ShellUtils.cs", 53));
+            if (!Sys.KernelPrint)
+                return;
             if(Sys.IsTty)
             {
                 ClearCurrentConsoleLine();
@@ -129,12 +131,14 @@ namespace WinttOS.Core.Utils.Sys
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.Write(" WARN ");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    Console.WriteLine($"] {task} - {detailes}\n");
                     return;
                 }
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine($"] {task}\n");
+                Console.Write("] ");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write(task + ": ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(detailes);
                 WinttCallStack.RegisterReturn();
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Processing;
 
 namespace WinttOS.wSystem.Services
@@ -12,7 +13,7 @@ namespace WinttOS.wSystem.Services
 
         private List<Service> _services = new();
 
-        public WinttServiceManager() : base("ServiceDaemon", ProcessType.KernelComponent)
+        public WinttServiceManager() : base("service.d", ProcessType.KernelComponent)
         { }
 
         public List<Service> Services => _services;
@@ -27,6 +28,8 @@ namespace WinttOS.wSystem.Services
                 "void(Service)", "WinttServiceManager.cs", 25));
             if (!_services.Contains(service))
             {
+                ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, service.ServiceName);
+
                 _services.Add(service);
 
                 service.IsProcessCritical = true;

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Shell.Utils;
 
 namespace WinttOS.wSystem.Processing
@@ -14,6 +15,11 @@ namespace WinttOS.wSystem.Processing
         public List<Process> Processes => _processes;
 
         public uint ProcessesCount => (uint) _processes.Count;
+
+        public ProcessManager()
+        {
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "ProcessManager");
+        }
 
         public bool TryRegisterProcess(Process process)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.Core.Utils.Sys;
 
 namespace WinttOS.wSystem.Scheduling
 {
@@ -13,6 +14,7 @@ namespace WinttOS.wSystem.Scheduling
 
         public TaskScheduler()
         {
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "TaskSchedular");
             _shutdownTasks = new List<sTask>();
         }
 
