@@ -25,6 +25,8 @@ namespace WinttOS.Core.Utils.Kernel
         }
         private static void panic(WinttStatus message, object sender)
         {
+            if (FullScreenCanvas.IsInUse)
+                FullScreenCanvas.Disable();
             _canvas = FullScreenCanvas.GetFullScreenCanvas(new(1024, 768, ColorDepth.ColorDepth32)); // 1024, 768 | 640, 480
 
             _status = message;
@@ -69,6 +71,8 @@ namespace WinttOS.Core.Utils.Kernel
         }
         private static void panic(WinttStatus message, HALException exception)
         {
+            if (FullScreenCanvas.IsInUse)
+                FullScreenCanvas.Disable();
             _canvas = FullScreenCanvas.GetFullScreenCanvas(new(1024, 768, ColorDepth.ColorDepth32)); // 1024, 768 | 640, 480
 
             _canvas.Clear(Color.Black);
