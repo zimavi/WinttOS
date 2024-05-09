@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
@@ -40,8 +41,8 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                 {
                     if (IsEastereggIsDetected != -1)
                     { // easteregg = True #Cuz -1 is not equal to current time =)
-                        Console.WriteLine("Variable: " + result);
-                        Console.WriteLine(@"
+                        SystemIO.STDOUT.PutLine("Variable: " + result);
+                        SystemIO.STDOUT.PutLine(@"
  (\___/)         Welcome, this is rabit =)
  (='.'=)         and yes, if you are in Vietnamese, you already know about 
 ('')_('')        'Hibiki Duca' right ?
@@ -50,7 +51,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                     }
                     else
                     {
-                        Console.WriteLine("WARNING: You need to wait to 8/8 to this easter egg work =)");
+                        SystemIO.STDOUT.PutLine("WARNING: You need to wait to 8/8 to this easter egg work =)");
                     }
                 }
                 else
@@ -62,12 +63,12 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
 
             response = string.Format("{0}", str);
                 
-            Console.WriteLine(response);
+            SystemIO.STDOUT.PutLine(response);
             return new(this, ReturnCode.OK);
         }
         public override ReturnInfo Execute()
         {
-            Console.WriteLine("ECHO is off by default.");
+            SystemIO.STDOUT.PutLine("ECHO is off by default.");
             return new(this, ReturnCode.OK);
         }
 

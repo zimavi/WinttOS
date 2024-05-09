@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.wSystem.Benchmark;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Processing
 {
@@ -29,7 +30,7 @@ namespace WinttOS.wSystem.Processing
             {
                 foreach (string repoUrl in Repositories)
                 {
-                    Console.WriteLine($"Updating from '{repoUrl}'...");
+                    SystemIO.STDOUT.PutLine($"Updating from '{repoUrl}'...");
 
                     Stopwatch sw = new();
 
@@ -64,10 +65,10 @@ namespace WinttOS.wSystem.Processing
                         LocalRepository.Add(package);
                     }
                     sw.Stop();
-                    Console.WriteLine($"Done, took {sw.TimeElapsed}");
+                    SystemIO.STDOUT.PutLine($"Done, took {sw.TimeElapsed}");
                 }
 
-                Console.WriteLine("Done.");
+                SystemIO.STDOUT.PutLine("Done.");
             }
             catch (Exception e)
             {
@@ -78,7 +79,7 @@ namespace WinttOS.wSystem.Processing
 
         public void Upgrade()
         {
-            Console.WriteLine("Upgrading packages...");
+            SystemIO.STDOUT.PutLine("Upgrading packages...");
 
             bool upgraded = false;
             
@@ -91,14 +92,14 @@ namespace WinttOS.wSystem.Processing
                 package.Download();
 
                 sw.Stop();
-                Console.WriteLine($"[OK] (took {sw.TimeElapsed})");
+                SystemIO.STDOUT.PutLine($"[OK] (took {sw.TimeElapsed})");
 
                 upgraded = true;
             }
 
             if (!upgraded)
             {
-                Console.WriteLine("No package found.");
+                SystemIO.STDOUT.PutLine("No package found.");
             }
         }
 
@@ -106,24 +107,24 @@ namespace WinttOS.wSystem.Processing
         {
             if (url.StartsWith("https://"))
             {
-                Console.WriteLine("HTTPS is not supported yet, please use HTTP");
+                SystemIO.STDOUT.PutLine("HTTPS is not supported yet, please use HTTP");
                 return;
             }
 
             Repositories.Add(url);
-            Console.WriteLine("Done.");
+            SystemIO.STDOUT.PutLine("Done.");
         }
 
         public void RemoveRepo(int id)
         {
             if(id < 0 || id > Repositories.Count - 1)
             {
-                Console.WriteLine("Error: id is out of bounce");
+                SystemIO.STDOUT.PutLine("Error: id is out of bounce");
                 return;
             }
             Repositories.RemoveAt(id);
 
-            Console.WriteLine("Done.");
+            SystemIO.STDOUT.PutLine("Done.");
         }
 
         public void Install(string packageName)
@@ -151,12 +152,12 @@ namespace WinttOS.wSystem.Processing
 
                     WinttDebugger.Trace("Installed!");
 
-                    Console.WriteLine($"{packageName} installed (took {sw.TimeElapsed})");
+                    SystemIO.STDOUT.PutLine($"{packageName} installed (took {sw.TimeElapsed})");
 
                     return;
                 }
             }
-            Console.WriteLine($"{packageName} not found!");
+            SystemIO.STDOUT.PutLine($"{packageName} not found!");
         }
 
         public void Remove(string packageName)
@@ -168,13 +169,13 @@ namespace WinttOS.wSystem.Processing
                     package.Installed = false;
                     Packages.Remove(package);
 
-                    Console.WriteLine($"{packageName} removed.");
+                    SystemIO.STDOUT.PutLine($"{packageName} removed.");
 
                     return;
                 }
             }
 
-            Console.WriteLine($"{packageName} not found.");
+            SystemIO.STDOUT.PutLine($"{packageName} not found.");
         }
     }
 }

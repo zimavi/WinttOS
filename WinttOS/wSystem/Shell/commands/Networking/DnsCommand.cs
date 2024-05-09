@@ -3,6 +3,7 @@ using Cosmos.System.Network.IPv4.UDP.DNS;
 using Cosmos.System.Network.IPv4;
 using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
 {
@@ -23,7 +24,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
             else if (arguments.Count == 1)
             {
                 xClient.Connect(DNSConfig.DNSNameservers[0]);
-                Console.WriteLine("DNS used : " + DNSConfig.DNSNameservers[0].ToString());
+                SystemIO.STDOUT.PutLine("DNS used : " + DNSConfig.DNSNameservers[0].ToString());
                 xClient.SendAsk(arguments[0]);
                 domainname = arguments[0];
             }
@@ -44,7 +45,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
             }
             else
             {
-                Console.WriteLine(domainname + " is " + address.ToString());
+                SystemIO.STDOUT.PutLine(domainname + " is " + address.ToString());
             }
 
             return new(this, ReturnCode.OK);
@@ -52,9 +53,9 @@ namespace WinttOS.wSystem.Shell.commands.Networking
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- dns {domain_name}");
-            Console.WriteLine("- dns {dns_server_ip} {domain_name}");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- dns {domain_name}");
+            SystemIO.STDOUT.PutLine("- dns {dns_server_ip} {domain_name}");
         }
     }
 }

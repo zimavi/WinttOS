@@ -1,4 +1,5 @@
 ﻿using System;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
@@ -10,14 +11,14 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
 
         public override ReturnInfo Execute()
         {
-            Console.WriteLine($"{Kernel.KernelVersion}\n{WinttOS.WinttVersion}:{WinttOS.WinttRevision}\nPowered by Cosmos Kernel");
+            SystemIO.STDOUT.PutLine($"{Kernel.KernelVersion}\n{WinttOS.WinttVersion}:{WinttOS.WinttRevision}\nPowered by Cosmos Kernel");
             return new(this, ReturnCode.OK);
         }
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- version");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- version");
         }
     }
 }

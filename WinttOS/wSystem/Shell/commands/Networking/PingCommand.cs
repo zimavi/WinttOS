@@ -3,6 +3,7 @@ using Cosmos.System.Network.IPv4;
 using Cosmos.System.Network.IPv4.UDP.DNS;
 using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
 {
@@ -43,7 +44,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
 
             try
             {
-                Console.WriteLine("Sending ping to " + destination.ToString());
+                SystemIO.STDOUT.PutLine("Sending ping to " + destination.ToString());
 
                 var xClient = new ICMPClient();
                 xClient.Connect(destination);
@@ -60,18 +61,18 @@ namespace WinttOS.wSystem.Shell.commands.Networking
 
                     if (second == -1)
                     {
-                        Console.WriteLine("Destination host unreachable.");
+                        SystemIO.STDOUT.PutLine("Destination host unreachable.");
                         PacketLost++;
                     }
                     else
                     {
                         if (second < 1)
                         {
-                            Console.WriteLine("Reply received from " + endpoint.Address.ToString() + " time < 1s");
+                            SystemIO.STDOUT.PutLine("Reply received from " + endpoint.Address.ToString() + " time < 1s");
                         }
                         else if (second >= 1)
                         {
-                            Console.WriteLine("Reply received from " + endpoint.Address.ToString() + " time " + second + "s");
+                            SystemIO.STDOUT.PutLine("Reply received from " + endpoint.Address.ToString() + " time " + second + "s");
                         }
 
                         PacketReceived++;
@@ -87,18 +88,18 @@ namespace WinttOS.wSystem.Shell.commands.Networking
 
             PercentLoss = 25 * PacketLost;
 
-            Console.WriteLine();
-            Console.WriteLine("Ping statistics for " + destination.ToString() + ":");
-            Console.WriteLine("    Packets: Sent = " + PacketSent + ", Received = " + PacketReceived + ", Lost = " + PacketLost + " (" + PercentLoss + "% loss)");
+            SystemIO.STDOUT.PutLine("");
+            SystemIO.STDOUT.PutLine("Ping statistics for " + destination.ToString() + ":");
+            SystemIO.STDOUT.PutLine("    Packets: Sent = " + PacketSent + ", Received = " + PacketReceived + ", Lost = " + PacketLost + " (" + PercentLoss + "% loss)");
 
             return new ReturnInfo(this, ReturnCode.OK);
         }
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- ping {ip}");
-            Console.WriteLine("- ping {domain_name}");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- ping {ip}");
+            SystemIO.STDOUT.PutLine("- ping {domain_name}");
         }
     }
 }

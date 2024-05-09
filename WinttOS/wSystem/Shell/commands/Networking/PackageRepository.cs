@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
 {
@@ -32,10 +33,10 @@ namespace WinttOS.wSystem.Shell.commands.Networking
                 }
                 else if(command == "list")
                 {
-                    Console.WriteLine("List of packages repositories:");
+                    SystemIO.STDOUT.PutLine("List of packages repositories:");
                     foreach(string repoLink in WinttOS.PackageManager.Repositories)
                     {
-                        Console.WriteLine("- " + repoLink);
+                        SystemIO.STDOUT.PutLine("- " + repoLink);
                     }
 
                     return new ReturnInfo(this, ReturnCode.OK);

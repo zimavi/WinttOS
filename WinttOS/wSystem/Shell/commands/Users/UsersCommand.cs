@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Users
@@ -35,9 +36,9 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                     res.Add(user.Name);
                 }
                 if (res.Any())
-                    Console.WriteLine(string.Join('\n', res.ToArray()));
+                    SystemIO.STDOUT.PutLine(string.Join('\n', res.ToArray()));
                 else
-                    Console.WriteLine("No users");
+                    SystemIO.STDOUT.PutLine("No users");
                 return new(this, ReturnCode.OK);
             }
             else if (arguments[0] == "--add" || arguments[0] == "-a")
@@ -47,10 +48,10 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                 if (arguments.Count > 1)
                 {
                     string Username = arguments[1];
-                    Console.Write("Enter new user password: ");
-                    string pass = Console.ReadLine();
-                    Console.Write("Enter new user access level\n(g - guest, d - default, a - admin):");
-                    char access = Console.ReadKey().KeyChar;
+                    SystemIO.STDOUT.Put("Enter new user password: ");
+                    string pass = SystemIO.STDIN.Get();
+                    SystemIO.STDOUT.Put("Enter new user access level\n(g - guest, d - default, a - admin):");
+                    char access = SystemIO.STDIN.GetChr().KeyChar;
                     byte accessToCreate;
                     switch (access)
                     {
@@ -96,7 +97,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                             if (WinttOS.UsersManager.ActiveUsers.Contains(user))
                                 return new(this, ReturnCode.ERROR, "Logout from account first!");
                             WinttOS.UsersManager.DeleteUser(user);
-                            Console.WriteLine("Done.");
+                            SystemIO.STDOUT.PutLine("Done.");
                             return new(this, ReturnCode.OK);
                         }
                     }
@@ -181,8 +182,8 @@ namespace WinttOS.wSystem.Shell.Commands.Users
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- user {--list|--add|--remove|--update-password}");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- user {--list|--add|--remove|--update-password}");
         }
     }
 }

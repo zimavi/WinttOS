@@ -5,6 +5,7 @@ using CosmosHttp.Client;
 using System;
 using System.Net;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Networking
 {
@@ -36,7 +37,7 @@ namespace WinttOS.wSystem.Networking
 
                 if(address == null)
                 {
-                    Console.WriteLine("Error: Invalid received address (Is it null?)");
+                    SystemIO.STDOUT.PutLine("Error: Invalid received address (Is it null?)");
                     return null;
                 }
 

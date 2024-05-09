@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WinttOS.Core;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
@@ -13,13 +14,13 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
         public override ReturnInfo Execute(List<string> arguments)
         {
             GlobalData.FileSystem.CreateDirectory(GlobalData.CurrentDirectory + arguments[0]);
-            
-            Console.WriteLine("Created directory!");
+
+            SystemIO.STDOUT.PutLine("Created directory!");
             return new(this, ReturnCode.OK);
         }
         public override ReturnInfo Execute()
         {
-            Console.Write("Enter new dir name: ");
+            SystemIO.STDOUT.Put("Enter new dir name: ");
             string dir = Console.ReadLine();
             // Added replacment of spaces in names into _ for preventing unopenable folders
             GlobalData.FileSystem.CreateDirectory(GlobalData.CurrentDirectory + string.Join('_', dir.Split(' ')));
@@ -28,8 +29,8 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- mkdir {directory}");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- mkdir {directory}");
         }
     }
 }

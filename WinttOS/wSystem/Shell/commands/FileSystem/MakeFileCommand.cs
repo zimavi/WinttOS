@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using WinttOS.Core;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
@@ -14,16 +15,16 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
         public override ReturnInfo Execute(List<string> arguments)
         {
             File.Create(GlobalData.CurrentDirectory + @"\" + string.Join(' ', arguments)).Close();
-            
 
-            Console.WriteLine("Created file!");
+
+            SystemIO.STDOUT.PutLine("Created file!");
             return new(this, ReturnCode.OK);
         }
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- mkfile {file}");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- mkfile {file}");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Filesystem
 {
@@ -20,7 +21,7 @@ namespace WinttOS.wSystem.Filesystem
             }
             else
             {
-                Console.WriteLine(fullPath + " does not exist!");
+                SystemIO.STDOUT.PutLine(fullPath + " does not exist!");
                 return false;
             }
         }
@@ -39,7 +40,7 @@ namespace WinttOS.wSystem.Filesystem
             }
             else
             {
-                Console.WriteLine("Source path does not exist!");
+                SystemIO.STDOUT.PutLine("Source path does not exist!");
                 return false;
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.Programs.RunCommands
 {
@@ -15,14 +16,14 @@ namespace WinttOS.wSystem.Shell.Programs.RunCommands
         public override ReturnInfo Execute(List<string> arguments)
         {
             CAT instance = new CAT();
-            Console.WriteLine(instance.Execute(arguments.ToArray()));
+            SystemIO.STDOUT.PutLine(instance.Execute(arguments.ToArray()));
             return new(this, ReturnCode.OK);
         }
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- cat {file}");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- cat {file}");
         }
     }
 }

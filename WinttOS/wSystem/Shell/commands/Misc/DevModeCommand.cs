@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
@@ -22,7 +23,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
         {
             if (arguments[0] == "-i" || arguments[0] == "--info")
             {
-                Console.WriteLine(IsInDebugMode ? "In debug mode" : "Not in debug mode");
+                SystemIO.STDOUT.PutLine(IsInDebugMode ? "In debug mode" : "Not in debug mode");
                 return new(this, ReturnCode.OK);
             }
             return new(this, ReturnCode.ERROR_ARG, "Flag expected!");
@@ -33,9 +34,9 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
             IsInDebugMode = !IsInDebugMode;
 
             if (IsInDebugMode)
-                Console.WriteLine("Now in debug mode");
+                SystemIO.STDOUT.PutLine("Now in debug mode");
             else
-                Console.WriteLine("Now debug mode is off");
+                SystemIO.STDOUT.PutLine("Now debug mode is off");
 
             return new(this, ReturnCode.OK);
         }

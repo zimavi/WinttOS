@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Services;
 using WinttOS.wSystem.Users;
 
@@ -25,10 +26,10 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
                 List<string> result = new();
                 foreach (var service in WinttOS.ServiceManager.Services)
                     result.Add(service.ProcessName);
-                Console.WriteLine(string.Join('\n', result.ToArray()));
+                SystemIO.STDOUT.PutLine(string.Join('\n', result.ToArray()));
             }
             if (arguments[0] == "-h" || arguments[0] == "--help")
-                Console.WriteLine(string.Join('\n', CommandManual.ToArray()));
+                SystemIO.STDOUT.PutLine(string.Join('\n', CommandManual.ToArray()));
             if (arguments.Count == 2 && (arguments[0] == "--status" || arguments[0] == "-s"))
             {
                 string errorMsg;
@@ -39,14 +40,14 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
                 if (string.IsNullOrEmpty(errorMsg))
                 {
                     string statusOperator = (status == ServiceStatus.OK) ? "[X] Online" : "[ ] Offline";
-                    Console.WriteLine(arguments[1] + "  " + statusOperator + "\nStatus: " +
+                    SystemIO.STDOUT.PutLine(arguments[1] + "  " + statusOperator + "\nStatus: " +
                         ServiceStatusFormatter.ToStringEnum(status));
                     return new(this, ReturnCode.OK);
                 }   
                 else
                 {
                     string statusOperator = (status == ServiceStatus.OK) ? "[X] Online" : "[ ] Offline";
-                    Console.WriteLine(arguments[1] + "  " + statusOperator + "\nStatus: " + 
+                    SystemIO.STDOUT.PutLine(arguments[1] + "  " + statusOperator + "\nStatus: " + 
                         ServiceStatusFormatter.ToStringEnum(status) + "\nError: " + errorMsg);
                     return new(this, ReturnCode.OK);
                 }
@@ -57,7 +58,7 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Please use 'man systemctl'!");
+            SystemIO.STDOUT.PutLine("Please use 'man systemctl'!");
         }
     }
 }

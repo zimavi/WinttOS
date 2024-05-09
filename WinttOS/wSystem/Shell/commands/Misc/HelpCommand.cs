@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
@@ -44,22 +45,22 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                     foreach (var value in commandsList[idx].CommandValues)
                     {
                         if (idx != commandsList[idx].CommandValues.Length - 1)
-                            Console.Write(value + ", ");
+                            SystemIO.STDOUT.Put(value + ", ");
                         else
-                            Console.Write(value);
+                            SystemIO.STDOUT.Put(value);
                     }
                 }
                 else
                 {
-                    Console.Write(commandsList[idx].CommandValues[0]);
+                    SystemIO.STDOUT.Put(commandsList[idx].CommandValues[0]);
                 }
-                Console.WriteLine(" (" + commandsList[idx].Description + ")");
+                SystemIO.STDOUT.PutLine(" (" + commandsList[idx].Description + ")");
             }
 
             if (idx >= commandsList.Count)
                 yield break;
 
-            Console.Write($"Press Space-bar to continue list ({idx + 1}/{commandsList.Count})...");
+            SystemIO.STDOUT.Put($"Press Space-bar to continue list ({idx + 1}/{commandsList.Count})...");
 
             while (true)
             {
@@ -70,8 +71,8 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                         continue;
                     if (idx >= commandsList.Count)
                     {
-                        Console.WriteLine();
-                        Console.WriteLine("You can see more information about a specific command by typing: {command} /help");
+                        SystemIO.STDOUT.PutLine("");
+                        SystemIO.STDOUT.PutLine("You can see more information about a specific command by typing: {command} /help");
                         WinttOS.CommandManager.IsInputTaken = false;
                         break;
                     }
@@ -84,19 +85,19 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                         foreach (var value in commandsList[idx].CommandValues)
                         {
                             if (idx != commandsList[idx].CommandValues.Length - 1)
-                                Console.Write(value + ", ");
+                                SystemIO.STDOUT.Put(value + ", ");
                             else
-                                Console.Write(value);
+                                SystemIO.STDOUT.Put(value);
                         }
                     }
                     else
                     {
-                        Console.Write(commandsList[idx].CommandValues[0]);
+                        SystemIO.STDOUT.Put(commandsList[idx].CommandValues[0]);
                     }
-                    Console.WriteLine(" (" + commandsList[idx++].Description + ")");
+                    SystemIO.STDOUT.PutLine(" (" + commandsList[idx++].Description + ")");
 
                     if (idx < commandsList.Count)
-                        Console.Write($"Press Enter to continue list ({idx + 1}/{commandsList.Count})");
+                        SystemIO.STDOUT.Put($"Press Enter to continue list ({idx + 1}/{commandsList.Count})");
                 }
                 yield return null;
             }
@@ -113,8 +114,8 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Available command:");
-            Console.WriteLine("- help /alias    show command aliases.");
+            SystemIO.STDOUT.PutLine("Available command:");
+            SystemIO.STDOUT.PutLine("- help /alias    show command aliases.");
         }
 
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using WinttOS.Core;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.Programs
 {
@@ -24,7 +25,7 @@ namespace WinttOS.wSystem.Shell.Programs
                 }
                 else if (arguments[0] == ">")
                 {
-                    text = Console.ReadLine();
+                    text = SystemIO.STDIN.Get();
                     File.WriteAllText(GlobalData.CurrentDirectory + arguments[1], text);
                     return string.Empty;
                 }

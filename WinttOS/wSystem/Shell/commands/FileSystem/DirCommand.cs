@@ -1,6 +1,7 @@
 ﻿using Cosmos.System.FileSystem.Listing;
 using System;
 using WinttOS.Core;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
@@ -16,26 +17,26 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
             {
                 var dir_files = GlobalData.FileSystem.GetDirectoryListing(GlobalData.CurrentDirectory);
 
-                Console.WriteLine($"<DIR>  {GlobalData.CurrentDirectory}");
+                SystemIO.STDOUT.PutLine($"<DIR>  {GlobalData.CurrentDirectory}");
 
                 foreach (var file in dir_files)
                 {
                     if (file.mEntryType == DirectoryEntryTypeEnum.File)
                     {
-                        Console.WriteLine($"<FILE>\t{file.mName}\t{file.mSize}");
+                        SystemIO.STDOUT.PutLine($"<FILE>\t{file.mName}\t{file.mSize}");
                     }
                     else if (file.mEntryType == DirectoryEntryTypeEnum.Directory)
                     {
                         if (file.mName.StartsWith('.'))
                             continue;
-                        Console.WriteLine($"<DIR>\t{file.mName}");
+                        SystemIO.STDOUT.PutLine($"<DIR>\t{file.mName}");
                     }
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString() + "\n" + e.Message);
-                Console.WriteLine("No files in directory");
+                SystemIO.STDOUT.PutLine(e.ToString() + "\n" + e.Message);
+                SystemIO.STDOUT.PutLine("No files in directory");
             }
 
             return new(this, ReturnCode.OK);
@@ -43,8 +44,8 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- dir");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- dir");
         }
     }
 }
