@@ -17,7 +17,6 @@ using WinttOS.wSystem.Processing;
 using WinttOS.wSystem.Scheduling;
 using WinttOS.wSystem.Services;
 using WinttOS.wSystem.Shell;
-using WinttOS.wSystem.Shell.bash;
 using WinttOS.wSystem.Shell.Commands.Misc;
 using WinttOS.wSystem.Users;
 using WinttOS.wSystem.wAPI.Events;
@@ -75,7 +74,7 @@ namespace WinttOS.wSystem
             {
 
                 SystemIO.STDOUT = new TtyIO();
-                SystemIO.STDERR = new TtyIO(); // Temperory sollution
+                SystemIO.STDERR = new TtyIO();
                 SystemIO.STDIN = new TtyIO();
 
                 Tty = new(1920, 1080);

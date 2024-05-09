@@ -9,6 +9,7 @@ using WinttOS.Core.Utils.Kernel;
 using WinttOS.wSystem.Users;
 using WinttOS.wSystem.Processing;
 using Cosmos.System.Network;
+using Cosmos.System.Graphics;
 
 namespace WinttOS
 {
@@ -92,6 +93,8 @@ namespace WinttOS
             WinttCallStack.RegisterCall(new("WinttOS.Kernel.ShutdownKernel()", "void()", "Kernel.cs", 87));
             try
             {
+                if (FullScreenCanvas.IsInUse)
+                    FullScreenCanvas.Disable();
                 foreach (var action in OnKernelFinish)
                 {
                     action();

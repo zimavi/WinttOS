@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Security.AccessControl;
 using WinttOS.Core;
+using WinttOS.Core.Utils.Debugging;
+using WinttOS.wSystem.Benchmark;
 
 namespace WinttOS.wSystem.GUI
 {
@@ -87,6 +89,7 @@ namespace WinttOS.wSystem.GUI
 
         #region Constructor & Methods
 
+
         public void Update()
         {
             _canvas.Clear(Color.Black);
@@ -96,14 +99,18 @@ namespace WinttOS.wSystem.GUI
                 for(int j = 0; j < Cols; j++)
                 {
                     int idx = GetIndex(i, j);
-                    if (_text[idx].Char == 0 || _text[idx].Char == '\n')
+                    if (_text[idx].Char == 0)
                         continue;
 
+                    if (_text[idx].Char == '\n')
+                        break;
+
                     _canvas.DrawChar(_text[idx].Char, GlobalData.FallbackFont,
-                        ForegroundColor, 0 + j * GlobalData.FallbackFont.Width,
+                        Color.FromArgb((int)_text[idx].Foreground), 0 + j * GlobalData.FallbackFont.Width,
                         0 + i * GlobalData.FallbackFont.Height);
                 }
             }
+
 
             _canvas.Display();
         }
