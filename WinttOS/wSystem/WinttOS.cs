@@ -11,6 +11,8 @@ using WinttOS.Core;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Kernel;
 using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem.GUI;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Processing;
 using WinttOS.wSystem.Scheduling;
 using WinttOS.wSystem.Services;
@@ -47,6 +49,7 @@ namespace WinttOS.wSystem
         public static Memory MemoryManager { get; private set; }
 
         public static bool IsTty { get; set; } = false;
+        public static Tty Tty { get; set; }
         public static bool IsSleeping { get; set; } = false;
         private static List<Action> OnSystemSleep;
 
@@ -70,6 +73,14 @@ namespace WinttOS.wSystem
                 "void()", "WinttOS.cs", 40));
             try
             {
+
+                SystemIO.STDOUT = new TtyIO();
+                SystemIO.STDERR = new TtyIO(); // Temperory sollution
+                SystemIO.STDIN = new TtyIO();
+
+                Tty = new(1920, 1080);
+                IsTty = true;
+
                 serviceManager = new WinttServiceManager();
                 SystemTaskScheduler = new TaskScheduler();
                 UsersManager = new UsersManager(null);
