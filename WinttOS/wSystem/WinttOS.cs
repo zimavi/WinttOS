@@ -123,13 +123,6 @@ namespace WinttOS.wSystem
 
             Heap.Collect();
 
-            if(File.Exists(@"0:\startup.sh"))
-            {
-                BashInterpreter bash = new();
-                bash.Parse(@"0:\startup.sh");
-                bash.Execute();
-            }
-
             CoroutinePool.Main.PerformHeapCollection = false;
 
             CoroutinePool.Main.AddCoroutine(new(SystemThread()));
