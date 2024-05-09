@@ -45,6 +45,8 @@ namespace WinttOS.wSystem
         public static CommandManager CommandManager { get; private set; }
         public static PackageManager PackageManager { get; private set; }
         public static Memory MemoryManager { get; private set; }
+
+        public static bool IsTty { get; set; } = false;
         public static bool IsSleeping { get; set; } = false;
         private static List<Action> OnSystemSleep;
 
