@@ -19,7 +19,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
 
             WinttDebugger.Trace("Entering _user's command execute function");
 
-            if (arguments[0] == "--list")
+            if (arguments[0] == "--list" || arguments[0] == "-l")
             {
                 WinttDebugger.Trace($"Showing list with {WinttOS.UsersManager.Users.Count} users");
                 List<string> res = new();
@@ -36,12 +36,13 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                 }
                 if (res.Any())
                     Console.WriteLine(string.Join('\n', res.ToArray()));
-                Console.WriteLine("No users");
+                else
+                    Console.WriteLine("No users");
                 return new(this, ReturnCode.OK);
             }
-            else if (arguments[0] == "--add")
+            else if (arguments[0] == "--add" || arguments[0] == "-a")
             {
-                return new(this, ReturnCode.CRASH, "NotImplementedYet!");
+                //return new(this, ReturnCode.CRASH, "NotImplementedYet!");
 
                 if (arguments.Count > 1)
                 {
@@ -68,7 +69,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                         default:
                             return new(this, ReturnCode.ERROR_ARG, "Invalid access!");
                     }
-                    if (string.IsNullOrEmpty(pass) || string.IsNullOrWhiteSpace(pass))
+                    if (pass.IsNullOrWhiteSpace())
                     {
                         WinttOS.UsersManager.AddUser(new User.UserBuilder().SetUserName(Username)
                                                                            .SetAccess(User.AccessLevel.FromValue(accessToCreate))
@@ -83,7 +84,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
             }
             else if (arguments[0] == "--remove" || arguments[0] == "-rm")
             {
-                return new(this, ReturnCode.CRASH, "NotImplementedYet!");
+                //return new(this, ReturnCode.CRASH, "NotImplementedYet!");
 
                 if (arguments.Count > 1)
                 {
@@ -108,7 +109,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
 
                 if (arguments.Count > 1)
                 {
-                    if (arguments.Count > 2 && (arguments[2] == "--leave-from-old" || arguments[2] == "-l"))
+                    if (arguments.Count > 2 && (arguments[2] == "--unlog" || arguments[2] == "-l"))
                     {
                         User user = WinttOS.UsersManager.GetUserByName(arguments[1]);
                         if (user.IsNull())
@@ -181,7 +182,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
         public override void PrintHelp()
         {
             Console.WriteLine("Usage:");
-            Console.WriteLine("- user {--list|--add|--remove|--change|--update-password}");
+            Console.WriteLine("- user {--list|--add|--remove|--update-password}");
         }
     }
 }

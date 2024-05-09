@@ -54,7 +54,7 @@ namespace WinttOS.wSystem.Shell
                 new MivCommand(new string[] { "miv" }),
                 new CatUtilCommand(new string[] { "cat" }),
                 new SystemCtlCommand(new string[] { "systemctl" }),
-                //new UsersCommand(new string[] { "user" }),
+                new UsersCommand(new string[] { "user" }),
                 new ProcessCommand(new string[] { "process" }),
                 new WgetCommand(new string[] { "wget" }),
                 //new PackageCommand(new string[] { "apt-get", "apt" }),

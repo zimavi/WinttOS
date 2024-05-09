@@ -13,7 +13,7 @@
         <StartCosmosGDB>False</StartCosmosGDB>
         <VisualStudioDebugPort>Pipe: Cosmos\Serial</VisualStudioDebugPort>
         <CosmosDebugPort>Serial: COM1</CosmosDebugPort>
-        <Launch>ISO</Launch>
+        <Launch>VMware</Launch>
         <Profile>VMware</Profile>
         <Description>Use VMware Player or Workstation to deploy and debug.</Description>
         <PxeInterface>192.168.0.8</PxeInterface>
@@ -48,7 +48,7 @@
 {
     public sealed class VersionInfo
     {
-        public static readonly string revision = "$(Date)$(Month)$(Year)$(Time)"%3b
+        public static readonly string revision = "$(Year)$(Date)$(Month)$(Time)"%3b
     }
 }]]>
 		</WinttRevision>

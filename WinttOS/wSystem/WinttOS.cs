@@ -40,7 +40,7 @@ namespace WinttOS.wSystem
 
         public static WinttServiceManager ServiceManager { get; private set; }
         public static TaskScheduler SystemTaskScheduler { get; private set; }
-        public static UsersManager UsersManager { get; private set; }
+        public static UsersManager UsersManager { get; /*private */set; }
         public static ProcessManager ProcessManager { get; private set; }
         public static CommandManager CommandManager { get; private set; }
         public static PackageManager PackageManager { get; private set; }
@@ -122,13 +122,6 @@ namespace WinttOS.wSystem
             }
 
             Heap.Collect();
-
-            if(File.Exists(@"0:\startup.sh"))
-            {
-                BashInterpreter bash = new();
-                bash.Parse(@"0:\startup.sh");
-                bash.Execute();
-            }
 
             CoroutinePool.Main.PerformHeapCollection = false;
 
