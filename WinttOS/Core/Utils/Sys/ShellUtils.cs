@@ -126,13 +126,17 @@ namespace WinttOS.Core.Utils.Sys
                     Console.Write("FAILED");
                 }
                 else if (isSuccessful == ShellTaskResult.DOING)
-                    Console.Write(new string(' ', 6));
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write(" **** ");
+                }
                 else if (isSuccessful == ShellTaskResult.WARN)
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.Write(" WARN ");
-                    return;
                 }
+                else
+                    Console.Write("      ");
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("] ");
                 Console.ForegroundColor = ConsoleColor.Gray;

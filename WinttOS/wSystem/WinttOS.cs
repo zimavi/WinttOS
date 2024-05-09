@@ -50,7 +50,7 @@ namespace WinttOS.wSystem
         public static bool IsTty { get; set; } = false;
         public static Tty Tty { get; set; }
         public static bool IsSleeping { get; set; } = false;
-        public static bool KernelPrint { get; private set; } = true;
+        public static bool KernelPrint { get; internal set; } = true;
         private static List<Action> OnSystemSleep;
 
 
@@ -282,6 +282,8 @@ namespace WinttOS.wSystem
 
             WinttDebugger.Trace("FinishOS coroutine executed! Waiting 3 seconds!", instance);
 
+            ShellUtils.PrintTaskResult("Running", ShellTaskResult.DOING, "System finish");
+
             WinttCallStack.RegisterReturn();
 
             yield return WaitFor.Seconds(3);
@@ -291,16 +293,25 @@ namespace WinttOS.wSystem
 
             WinttDebugger.Trace("3 seconds elapsed, running shutdown tasks, and finishing running coroutines!", instance);
 
+            ShellUtils.MoveCursorUp();
+
+            ShellUtils.PrintTaskResult("Running", ShellTaskResult.OK, "System finish");
+
             SystemTaskScheduler.CallShutdownSchedule();
+
+            ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.DOING, "Running threads");
 
             foreach (var coroutine in CoroutinePool.Main.RunningCoroutines)
             {
                 coroutine.Stop();
             }
 
+            ShellUtils.MoveCursorUp();
+            ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.OK, "Running threads");
+
             WinttDebugger.Info("Finishing Kernel!", instance);
 
-            Console.WriteLine("Is now safe to turn off your computer!");
+            SystemIO.STDOUT.PutLine("Is now safe to turn off your computer!");
 
             if (Kernel.IsRebooting)
                 Sys.Power.Reboot();

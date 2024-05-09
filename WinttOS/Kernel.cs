@@ -10,6 +10,7 @@ using WinttOS.wSystem.Users;
 using WinttOS.wSystem.Processing;
 using Cosmos.System.Network;
 using Cosmos.System.Graphics;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS
 {
@@ -94,17 +95,32 @@ namespace WinttOS
             try
             {
                 if (FullScreenCanvas.IsInUse)
+                {
                     FullScreenCanvas.Disable();
+
+                    wSystem.WinttOS.IsTty = false;
+
+                    SystemIO.STDOUT = new ConsoleIO();
+                    SystemIO.STDERR = new ConsoleIO();
+                    SystemIO.STDIN = new ConsoleIO();
+                }
+                
+                wSystem.WinttOS.KernelPrint = true;
+
+                ShellUtils.PrintTaskResult("Shutting down", ShellTaskResult.NONE);
+
+                ShellUtils.PrintTaskResult("Running", ShellTaskResult.DOING, "Shutdown actions");
                 foreach (var action in OnKernelFinish)
                 {
                     action();
                 }
-                Console.Clear();
-                if (!IsRebooting)
-                    Console.WriteLine("Shutting down...");
-                else
-                    Console.WriteLine("Rebooting...");
+                ShellUtils.MoveCursorUp();
+                ShellUtils.PrintTaskResult("Running", ShellTaskResult.OK, "Shutdown actions");
+
                 IsFinishingKernel = true;
+
+                ShellUtils.PrintTaskResult("Finishing", ShellTaskResult.DOING, "Tasks");
+
             }
             catch (Exception ex)
             {
