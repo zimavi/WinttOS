@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text;
+using WinttOS.Core.Utils.Sys;
 
 namespace WinttOS.wSystem.Shell.Utils
 {
@@ -9,7 +10,7 @@ namespace WinttOS.wSystem.Shell.Utils
         {
             List<string> args = new();
 
-            if (string.IsNullOrWhiteSpace(cmdLine)) 
+            if (cmdLine.IsNullOrWhiteSpace()) 
                 return args;
 
             StringBuilder currentArg = new();

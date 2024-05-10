@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Shell.Utils;
 
 namespace WinttOS.wSystem.Processing
@@ -15,14 +16,24 @@ namespace WinttOS.wSystem.Processing
 
         public uint ProcessesCount => (uint) _processes.Count;
 
+        public ProcessManager()
+        {
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "ProcessManager");
+        }
+
         public bool TryRegisterProcess(Process process)
         {
             WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.TryRegisterProcess()",
                 "bool(Process)", "ProcessManager.cs", 16));
+
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.DOING, process.ProcessName);
+            ShellUtils.MoveCursorUp();
+
             foreach (var p in _processes)
             {
                 if (p == process)
                 {
+                    ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.FAILED, process.ProcessName);
                     WinttCallStack.RegisterReturn();
                     return false;
                 }
@@ -31,6 +42,9 @@ namespace WinttOS.wSystem.Processing
             _processes[_processes.Count - 1].SetProcessID((uint)_processes.Count - 1);
             _processes[_processes.Count - 1].CurrentSet = WinttOS.UsersManager.CurrentUser.UserAccess.PrivilegeSet;
             _processes[_processes.Count - 1].Initialize();
+
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.OK, process.ProcessName);
+
             WinttCallStack.RegisterReturn();
             return true;
         }
@@ -38,10 +52,15 @@ namespace WinttOS.wSystem.Processing
         {
             WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.TryRegisterProcess()",
                 "bool(Process, ref uint)", "ProcessManager.cs", 34));
+
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.DOING, process.ProcessName);
+            ShellUtils.MoveCursorUp();
+
             foreach (var _process in _processes)
             {
                 if (_process == process)
                 {
+                    ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.FAILED, process.ProcessName);
                     WinttCallStack.RegisterReturn();
                     newProcessID = 0;
                     return false;
@@ -52,6 +71,7 @@ namespace WinttOS.wSystem.Processing
             _processes[_processes.Count - 1].CurrentSet = WinttOS.UsersManager.CurrentUser.UserAccess.PrivilegeSet;
             _processes[_processes.Count - 1].Initialize();
             newProcessID = (uint)_processes.Count - 1;
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.OK, process.ProcessName);
             WinttCallStack.RegisterReturn();
             return true;
         }
@@ -60,20 +80,27 @@ namespace WinttOS.wSystem.Processing
         {
             WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.TryStartProcess()",
                 "bool(string)", "ProcessManager.cs", 54));
+
+            ShellUtils.PrintTaskResult("Starting", ShellTaskResult.DOING, processName);
+            ShellUtils.MoveCursorUp();
+
             foreach (var process in _processes)
             {
                 if (process.ProcessName.Equals(processName)) 
                 {
                     if (process.IsProcessRunning)
                     {
+                        ShellUtils.PrintTaskResult("Starting", ShellTaskResult.FAILED, processName);
                         WinttCallStack.RegisterReturn();
                         return false;
                     }
+                    ShellUtils.PrintTaskResult("Starting", ShellTaskResult.OK, processName);
                     process.Start();
                     WinttCallStack.RegisterReturn();
                     return true; 
                 }
             }
+            ShellUtils.PrintTaskResult("Starting", ShellTaskResult.FAILED, processName);
             WinttCallStack.RegisterReturn();
             return false;
         }
@@ -82,20 +109,27 @@ namespace WinttOS.wSystem.Processing
         {
             WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.ProcessManager.TryStopProcess()",
                 "bool(Process)", "ProcessManager.cs", 76));
+
+            ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.DOING, processName);
+            ShellUtils.MoveCursorUp();
+
             foreach (var process in _processes)
             {
                 if(process.ProcessName == processName)
                 {
                     if (!process.IsProcessRunning)
                     {
+                        ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.FAILED, processName);
                         WinttCallStack.RegisterReturn();
                         return false;
                     }
                     process.Stop();
+                    ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.OK, processName);
                     WinttCallStack.RegisterReturn();
                     return true;
                 }    
             }
+            ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.FAILED, processName);
             WinttCallStack.RegisterReturn();
             return false;
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.Programs.RunCommands
 {
@@ -16,8 +17,8 @@ namespace WinttOS.wSystem.Shell.Programs.RunCommands
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- miv {file}");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- miv {file}");
         }
     }
 }

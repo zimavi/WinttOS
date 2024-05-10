@@ -10,7 +10,7 @@ namespace WinttOS.wSystem.Services
         public static bool isIdling = false;
         //private Stopwatch _timer = new();
 
-        public PowerManagerService() : base("pwrmgr", "PowerManagerDaemon")
+        public PowerManagerService() : base("powerd", "power.service")
         { 
             //WinttOS.OnSystemSleep.Add(HandleSystemSleepEvent); 
         }

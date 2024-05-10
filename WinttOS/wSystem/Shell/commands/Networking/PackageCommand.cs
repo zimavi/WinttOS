@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
 {
@@ -41,17 +42,17 @@ namespace WinttOS.wSystem.Shell.commands.Networking
                 {
                     if (WinttOS.PackageManager.LocalRepository.Count == 0)
                     {
-                        Console.WriteLine("No package found! Please make 'apt-get update' to update the package list.");
+                        SystemIO.STDOUT.PutLine("No package found! Please make 'apt-get update' to update the package list.");
                         return new ReturnInfo(this, ReturnCode.OK);
                     }
                     else
                     {
-                        Console.WriteLine("Package list:");
+                        SystemIO.STDOUT.PutLine("Package list:");
 
                         foreach (var package in WinttOS.PackageManager.LocalRepository)
                         {
-                            Console.WriteLine("- " + package.Name + " v" + package.Version + " (by " + package.Author + "), " + (package.Installed ? "installed." : "not installed."));
-                            Console.WriteLine("\t" + package.Description);
+                            SystemIO.STDOUT.PutLine("- " + package.Name + " v" + package.Version + " (by " + package.Author + "), " + (package.Installed ? "installed." : "not installed."));
+                            SystemIO.STDOUT.PutLine("\t" + package.Description);
                         }
 
                         return new ReturnInfo(this, ReturnCode.OK);

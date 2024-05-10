@@ -3,6 +3,7 @@
 //
 
 using Cosmos.Core;
+using WinttOS.Core.Utils.Sys;
 
 namespace WinttOS.Core
 {
@@ -16,6 +17,7 @@ namespace WinttOS.Core
 
         public Memory()
         {
+            ShellUtils.PrintTaskResult("Starting", ShellTaskResult.NONE, "MemoryMon");
             this.Monitor();
         }
 

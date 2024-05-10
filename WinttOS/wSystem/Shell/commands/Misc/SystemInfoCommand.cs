@@ -1,6 +1,7 @@
 ﻿using System;
 using WinttOS.Core;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
@@ -18,7 +19,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
             uint amoundOfRam = Memory.TotalMemory;
             uint usedRam = Memory.GetUsedMemory();
             WinttDebugger.Trace($"Sysinfo => CPUbrand => {CPUbrand}");
-            Console.WriteLine($"CPU: {CPUbrand}\nAmount of RAM: {amoundOfRam} MB\nUsed RAM: {usedRam /*/ 1000000*/} MB");
+            SystemIO.STDOUT.PutLine($"CPU: {CPUbrand}\nAmount of RAM: {amoundOfRam} MB\nUsed RAM: {usedRam /*/ 1000000*/} MB");
             return new(this, ReturnCode.OK);
         }
     }

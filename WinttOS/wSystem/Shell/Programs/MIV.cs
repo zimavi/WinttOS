@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using WinttOS.Core;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.Programs
 {
@@ -8,32 +9,35 @@ namespace WinttOS.wSystem.Shell.Programs
     {
         public static void printMIVStartScreen()
         {
-            Console.Clear();
-            Console.WriteLine("~");
-            Console.WriteLine("~");
-            Console.WriteLine("~");
-            Console.WriteLine("~");
-            Console.WriteLine("~");
-            Console.WriteLine("~");
-            Console.WriteLine("~");
-            Console.WriteLine("~                               MIV - MInimalistic Vi");
-            Console.WriteLine("~");
-            Console.WriteLine("~                                  version 1.2");
-            Console.WriteLine("~                             by Denis Bartashevich");
-            Console.WriteLine("~                            Minor additions by CaveSponge");
-            Console.WriteLine("~                    MIV is open source and freely distributable");
-            Console.WriteLine("~");
-            Console.WriteLine("~                     type :help<Enter>          for information");
-            Console.WriteLine("~                     type :q<Enter>             to exit");
-            Console.WriteLine("~                     type :wq<Enter>            save to file and exit");
-            Console.WriteLine("~                     press i                    to write");
-            Console.WriteLine("~");
-            Console.WriteLine("~");
-            Console.WriteLine("~");
-            Console.WriteLine("~");
-            Console.WriteLine("~");
-            Console.WriteLine("~");
-            Console.Write("~");
+            if (WinttOS.IsTty)
+                WinttOS.Tty.ClearText();
+            else
+                Console.Clear();
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~                               MIV - MInimalistic Vi");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~                                  version 1.2");
+            SystemIO.STDOUT.PutLine("~                             by Denis Bartashevich");
+            SystemIO.STDOUT.PutLine("~                            Minor additions by CaveSponge");
+            SystemIO.STDOUT.PutLine("~                    MIV is open source and freely distributable");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~                     type :help<Enter>          for information");
+            SystemIO.STDOUT.PutLine("~                     type :q<Enter>             to exit");
+            SystemIO.STDOUT.PutLine("~                     type :wq<Enter>            save to file and exit");
+            SystemIO.STDOUT.PutLine("~                     press i                    to write");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.PutLine("~");
+            SystemIO.STDOUT.Put("~");
         }
         public static String stringCopy(String value)
         {
@@ -52,19 +56,22 @@ namespace WinttOS.wSystem.Shell.Programs
             int countNewLine = 0;
             int countChars = 0;
             delay(10000000);
-            Console.Clear();
+            if (WinttOS.IsTty)
+                WinttOS.Tty.ClearText();
+            else
+                Console.Clear();
 
             for (int i = 0; i < pos; i++)
             {
                 if (chars[i] == '\n')
                 {
-                    Console.WriteLine("");
+                    SystemIO.STDOUT.PutLine("");
                     countNewLine++;
                     countChars = 0;
                 }
                 else
                 {
-                    Console.Write(chars[i]);
+                    SystemIO.STDOUT.Put(chars[i]);
                     countChars++;
                     if (countChars % 80 == 79)
                     {
@@ -73,31 +80,31 @@ namespace WinttOS.wSystem.Shell.Programs
                 }
             }
 
-            Console.Write("/");
+            SystemIO.STDOUT.Put("/");
 
             for (int i = 0; i < 23 - countNewLine; i++)
             {
-                Console.WriteLine("");
-                Console.Write("~");
+                SystemIO.STDOUT.PutLine("");
+                SystemIO.STDOUT.Put("~");
             }
 
             //PRINT INSTRUCTION
-            Console.WriteLine();
+            SystemIO.STDOUT.PutLine("");
             for (int i = 0; i < 72; i++)
             {
                 if (i < infoBar.Length)
                 {
-                    Console.Write(infoBar[i]);
+                    SystemIO.STDOUT.Put(infoBar[i]);
                 }
                 else
                 {
-                    Console.Write(" ");
+                    SystemIO.STDOUT.Put(" ");
                 }
             }
 
             if (editMode)
             {
-                Console.Write(countNewLine + 1 + "," + countChars);
+                SystemIO.STDOUT.Put(countNewLine + 1 + "," + countChars);
             }
 
         }
@@ -128,7 +135,7 @@ namespace WinttOS.wSystem.Shell.Programs
 
             do
             {
-                keyInfo = Console.ReadKey(true);
+                keyInfo = SystemIO.STDIN.GetChr(true);
 
                 if (isForbiddenKey(keyInfo.Key)) continue;
 
@@ -138,7 +145,7 @@ namespace WinttOS.wSystem.Shell.Programs
                     printMIVScreen(chars, pos, infoBar, editMode);
                     do
                     {
-                        keyInfo = Console.ReadKey(true);
+                        keyInfo = SystemIO.STDIN.GetChr(true);
                         if (keyInfo.Key == ConsoleKey.Enter)
                         {
                             if (infoBar == ":wq")
@@ -273,23 +280,26 @@ namespace WinttOS.wSystem.Shell.Programs
             {
                 if (File.Exists(GlobalData.CurrentDirectory + GlobalData.FileToEdit))
                 {
-                    Console.WriteLine("Found file!");
+                    SystemIO.STDOUT.PutLine("Found file!");
                 }
                 else if (!File.Exists(GlobalData.CurrentDirectory + GlobalData.FileToEdit))
                 {
-                    Console.WriteLine("Creating file!");
+                    SystemIO.STDOUT.PutLine("Creating file!");
                     File.Create(GlobalData.CurrentDirectory + GlobalData.FileToEdit);
                 }
-                Console.Clear();
+                if (WinttOS.IsTty)
+                    WinttOS.Tty.ClearText();
+                else
+                    Console.Clear();
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                SystemIO.STDOUT.PutLine(ex.Message);
             }
 
             String text = String.Empty;
-            Console.WriteLine("Do you want to open " + GlobalData.FileToEdit + " content? (Yes/No)");
-            if (Console.ReadLine().ToLower() == "yes" || Console.ReadLine().ToLower() == "y")
+            SystemIO.STDOUT.PutLine("Do you want to open " + GlobalData.FileToEdit + " content? (Yes/No)");
+            if (SystemIO.STDIN.Get().ToLower() == "yes" || SystemIO.STDIN.Get().ToLower() == "y")
             {
                 text = miv(File.ReadAllText(GlobalData.CurrentDirectory + GlobalData.FileToEdit));
             }
@@ -298,12 +308,15 @@ namespace WinttOS.wSystem.Shell.Programs
                 text = miv(null);
             }
 
-            Console.Clear();
+            if (WinttOS.IsTty)
+                WinttOS.Tty.ClearText();
+            else
+                Console.Clear();
 
             if (text != null)
             {
                 File.WriteAllText(GlobalData.CurrentDirectory + GlobalData.FileToEdit, text);
-                Console.WriteLine("Content has been saved to " + GlobalData.FileToEdit);
+                SystemIO.STDOUT.PutLine("Content has been saved to " + GlobalData.FileToEdit);
             }
         }
     }

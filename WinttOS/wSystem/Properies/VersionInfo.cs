@@ -2,6 +2,6 @@ namespace WinttOS.wSystem
 {
     public sealed class VersionInfo
     {
-        public static readonly string revision = "202409051305";
+        public static readonly string revision = "202410051104";
     }
 }

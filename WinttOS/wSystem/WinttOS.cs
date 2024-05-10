@@ -11,11 +11,12 @@ using WinttOS.Core;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Kernel;
 using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem.GUI;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Processing;
 using WinttOS.wSystem.Scheduling;
 using WinttOS.wSystem.Services;
 using WinttOS.wSystem.Shell;
-using WinttOS.wSystem.Shell.bash;
 using WinttOS.wSystem.Shell.Commands.Misc;
 using WinttOS.wSystem.Users;
 using WinttOS.wSystem.wAPI.Events;
@@ -45,7 +46,11 @@ namespace WinttOS.wSystem
         public static CommandManager CommandManager { get; private set; }
         public static PackageManager PackageManager { get; private set; }
         public static Memory MemoryManager { get; private set; }
+
+        public static bool IsTty { get; set; } = false;
+        public static Tty Tty { get; set; }
         public static bool IsSleeping { get; set; } = false;
+        public static bool KernelPrint { get; internal set; } = true;
         private static List<Action> OnSystemSleep;
 
 
@@ -68,10 +73,21 @@ namespace WinttOS.wSystem
                 "void()", "WinttOS.cs", 40));
             try
             {
-                serviceManager = new WinttServiceManager();
+                ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "Standard IO");
+
+                SystemIO.STDOUT = new TtyIO();
+                SystemIO.STDERR = new TtyIO();
+                SystemIO.STDIN = new TtyIO();
+
+                ShellUtils.PrintTaskResult("Starting", ShellTaskResult.NONE, "TTY");
+
+                Tty = new(1920, 1080);
+                IsTty = true;
+
                 SystemTaskScheduler = new TaskScheduler();
                 UsersManager = new UsersManager(null);
                 ProcessManager = new ProcessManager();
+                serviceManager = new WinttServiceManager();
                 CommandManager = new CommandManager();
                 PackageManager = new PackageManager();
                 MemoryManager = new Memory();
@@ -105,10 +121,38 @@ namespace WinttOS.wSystem
                 CommandManager.RegisterCommand(new DevModeCommand(new string[] { "dev-mode" }));
                 CommandManager.RegisterCommand(new CommandAction(new string[] { "crash" }, User.AccessLevel.Administrator, () =>
                 {
-                    WinttCallStack.RegisterCall(new("WinttOS.wSystem,WinttOS.Execute()"));
+                    WinttCallStack.RegisterCall(new("WinttOS.wSystem.WinttOS.Execute()"));
 
                     Kernel.WinttRaiseHardError(WinttStatus.MANUALLY_INITIATED_CRASH, instance,
                         HardErrorResponseOption.OptionShutdownSystem);
+
+                    WinttCallStack.RegisterReturn();
+                }));
+                CommandManager.RegisterCommand(new CommandAction(new string[] { "tty" }, User.AccessLevel.Administrator, () =>
+                {
+                    WinttCallStack.RegisterCall(new("WinttOS.wSystem.WinttOS.Execute()"));
+
+                    if (IsTty)
+                    {
+                        SystemIO.STDOUT = new ConsoleIO();
+                        SystemIO.STDERR = new ConsoleIO();
+                        SystemIO.STDIN = new ConsoleIO();
+
+                        if (FullScreenCanvas.IsInUse)
+                            FullScreenCanvas.Disable();
+
+                        Tty = default;
+                        IsTty = false;
+                    }
+                    else
+                    {
+                        SystemIO.STDOUT = new TtyIO();
+                        SystemIO.STDERR = new TtyIO();
+                        SystemIO.STDIN = new TtyIO();
+
+                        Tty = new(1920, 1080);
+                        IsTty = true;
+                    }
 
                     WinttCallStack.RegisterReturn();
                 }));
@@ -123,6 +167,8 @@ namespace WinttOS.wSystem
 
             Heap.Collect();
 
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "Threads");
+
             CoroutinePool.Main.PerformHeapCollection = false;
 
             CoroutinePool.Main.AddCoroutine(new(SystemThread()));
@@ -134,6 +180,16 @@ namespace WinttOS.wSystem
             Console.Clear();
             try
             {
+                ShellUtils.PrintTaskResult("Starting", ShellTaskResult.NONE, "ThreadPool");
+
+                KernelPrint = false;
+
+                // All after-init code which only runs once goes here.
+
+                SystemIO.STDOUT.PutLine("\n\nWelcome to WinttOS!\n"); // welcome message
+                SystemIO.STDOUT.PutLine("To switch to VGA console type 'tty'");
+                SystemIO.STDOUT.PutLine("BEWARE: All text on screen will be erased on switch");
+
                 CoroutinePool.Main.StartPool();
             }
             catch(Exception e)
@@ -226,6 +282,8 @@ namespace WinttOS.wSystem
 
             WinttDebugger.Trace("FinishOS coroutine executed! Waiting 3 seconds!", instance);
 
+            ShellUtils.PrintTaskResult("Running", ShellTaskResult.DOING, "System finish");
+
             WinttCallStack.RegisterReturn();
 
             yield return WaitFor.Seconds(3);
@@ -235,16 +293,25 @@ namespace WinttOS.wSystem
 
             WinttDebugger.Trace("3 seconds elapsed, running shutdown tasks, and finishing running coroutines!", instance);
 
+            ShellUtils.MoveCursorUp();
+
+            ShellUtils.PrintTaskResult("Running", ShellTaskResult.OK, "System finish");
+
             SystemTaskScheduler.CallShutdownSchedule();
+
+            ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.DOING, "Running threads");
 
             foreach (var coroutine in CoroutinePool.Main.RunningCoroutines)
             {
                 coroutine.Stop();
             }
 
+            ShellUtils.MoveCursorUp();
+            ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.OK, "Running threads");
+
             WinttDebugger.Info("Finishing Kernel!", instance);
 
-            Console.WriteLine("Is now safe to turn off your computer!");
+            SystemIO.STDOUT.PutLine("Is now safe to turn off your computer!");
 
             if (Kernel.IsRebooting)
                 Sys.Power.Reboot();

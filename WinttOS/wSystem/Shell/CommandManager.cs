@@ -5,6 +5,7 @@ using System.IO;
 using WinttOS.Core;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Services;
 using WinttOS.wSystem.Shell.bash;
 using WinttOS.wSystem.Shell.commands.Misc;
@@ -32,7 +33,7 @@ namespace WinttOS.wSystem.Shell
         public bool IsInputTaken = false;
         public bool _executeNewCommand = false;
 
-        public CommandManager() : base("ShellDaemon", "ShellManagerDaemon")
+        public CommandManager() : base("shelld", "shell.service")
         {
             _commands = new List<Command>
             {
@@ -66,12 +67,12 @@ namespace WinttOS.wSystem.Shell
 
                 new CommandAction(new string[] { "whoami" }, User.AccessLevel.Guest, () =>
                 {
-                    Console.WriteLine(WinttOS.UsersManager.CurrentUser.Login);
+                    SystemIO.STDOUT.PutLine(WinttOS.UsersManager.CurrentUser.Login);
                 }),
                 new CommandAction(new string[] { "bash" }, User.AccessLevel.Default, () =>
                 {
                     BashInterpreter bash = new();
-                    Console.WriteLine(bash.Parse(@"0:\startup.sh"));
+                    SystemIO.STDOUT.PutLine(bash.Parse(@"0:\startup.sh"));
                     bash.Execute();
                 }),
                 new CommandAction(new string[] { "crash" }, User.AccessLevel.Administrator, () =>
@@ -81,10 +82,10 @@ namespace WinttOS.wSystem.Shell
                 }),
                 new CommandAction(new string[] { "memory", "mem" }, User.AccessLevel.Guest, () =>
                 {
-                    Console.WriteLine($"Available memory: {WinttOS.MemoryManager.FreeMemory} MB");
-                    Console.WriteLine($"Used memory: {Memory.GetUsedMemory()} MB");
-                    Console.WriteLine($"Used memory (%): {100 - WinttOS.MemoryManager.FreePercentage}%");
-                    Console.WriteLine($"Total memory: {Memory.TotalMemory} MB");
+                    SystemIO.STDOUT.PutLine($"Available memory: {WinttOS.MemoryManager.FreeMemory} MB");
+                    SystemIO.STDOUT.PutLine($"Used memory: {Memory.GetUsedMemory()} MB");
+                    SystemIO.STDOUT.PutLine($"Used memory (%): {100 - WinttOS.MemoryManager.FreePercentage}%");
+                    SystemIO.STDOUT.PutLine($"Total memory: {Memory.TotalMemory} MB");
                 })
             };
         }
@@ -166,7 +167,7 @@ namespace WinttOS.wSystem.Shell
                     if (cmd.RequiredAccessLevel.Value > WinttOS.UsersManager.CurrentUser.UserAccess.Value)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkRed;
-                        Console.WriteLine("You do not have permission to run this command!");
+                        SystemIO.STDOUT.PutLine("You do not have permission to run this command!");
                         Console.ForegroundColor = ConsoleColor.White;
                         return;
                     }
@@ -212,7 +213,7 @@ namespace WinttOS.wSystem.Shell
             }
 
             Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine("Unknown command.");
+            SystemIO.STDOUT.PutLine("Unknown command.");
             Console.ForegroundColor = ConsoleColor.White;
 
             Console.WriteLine();
@@ -281,7 +282,7 @@ namespace WinttOS.wSystem.Shell
                     if (cmd.RequiredAccessLevel.Value > user.UserAccess.Value)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkRed;
-                        Console.WriteLine("You do not have permission to run this command!");
+                        SystemIO.STDOUT.PutLine("You do not have permission to run this command!");
                         Console.ForegroundColor = ConsoleColor.White;
                         user = null;
                         return;
@@ -329,7 +330,7 @@ namespace WinttOS.wSystem.Shell
             }
 
             Console.ForegroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine("Unknown command.");
+            SystemIO.STDOUT.PutLine("Unknown command.");
             Console.ForegroundColor = ConsoleColor.White;
 
             Console.WriteLine();
@@ -346,7 +347,7 @@ namespace WinttOS.wSystem.Shell
 
         private void showHelp(Command cmd)
         {
-            Console.WriteLine("Description: " + cmd.Description + '.');
+            SystemIO.STDOUT.PutLine("Description: " + cmd.Description + '.');
             Console.WriteLine();
             if (cmd.CommandValues.Length > 1)
             {
@@ -392,17 +393,17 @@ namespace WinttOS.wSystem.Shell
             if (result.Code == ReturnCode.ERROR_ARG)
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine("Command arguments are incorrectly formatted.");
+                SystemIO.STDOUT.PutLine("Command arguments are incorrectly formatted.");
                 Console.ForegroundColor = ConsoleColor.White;
             }
             else if (result.Code == ReturnCode.ERROR)
             {
                 Console.ForegroundColor = ConsoleColor.DarkRed;
-                Console.WriteLine("Error: " + result.Info);
+                SystemIO.STDOUT.PutLine("Error: " + result.Info);
                 Console.ForegroundColor = ConsoleColor.White;
             }
 
-            Console.WriteLine();
+            SystemIO.STDOUT.PutLine("");
         }
 
         private void HandleRedirection(string filePath, string commandOutput)
@@ -426,34 +427,68 @@ namespace WinttOS.wSystem.Shell
                     WinttCallStack.RegisterReturn();
                     return;
                 }
-                if (_didRunCycle && !IsInputTaken)
+                if (WinttOS.IsTty)
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    _didRunCycle = false;
-                    _hasShellFired = true;
-                }
-                else if (!IsInputTaken && !_hasShellFired)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
-                    Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    _didRunCycle = false;
-                    _hasShellFired = true;
-                }
-                string input = "";
-                bool hasKey = ShellUtils.ProcessExtendedInput(ref input);
-                if (hasKey)
-                {
-                    PowerManagerService.isIdling = false;
-                    string[] split = input.Split(' ');
-                    Console.ForegroundColor = ConsoleColor.Gray;
-                    ProcessInput(input);
-                    _didRunCycle = true;
+                    if (_didRunCycle && !IsInputTaken)
+                    {
+                        WinttOS.Tty.Foreground = ConsoleColor.DarkGray;
+                        WinttOS.Tty.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
+                        WinttOS.Tty.Foreground = ConsoleColor.White;
+                        _didRunCycle = false;
+                        _hasShellFired = true;
+                    }
+                    else if (!IsInputTaken && !_hasShellFired)
+                    {
+                        WinttOS.Tty.Foreground = ConsoleColor.DarkGray;
+                        WinttOS.Tty.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
+                        WinttOS.Tty.Foreground = ConsoleColor.White;
+                        _didRunCycle = false;
+                        _hasShellFired = true;
+                    }
+                    string input = "";
+                    bool hasKey = ShellUtils.ProcessExtendedInput(ref input);
+                    if (hasKey)
+                    {
+                        PowerManagerService.isIdling = false;
+                        string[] split = input.Split(' ');
+                        WinttOS.Tty.Foreground = ConsoleColor.Gray;
+                        ProcessInput(input);
+                        _didRunCycle = true;
+                    }
+                    else
+                        PowerManagerService.isIdling = true;
                 }
                 else
-                    PowerManagerService.isIdling = true;
+                {
+                    if (_didRunCycle && !IsInputTaken)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        _didRunCycle = false;
+                        _hasShellFired = true;
+                    }
+                    else if (!IsInputTaken && !_hasShellFired)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        _didRunCycle = false;
+                        _hasShellFired = true;
+                    }
+                    string input = "";
+                    bool hasKey = ShellUtils.ProcessExtendedInput(ref input);
+                    if (hasKey)
+                    {
+                        PowerManagerService.isIdling = false;
+                        string[] split = input.Split(' ');
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        ProcessInput(input);
+                        _didRunCycle = true;
+                    }
+                    else
+                        PowerManagerService.isIdling = true;
+                }
             }
             #region Catch
             catch

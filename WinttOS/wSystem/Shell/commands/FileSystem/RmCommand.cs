@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using WinttOS.Core;
 using WinttOS.wSystem.Filesystem;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
@@ -24,8 +25,8 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- rm {file or directory}");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- rm {file or directory}");
         }
     }
 }

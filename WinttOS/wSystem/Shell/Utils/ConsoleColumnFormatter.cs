@@ -1,4 +1,5 @@
 ﻿using System;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.Utils
 {
@@ -23,7 +24,7 @@ namespace WinttOS.wSystem.Shell.Utils
             if (text.Length > columnWidth)
                 text = text[..(columnWidth - 1)];
 
-            Console.Write(text.PadRight(columnWidth, ' '));
+            SystemIO.STDOUT.Put(text.PadRight(columnWidth, ' '));
             currentColumn++;
             checkForNewLine();
         }
@@ -32,7 +33,7 @@ namespace WinttOS.wSystem.Shell.Utils
         {
             if(currentColumn >= columnsInRow)
             {
-                Console.Write('\n');
+                SystemIO.STDOUT.Put('\n');
                 currentColumn = 0;
             }
         }

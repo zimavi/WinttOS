@@ -3,6 +3,7 @@ using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Users;
 using System.Collections.Generic;
 using Cosmos.System.Coroutines;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.Commands.Users
 {
@@ -15,8 +16,8 @@ namespace WinttOS.wSystem.Shell.Commands.Users
 
         public override ReturnInfo Execute(List<string> arguments)
         {
-            Console.Write("Enter password: ");
-            string pass = Console.ReadLine();
+            SystemIO.STDOUT.Put("Enter password: ");
+            string pass = SystemIO.STDIN.Get();
             TempUser u = WinttOS.UsersManager.RequestAdminAccount("root", pass);
 
             if (u.IsNull())
@@ -57,8 +58,8 @@ namespace WinttOS.wSystem.Shell.Commands.Users
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- sudo [command]");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- sudo [command]");
         }
     }
 }

@@ -5,6 +5,7 @@ using Cosmos.System.Network.IPv4;
 using Cosmos.System.Network.IPv4.UDP.DHCP;
 using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Networking
@@ -34,7 +35,7 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
             string returnData = "";
             if (NetworkStack.ConfigEmpty())
             {
-                Console.WriteLine("No network configuration detected! Use ipconfig /help");
+                SystemIO.STDOUT.PutLine("No network configuration detected! Use ipconfig /help");
                 return new(this, ReturnCode.OK);
             }
             foreach (NetworkConfig config in NetworkConfiguration.NetworkConfigs)
@@ -70,7 +71,7 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                 }
             }
 
-            Console.WriteLine(returnData);
+            SystemIO.STDOUT.PutLine(returnData);
             return new(this, ReturnCode.OK);
         }
 
@@ -94,7 +95,7 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                 {
                     xClient.Close();
                     wAPI.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", true);
-                    Console.WriteLine("Configuration applied! Your local IPv4 Address is " + NetworkConfiguration.CurrentAddress + ".");
+                    SystemIO.STDOUT.PutLine("Configuration applied! Your local IPv4 Address is " + NetworkConfiguration.CurrentAddress + ".");
                     return new(this, ReturnCode.OK); 
                 }
                 else
@@ -112,10 +113,10 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                     switch (device.CardType)
                     {
                         case CardType.Ethernet:
-                            Console.WriteLine("Ethernet Card - " + device.NameID + " - " + device.Name + " (" + device.MACAddress + ")");
+                            SystemIO.STDOUT.PutLine("Ethernet Card - " + device.NameID + " - " + device.Name + " (" + device.MACAddress + ")");
                             break;
                         case CardType.Wireless:
-                            Console.WriteLine("Wireless Card - " + device.NameID + " - " + device.Name + " (" + device.MACAddress + ")");
+                            SystemIO.STDOUT.PutLine("Wireless Card - " + device.NameID + " - " + device.Name + " (" + device.MACAddress + ")");
                             break;
                     }
                 }
@@ -153,14 +154,14 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                     {
                         IPConfig.Enable(nic, ip, subnet, gw);
                         wAPI.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", true);
-                        Console.WriteLine("Config OK!");
+                        SystemIO.STDOUT.PutLine("Config OK!");
                         return new(this, ReturnCode.OK);
                     }
                     else if (ip != null && subnet != null)
                     {
                         IPConfig.Enable(nic, ip, subnet, ip);
                         wAPI.Environment.SetEnvironmentVariable("HAS_NETWORK_CONNECTION", true);
-                        Console.WriteLine("Config OK!");
+                        SystemIO.STDOUT.PutLine("Config OK!");
                         return new(this, ReturnCode.OK);
                     }
                     else
@@ -170,7 +171,7 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                 }
                 else
                 {
-                    Console.WriteLine("Usage : ipconfig --set {device} {IPv4/CIDR} {Gateway|null}");
+                    SystemIO.STDOUT.PutLine("Usage : ipconfig --set {device} {IPv4/CIDR} {Gateway|null}");
                     return new(this, ReturnCode.OK);
                 }
             }
@@ -179,19 +180,19 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                 if (arguments[1] == "--add" || arguments[1] == "-a")
                 {
                     DNSConfig.Add(Address.Parse(arguments[2]));
-                    Console.WriteLine(arguments[2] + " has been added to nameservers.");
+                    SystemIO.STDOUT.PutLine(arguments[2] + " has been added to nameservers.");
                     return new(this, ReturnCode.OK);
                 }
                 else if (arguments[1] == "--remove" || arguments[1] == "-rm")
                 {
                     DNSConfig.Remove(Address.Parse(arguments[2]));
-                    Console.WriteLine(arguments[2] + " has been removed from nameservers list.");
+                    SystemIO.STDOUT.PutLine(arguments[2] + " has been removed from nameservers list.");
                     return new(this, ReturnCode.OK);
                 }
             }
             else
             {
-                Console.WriteLine("Wrong usage, please type: man ipconfig");
+                SystemIO.STDOUT.PutLine("Wrong usage, please type: man ipconfig");
                 return new(this, ReturnCode.OK);
             }
             return new(this, ReturnCode.OK);
@@ -199,7 +200,7 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Please type 'man ipconfig'!");
+            SystemIO.STDOUT.PutLine("Please type 'man ipconfig'!");
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.commands.Misc
 {
@@ -27,8 +28,8 @@ namespace WinttOS.wSystem.Shell.commands.Misc
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- export {var_name} {var_value}");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- export {var_name} {var_value}");
         }
     }
 }

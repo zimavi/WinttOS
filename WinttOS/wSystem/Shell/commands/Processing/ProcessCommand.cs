@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Processing;
 using WinttOS.wSystem.Users;
 
@@ -32,7 +32,7 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
                         if (arguments.Count > 2 && (arguments[2] == "-f" || arguments[2] == "--force"))
                         {
                             WinttDebugger.Trace($"TryStopProcess() => {WinttOS.ProcessManager.TryStopProcess(num)}");
-                            Console.WriteLine("Done.");
+                            SystemIO.STDOUT.PutLine("Done.");
                             return new(this, ReturnCode.OK);
                         }
                         if (!process.IsProcessCritical)
@@ -41,7 +41,7 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
                         {
                             return new(this, ReturnCode.ERROR, "Permission denied");
                         }
-                        Console.WriteLine("Done.");
+                        SystemIO.STDOUT.PutLine("Done.");
                         return new(this, ReturnCode.OK);
                     }
                     return new(this, ReturnCode.ERROR, "There is no such process!");
@@ -63,7 +63,7 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
                 {
                     WinttOS.ProcessManager.TryStopProcess(num);
                     WinttOS.ProcessManager.TryStartProcess(num);
-                    Console.WriteLine("Done.");
+                    SystemIO.STDOUT.PutLine("Done.");
                     return new(this, ReturnCode.OK);
                 }
                 else
@@ -82,8 +82,8 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage: ");
-            Console.WriteLine("- process {--list|--kill|--restart} {PID}");
+            SystemIO.STDOUT.PutLine("Usage: ");
+            SystemIO.STDOUT.PutLine("- process {--list|--kill|--restart} {PID}");
         }
     }
 }

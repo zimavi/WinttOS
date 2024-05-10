@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WinttOS.wSystem.Filesystem;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.FileSystem
@@ -21,8 +22,8 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- cd {directory}");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- cd {directory}");
         }
     }
 }

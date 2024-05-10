@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using WinttOS.Core.Utils.Debugging;
+using WinttOS.wSystem.GUI;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Shell.Programs;
 
 namespace WinttOS.Core.Utils.Sys
 {
+    using Sys = wSystem.WinttOS;
     public sealed class ShellUtils
     {
         #region Variables
@@ -23,11 +27,22 @@ namespace WinttOS.Core.Utils.Sys
         {
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Sys.ShellUtils.ClearCurrentConsoleLine()",
                 "void(int)", "ShellUtils.cs", 28));
-            int currLineCursor = Console.CursorTop;
-            Console.SetCursorPosition(startPos, Console.CursorTop);
-            Console.Write(new string(' ', Console.WindowWidth - startPos - 1));
-            //Console.Write("\r" + new string(' ', Console.WindowWidth - 1 - startPos) + "\r");
-            Console.SetCursorPosition(startPos, currLineCursor);
+            if (Sys.IsTty)
+            {
+                int y = Sys.Tty.Y;
+                Sys.Tty.X = startPos;
+                Sys.Tty.Write(new string('\0', Sys.Tty.Cols - startPos - 1));
+                Sys.Tty.X = startPos;
+                Sys.Tty.Y = y;
+            }
+            else
+            {
+                int currLineCursor = Console.CursorTop;
+                Console.SetCursorPosition(startPos, Console.CursorTop);
+                Console.Write(new string('\0', Console.WindowWidth - startPos - 1));
+                //Console.Write("\r" + new string(' ', Console.WindowWidth - 1 - startPos) + "\r");
+                Console.SetCursorPosition(startPos, currLineCursor);
+            }
             WinttCallStack.RegisterReturn();
         }
 
@@ -35,7 +50,10 @@ namespace WinttOS.Core.Utils.Sys
         {
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Sys.ShellUtils.MoveCursorUp()",
                 "void(int)", "ShellUtils.cs", 40));
-            Console.SetCursorPosition(0, Console.CursorTop - steps);
+            if (Sys.IsTty)
+                Sys.Tty.Y = Sys.Tty.Y - 1;
+            else
+                Console.SetCursorPosition(0, Console.CursorTop - steps);
             WinttCallStack.RegisterReturn();
         }
 
@@ -48,32 +66,85 @@ namespace WinttOS.Core.Utils.Sys
         {
             WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Sys.ShellUtils.PrintTaskResult",
                 "void(string, ShellTaskResult, string)", "ShellUtils.cs", 53));
-            Console.SetCursorPosition(0, Console.CursorTop - 1);
-            ClearCurrentConsoleLine();
-            Console.Write("[");
-            if (isSuccessful == ShellTaskResult.OK)  // I wanted to make it using swich case, but I'm too lazy to rewrite it 2 times :)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.Write("  OK  ");
-            }
-            else if (isSuccessful == ShellTaskResult.FAILED)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("FAILED");
-            }
-            else if (isSuccessful == ShellTaskResult.DOING)
-                Console.Write(new string(' ', 6));
-            else if (isSuccessful == ShellTaskResult.WARN)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write(" WARN ");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine($"] {task} - {detailes}\n");
+            if (!Sys.KernelPrint)
                 return;
+            if(Sys.IsTty)
+            {
+                ClearCurrentConsoleLine();
+                Sys.Tty.Write("[");
+
+                var originColor = Sys.Tty.ForegroundColor;
+                
+                switch(isSuccessful)
+                {
+                    case ShellTaskResult.OK:
+                        Sys.Tty.ForegroundColor = Color.Green;
+                        Sys.Tty.Write("  OK  ");
+                        break;
+                    case ShellTaskResult.FAILED:
+                        Sys.Tty.ForegroundColor = Color.Red;
+                        Sys.Tty.Write("FAILED");
+                        break;
+                    case ShellTaskResult.DOING:
+                        Sys.Tty.ForegroundColor = Color.Red;
+                        Sys.Tty.Write(" **** ");
+                        break;
+                    case ShellTaskResult.WARN:
+                        Sys.Tty.ForegroundColor = Color.Yellow;
+                        Sys.Tty.Write(" WARN ");
+                        break;
+                    case ShellTaskResult.NONE:
+                        Sys.Tty.Write("      ");
+                        break;
+                }
+
+                Sys.Tty.ForegroundColor = Color.White;
+
+                Sys.Tty.Write("] ");
+
+                Sys.Tty.ForegroundColor = Color.Gray;
+
+                Sys.Tty.Write(task + ": ");
+
+                Sys.Tty.ForegroundColor = Color.White;
+
+                Sys.Tty.WriteLine(detailes);
             }
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine($"] {task}\n");
-            WinttCallStack.RegisterReturn();
+            else
+            {
+                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                ClearCurrentConsoleLine();
+                Console.Write("[");
+                if (isSuccessful == ShellTaskResult.OK)  // I wanted to make it using swich case, but I'm too lazy to rewrite it 2 times :)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.Write("  OK  ");
+                }
+                else if (isSuccessful == ShellTaskResult.FAILED)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("FAILED");
+                }
+                else if (isSuccessful == ShellTaskResult.DOING)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write(" **** ");
+                }
+                else if (isSuccessful == ShellTaskResult.WARN)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write(" WARN ");
+                }
+                else
+                    Console.Write("      ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("] ");
+                Console.ForegroundColor = ConsoleColor.Gray;
+                Console.Write(task + ": ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(detailes);
+                WinttCallStack.RegisterReturn();
+            }
         }
 
         //[Obsolete("This method contains not working code! Please use Console.Readline()!", true)]
@@ -83,14 +154,14 @@ namespace WinttOS.Core.Utils.Sys
                 "bool(ref string)", "ShellUtils.cs", 86));
             if (Console.KeyAvailable)
             {
-                ConsoleKeyInfo key = Console.ReadKey(true);
+                ConsoleKeyInfo key = SystemIO.STDIN.GetChr(true);
                 if (key.Key == ConsoleKey.Enter)
                 {
                     _recentInput.Insert(0, _inputToDisplay);
                     if (_recentInput.Count > 10)
                         _recentInput.RemoveAt(_recentInput.Count - 1);
                     ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
-                    Console.WriteLine(_inputToDisplay);
+                    SystemIO.STDOUT.PutLine(_inputToDisplay);
                     input = _inputToDisplay;
                     _inputToDisplay = "";
                     _currentInput = null;
@@ -102,7 +173,7 @@ namespace WinttOS.Core.Utils.Sys
                     if (_inputToDisplay.Length > 0)
                         _inputToDisplay = _inputToDisplay.Substring(0, _inputToDisplay.Length - 1);
                     ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
-                    Console.Write(_inputToDisplay);
+                    SystemIO.STDOUT.Put(_inputToDisplay);
                 }
                 else if (key.Key == ConsoleKey.UpArrow)
                 {
@@ -117,7 +188,7 @@ namespace WinttOS.Core.Utils.Sys
                         if (_currentRecentPos == 0)
                             _currentRecentPos++;
                         ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
-                        Console.Write(_inputToDisplay);
+                        SystemIO.STDOUT.Put(_inputToDisplay);
 
                     }
                 }
@@ -132,13 +203,13 @@ namespace WinttOS.Core.Utils.Sys
                             _inputToDisplay = _currentInput;
                             _currentInput = "";
                             ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
-                            Console.Write(_inputToDisplay);
+                            SystemIO.STDOUT.Put(_inputToDisplay);
                         }
                         else
                         {
                             _inputToDisplay = _recentInput[_currentRecentPos];
                             ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
-                            Console.Write(_inputToDisplay);
+                            SystemIO.STDOUT.Put(_inputToDisplay);
                         }
                     }
                 }
@@ -147,7 +218,7 @@ namespace WinttOS.Core.Utils.Sys
                     _inputToDisplay += key.KeyChar;
 
                     ClearCurrentConsoleLine(GlobalData.ShellClearStartPos);
-                    Console.Write(_inputToDisplay);
+                    SystemIO.STDOUT.Put(_inputToDisplay);
                 }
             }
             WinttCallStack.RegisterReturn();
@@ -164,17 +235,17 @@ namespace WinttOS.Core.Utils.Sys
             ConsoleKey key;
             do
             {
-                var keyInfo = Console.ReadKey(intercept: true);
+                var keyInfo = SystemIO.STDIN.GetChr(true);
                 key = keyInfo.Key;
 
                 if (key == ConsoleKey.Backspace && input.Length > 0)
                 {
-                    Console.Write("\b \b");
+                    SystemIO.STDOUT.Put("\b \b");
                     input = input[0..^1];
                 }
                 else if (!char.IsControl(keyInfo.KeyChar))
                 {
-                    Console.Write("*");
+                    SystemIO.STDOUT.Put("*");
                     input += keyInfo.KeyChar;
                 }
             } while (key != ConsoleKey.Enter);
@@ -187,6 +258,7 @@ namespace WinttOS.Core.Utils.Sys
 
     public enum ShellTaskResult
     {
+        NONE,
         OK,
         FAILED,
         DOING,

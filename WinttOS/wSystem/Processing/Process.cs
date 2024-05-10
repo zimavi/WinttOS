@@ -61,8 +61,21 @@ namespace WinttOS.wSystem.Processing
 
             IsProcessInitialized = true;
         }
-        public virtual void Start() { if (!IsProcessInitialized) return; if(IsProcessRunning) return; IsProcessRunning = true; }
-        public virtual void Stop() { if (!IsProcessInitialized) return; if (!IsProcessRunning) return; IsProcessRunning = false; }
+        public virtual void Start() 
+        { 
+            if (!IsProcessInitialized) return; 
+            if(IsProcessRunning) return;
+
+            IsProcessRunning = true; 
+        }
+        public virtual void Stop() 
+        { 
+            if (!IsProcessInitialized) return; 
+            if (!IsProcessRunning) return; 
+
+            IsProcessRunning = false; 
+
+        }
         public virtual void Update() { if (!IsProcessInitialized) return; }
 
         public void SetName(string name) => 

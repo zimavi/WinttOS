@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using WinttOS.Core;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Networking;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
@@ -26,7 +27,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
 
                 File.WriteAllText(GlobalData.CurrentDirectory + "file.html", file);
 
-                Console.WriteLine(url + " saved to file.html");
+                SystemIO.STDOUT.PutLine(url + " saved to file.html");
                 return new(this, ReturnCode.OK);
             }
             catch(Exception e)

@@ -9,7 +9,10 @@ namespace WinttOS.wSystem.Shell.Commands.Screen
         { }
         public override ReturnInfo Execute()
         {
-            Console.Clear();
+            if (WinttOS.IsTty)
+                WinttOS.Tty.ClearText();
+            else
+                Console.Clear();
             return new(this, ReturnCode.OK);
         }
     }

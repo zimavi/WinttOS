@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 using WinttOS.wSystem.wAPI;
 
@@ -28,7 +29,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                     return new(this, ReturnCode.ERROR_ARG, "Expected flag!");
                 }
 
-                Console.WriteLine(formated);
+                SystemIO.STDOUT.PutLine(formated);
                 return new(this, ReturnCode.OK);
             }
 
@@ -38,16 +39,16 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
         public override ReturnInfo Execute()
         {
             string formated = $"{Time.DayString()}.{Time.MonthString()}.{Time.YearString()} {Time.TimeString(true, true, false)}";
-            Console.WriteLine(formated);
+            SystemIO.STDOUT.PutLine(formated);
             return new(this, ReturnCode.OK);
         }
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- time");
-            Console.WriteLine("- time -h12");
-            Console.WriteLine("- time -h24 (default)");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- time");
+            SystemIO.STDOUT.PutLine("- time -h12");
+            SystemIO.STDOUT.PutLine("- time -h24 (default)");
         }
     }
 }

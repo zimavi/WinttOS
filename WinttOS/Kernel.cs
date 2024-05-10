@@ -9,6 +9,8 @@ using WinttOS.Core.Utils.Kernel;
 using WinttOS.wSystem.Users;
 using WinttOS.wSystem.Processing;
 using Cosmos.System.Network;
+using Cosmos.System.Graphics;
+using WinttOS.wSystem.IO;
 
 namespace WinttOS
 {
@@ -50,7 +52,7 @@ namespace WinttOS
 
                 ShellUtils.MoveCursorUp(-1);
 
-                ShellUtils.PrintTaskResult("Registration Files Sys", ShellTaskResult.DOING);
+                ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.DOING, "VFS Filesystem");
 
                 WinttDebugger.Debug("Registering filesystem", this);
                 GlobalData.FileSystem = new Sys.FileSystem.CosmosVFS();
@@ -58,7 +60,7 @@ namespace WinttOS
                 GlobalData.FileSystem.Initialize(true);
 
                 ShellUtils.MoveCursorUp();
-                ShellUtils.PrintTaskResult("Registration Files Sys", ShellTaskResult.OK);
+                ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.OK, "VFS Filesystem");
 
                 WinttDebugger.Trace("Kernel initialize complete! Coming to system");
                 wSystem.WinttOS.InitializeSystem();
@@ -92,16 +94,35 @@ namespace WinttOS
             WinttCallStack.RegisterCall(new("WinttOS.Kernel.ShutdownKernel()", "void()", "Kernel.cs", 87));
             try
             {
+                if (FullScreenCanvas.IsInUse)
+                {
+                    FullScreenCanvas.Disable();
+
+                    wSystem.WinttOS.IsTty = false;
+
+                    SystemIO.STDOUT = new ConsoleIO();
+                    SystemIO.STDERR = new ConsoleIO();
+                    SystemIO.STDIN = new ConsoleIO();
+
+                    Console.Clear();
+                }
+                
+                wSystem.WinttOS.KernelPrint = true;
+
+                ShellUtils.PrintTaskResult("Shutting down", ShellTaskResult.NONE);
+
+                ShellUtils.PrintTaskResult("Running", ShellTaskResult.DOING, "Shutdown actions");
                 foreach (var action in OnKernelFinish)
                 {
                     action();
                 }
-                Console.Clear();
-                if (!IsRebooting)
-                    Console.WriteLine("Shutting down...");
-                else
-                    Console.WriteLine("Rebooting...");
+                ShellUtils.MoveCursorUp();
+                ShellUtils.PrintTaskResult("Running", ShellTaskResult.OK, "Shutdown actions");
+
                 IsFinishingKernel = true;
+
+                ShellUtils.PrintTaskResult("Finishing", ShellTaskResult.DOING, "Tasks");
+
             }
             catch (Exception ex)
             {

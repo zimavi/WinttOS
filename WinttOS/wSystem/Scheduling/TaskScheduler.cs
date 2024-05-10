@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.Core.Utils.Sys;
 
 namespace WinttOS.wSystem.Scheduling
 {
@@ -13,6 +14,7 @@ namespace WinttOS.wSystem.Scheduling
 
         public TaskScheduler()
         {
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "TaskSchedular");
             _shutdownTasks = new List<sTask>();
         }
 
@@ -34,6 +36,8 @@ namespace WinttOS.wSystem.Scheduling
             if (_shutdownTasks.Count == 0)
                 return;
 
+            ShellUtils.PrintTaskResult("Running", ShellTaskResult.DOING, "Shutdown schedule");
+
             var currSet = WinttOS.UsersManager.CurrentUser.UserAccess.PrivilegeSet;
             WinttOS.CurrentExecutionSet = currSet;
 
@@ -54,6 +58,9 @@ namespace WinttOS.wSystem.Scheduling
             }
 
             WinttOS.CurrentExecutionSet = wAPI.PrivilegesSystem.PrivilegesSet.HIGHEST;
+
+            ShellUtils.MoveCursorUp();
+            ShellUtils.PrintTaskResult("Running", ShellTaskResult.OK, "Shutdown schedule");
         }
     }
 }

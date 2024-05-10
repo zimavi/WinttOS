@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Misc
@@ -18,7 +19,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                 {
                     if (command.CommandManual.Any())
                     {
-                        Console.WriteLine(string.Join('\n', command.CommandManual.ToArray()));
+                        SystemIO.STDOUT.PutLine(string.Join('\n', command.CommandManual.ToArray()));
                         return new(this, ReturnCode.OK);
                     }
                     break;
@@ -39,14 +40,14 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
             }
             string returnStr = "List of _commands with manuals:\n";
             returnStr += string.Join('\n', commandsWithManuals.ToArray()[0]);
-            Console.WriteLine(returnStr);
+            SystemIO.STDOUT.PutLine(returnStr);
             return new(this, ReturnCode.OK);
         }
 
         public override void PrintHelp()
         {
-            Console.WriteLine("Usage:");
-            Console.WriteLine("- man [command name]");
+            SystemIO.STDOUT.PutLine("Usage:");
+            SystemIO.STDOUT.PutLine("- man [command name]");
         }
     }
 }

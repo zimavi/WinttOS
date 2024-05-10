@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell
@@ -78,7 +79,7 @@ namespace WinttOS.wSystem.Shell
 
         public virtual void PrintHelp()
         {
-            Console.WriteLine("No help information for this command!");
+            SystemIO.STDOUT.PutLine("No help information for this command!");
         }
 
 

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using WinttOS.Core.Utils.Cryptography;
+using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Serialization;
 
 namespace WinttOS.wSystem.Users
@@ -36,6 +37,7 @@ namespace WinttOS.wSystem.Users
 
         public UsersManager(List<User>? Users)
         {
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "UserManager");
             if (Users == null)
                 this._users = new();
             else
