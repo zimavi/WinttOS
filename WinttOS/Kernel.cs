@@ -103,6 +103,8 @@ namespace WinttOS
                     SystemIO.STDOUT = new ConsoleIO();
                     SystemIO.STDERR = new ConsoleIO();
                     SystemIO.STDIN = new ConsoleIO();
+
+                    Console.Clear();
                 }
                 
                 wSystem.WinttOS.KernelPrint = true;
