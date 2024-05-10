@@ -38,7 +38,14 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
 
             var commandsList = WinttOS.CommandManager.GetCommandsListInstances();
 
-            for (; idx < 22 && idx < commandsList.Count; idx++)
+            int termHeight = 22;
+
+            if (WinttOS.IsTty)
+            {
+                termHeight = WinttOS.Tty.Rows;
+            }
+
+            for (; idx < termHeight && idx < commandsList.Count; idx++)
             {
                 if (showAliases)
                 {
@@ -48,17 +55,25 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                             SystemIO.STDOUT.Put(value + ", ");
                         else
                             SystemIO.STDOUT.Put(value);
+
+                        WinttDebugger.Debug($"Index: {idx}; List count: {commandsList.Count})", this);
                     }
                 }
                 else
                 {
                     SystemIO.STDOUT.Put(commandsList[idx].CommandValues[0]);
+                    WinttDebugger.Debug($"Index: {idx}; List count: {commandsList.Count})", this);
                 }
                 SystemIO.STDOUT.PutLine(" (" + commandsList[idx].Description + ")");
             }
 
-            if (idx >= commandsList.Count)
+            if (idx >= commandsList.Count - 1)
+            {
+                SystemIO.STDOUT.PutLine("");
+                SystemIO.STDOUT.PutLine("You can see more information about a specific command by typing: {command} /help");
+                WinttOS.CommandManager.IsInputTaken = false;
                 yield break;
+            }
 
             SystemIO.STDOUT.Put($"Press Space-bar to continue list ({idx + 1}/{commandsList.Count})...");
 
@@ -69,12 +84,12 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                     ConsoleKeyInfo key = Console.ReadKey(true);
                     if (key.Key != ConsoleKey.Spacebar && key.Key != ConsoleKey.Enter)
                         continue;
-                    if (idx >= commandsList.Count)
+                    if (idx >= commandsList.Count - 1)
                     {
                         SystemIO.STDOUT.PutLine("");
                         SystemIO.STDOUT.PutLine("You can see more information about a specific command by typing: {command} /help");
                         WinttOS.CommandManager.IsInputTaken = false;
-                        break;
+                        yield break;
                     }
 
                     ShellUtils.ClearCurrentConsoleLine();
