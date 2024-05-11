@@ -13,6 +13,8 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
 
         public override ReturnInfo Execute(List<string> arguments)
         {
+            if (arguments[0] == "/")
+                arguments[0] = @"0:\";
             if (!CurrentPath.Set(arguments[0], out string error))
             {
                 return new(this, ReturnCode.ERROR, error);

@@ -46,9 +46,8 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage:");
-            SystemIO.STDOUT.PutLine("- time");
-            SystemIO.STDOUT.PutLine("- time -h12");
-            SystemIO.STDOUT.PutLine("- time -h24 (default)");
+            SystemIO.STDOUT.PutLine("time");
+            SystemIO.STDOUT.PutLine("time [-h12 | -h24]");
         }
     }
 }

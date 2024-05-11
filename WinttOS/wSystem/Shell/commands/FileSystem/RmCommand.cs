@@ -26,7 +26,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage:");
-            SystemIO.STDOUT.PutLine("- rm {file or directory}");
+            SystemIO.STDOUT.PutLine("rm [file or directory]");
         }
     }
 }

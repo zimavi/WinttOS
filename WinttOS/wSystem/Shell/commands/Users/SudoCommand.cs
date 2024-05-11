@@ -59,7 +59,7 @@ namespace WinttOS.wSystem.Shell.Commands.Users
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage:");
-            SystemIO.STDOUT.PutLine("- sudo [command]");
+            SystemIO.STDOUT.PutLine("sudo [command]");
         }
     }
 }

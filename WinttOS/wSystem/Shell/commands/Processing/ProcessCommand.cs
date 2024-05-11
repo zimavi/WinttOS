@@ -83,7 +83,7 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage: ");
-            SystemIO.STDOUT.PutLine("- process {--list|--kill|--restart} {PID}");
+            SystemIO.STDOUT.PutLine("process [--list] [--kill] [--restart] [PID]");
         }
     }
 }

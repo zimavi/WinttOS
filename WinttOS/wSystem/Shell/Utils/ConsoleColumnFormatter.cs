@@ -33,7 +33,7 @@ namespace WinttOS.wSystem.Shell.Utils
         {
             if(currentColumn >= columnsInRow)
             {
-                SystemIO.STDOUT.Put('\n');
+                SystemIO.STDOUT.PutLine("");
                 currentColumn = 0;
             }
         }

@@ -9,15 +9,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
     {
         public static bool IsInDebugMode { get; private set; }
         public DevModeCommand(string[] name) : base(name, User.AccessLevel.Administrator)
-        {
-            CommandManual = new List<string>()
-            {
-                "By running this command, you can switch dev mode.",
-                "This can unlock you some hidden features.",
-                "If you add '-i' or '--info' flags after command",
-                "you can see in which mode you are."
-            };
-        }
+        { }
 
         public override ReturnInfo Execute(List<string> arguments)
         {

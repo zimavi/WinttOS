@@ -18,7 +18,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage:");
-            SystemIO.STDOUT.PutLine("- version");
+            SystemIO.STDOUT.PutLine("version");
         }
     }
 }

@@ -22,7 +22,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage: ");
-            SystemIO.STDOUT.PutLine("- touch {file}");
+            SystemIO.STDOUT.PutLine("touch [file]");
         }
     }
 }

@@ -155,7 +155,7 @@ namespace WinttOS.wSystem.Shell.commands.Processing
         public override void PrintHelp()
         {
             Console.WriteLine("Usage:");
-            Console.WriteLine("- run {file}");
+            Console.WriteLine("run [file]");
         }
     }
 }

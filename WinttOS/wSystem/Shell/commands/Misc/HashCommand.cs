@@ -43,10 +43,10 @@ namespace WinttOS.wSystem.Shell.commands.Misc
                 "",
                 "EXAMPLES",
                 "    To compute the SHA-256 hash of a text string:",
-                "        hash --sha256 --text \"hello world\"",
+                "        $ hash --sha256 --text \"hello world\"",
                 "",
                 "    To compute the MD5 checksum of a file:",
-                "        hash --md5 --file /path/to/file.txt",
+                "        $ hash --md5 --file /path/to/file.txt",
                 "",
                 "AUTHOR",
                 "    Written by zimavi"
