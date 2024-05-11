@@ -1,7 +1,6 @@
 ﻿using Cosmos.System.Coroutines;
 using System;
 using System.Collections.Generic;
-using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
@@ -55,14 +54,11 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                             SystemIO.STDOUT.Put(value + ", ");
                         else
                             SystemIO.STDOUT.Put(value);
-
-                        WinttDebugger.Debug($"Index: {idx}; List count: {commandsList.Count})", this);
                     }
                 }
                 else
                 {
                     SystemIO.STDOUT.Put(commandsList[idx].CommandValues[0]);
-                    WinttDebugger.Debug($"Index: {idx}; List count: {commandsList.Count})", this);
                 }
                 SystemIO.STDOUT.PutLine(" (" + commandsList[idx].Description + ")");
             }
@@ -93,8 +89,6 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                     }
 
                     ShellUtils.ClearCurrentConsoleLine();
-                    //ShellUtils.MoveCursorUp(1);
-                    WinttDebugger.Debug($"Index: {idx}; List count: {commandsList.Count})", this);
                     if (showAliases)
                     {
                         foreach (var value in commandsList[idx].CommandValues)

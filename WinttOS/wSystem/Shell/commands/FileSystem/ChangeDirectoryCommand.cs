@@ -25,7 +25,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage:");
-            SystemIO.STDOUT.PutLine("- cd {directory}");
+            SystemIO.STDOUT.PutLine("cd {directory}");
         }
     }
 }

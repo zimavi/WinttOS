@@ -21,12 +21,8 @@ namespace WinttOS.wSystem.Networking
             try
             {
 
-                WinttDebugger.Trace("Http -> Preprocessing url");
-
                 string path = ExtractPathFromUrl(url);
                 string domainName = ExtractDomainNameFromUrl(url);
-
-                WinttDebugger.Trace("Http -> Sending DNS request");
 
                 DnsClient dnsClient = new();
 
@@ -41,8 +37,6 @@ namespace WinttOS.wSystem.Networking
                     return null;
                 }
 
-                WinttDebugger.Trace("Http -> Sending GET request");
-
                 HttpRequest req = new()
                 {
                     IP = address.ToString(),
@@ -52,13 +46,11 @@ namespace WinttOS.wSystem.Networking
                 };
                 req.Send();
 
-                WinttDebugger.Trace("Http -> Sent request");
-
                 return req.Response.GetStream();
             }
             catch(Exception ex)
             {
-                WinttDebugger.Critical("Http -> " + ex.Message, true);
+                Logger.DoOSLog("[Error] Http -> " + ex.Message);
                 return null;
             }
         }
@@ -94,9 +86,7 @@ namespace WinttOS.wSystem.Networking
             }
             catch(Exception e)
             {
-                WinttDebugger.Error("Http: " + e.Message, true);
-                Kernel.WinttRaiseHardError(Core.Utils.Kernel.WinttStatus.SYSTEM_THREAD_EXCEPTION_NOT_HANDLED,
-                    null, Core.Utils.Kernel.HardErrorResponseOption.OptionShutdownSystem);
+                Logger.DoOSLog("[Error] Http -> " + e.Message);
                 return null;
             }
         }

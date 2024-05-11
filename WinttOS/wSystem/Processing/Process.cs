@@ -51,7 +51,7 @@ namespace WinttOS.wSystem.Processing
             }
             catch (Exception ex)
             {
-                WinttDebugger.Error(ex.Message, true, this);
+                Logger.DoOSLog("[ERROR] " + ex.Message);
             }
         }
         public virtual void Initialize()
@@ -97,17 +97,13 @@ namespace WinttOS.wSystem.Processing
         /// <returns><see langword="true"/> if privileges raised, otherwise, <see langword="false"/></returns>
         protected bool TryRisePrivileges(PrivilegesSet requested_type)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.Processing.Process.TryRisePrivileges",
-                "bool(PrivilegesSet)", "Process.cs", 71));
             if (WinttOS.UsersManager.CurrentUser.UserAccess.Value >= User.AccessLevel.Guest.Value &&
                 WinttOS.UsersManager.CurrentUser.UserAccess.PrivilegeSet.Privileges <= requested_type.Privileges && 
                 !HasOwnerProcess)
             {
                 CurrentSet = requested_type;
-                WinttCallStack.RegisterReturn();
                 return true;
             }
-            WinttCallStack.RegisterReturn();
             return false;
         }
 

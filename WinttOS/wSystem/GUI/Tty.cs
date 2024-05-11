@@ -2,10 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Security.AccessControl;
 using WinttOS.Core;
-using WinttOS.Core.Utils.Debugging;
-using WinttOS.wSystem.Benchmark;
 
 namespace WinttOS.wSystem.GUI
 {
@@ -105,9 +102,9 @@ namespace WinttOS.wSystem.GUI
                     if (_text[idx].Char == '\n')
                         break;
 
-                    _canvas.DrawChar(_text[idx].Char, GlobalData.FallbackFont,
-                        Color.FromArgb((int)_text[idx].Foreground), 0 + j * GlobalData.FallbackFont.Width,
-                        0 + i * GlobalData.FallbackFont.Height);
+                    _canvas.DrawChar(_text[idx].Char, Core.Utils.Sys.Files.Fonts.Font18,
+                        Color.FromArgb((int)_text[idx].Foreground), 0 + j * Core.Utils.Sys.Files.Fonts.Font18.Width,
+                        0 + i * Core.Utils.Sys.Files.Fonts.Font18.Height);
                 }
             }
 
@@ -138,8 +135,8 @@ namespace WinttOS.wSystem.GUI
 
             // Init
 
-            Cols = (int)x / GlobalData.FallbackFont.Width - 1;
-            Rows = (int)y / GlobalData.FallbackFont.Height - 1;
+            Cols = (int)x / Core.Utils.Sys.Files.Fonts.Font18.Width - 1;
+            Rows = (int)y / Core.Utils.Sys.Files.Fonts.Font18.Height - 1;
 
             _text = new Cell[Cols * Rows];
 
@@ -158,8 +155,8 @@ namespace WinttOS.wSystem.GUI
         {
             if (CursorVisible)
             {
-                _canvas.DrawFilledRectangle(ForegroundColor, 0 + x * GlobalData.FallbackFont.Width,
-                    0 + y * GlobalData.FallbackFont.Height + GlobalData.FallbackFont.Height, 8, 4);
+                _canvas.DrawFilledRectangle(ForegroundColor, 0 + x * Core.Utils.Sys.Files.Fonts.Font18.Width,
+                    0 + y * Core.Utils.Sys.Files.Fonts.Font18.Height + Core.Utils.Sys.Files.Fonts.Font18.Height, 8, 4);
             }
         }
 

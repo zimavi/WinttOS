@@ -25,8 +25,6 @@ namespace WinttOS.Core.Utils.Sys
 
         public static void ClearCurrentConsoleLine(int startPos = 0)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Sys.ShellUtils.ClearCurrentConsoleLine()",
-                "void(int)", "ShellUtils.cs", 28));
             if (Sys.IsTty)
             {
                 int y = Sys.Tty.Y;
@@ -43,18 +41,14 @@ namespace WinttOS.Core.Utils.Sys
                 //Console.Write("\r" + new string(' ', Console.WindowWidth - 1 - startPos) + "\r");
                 Console.SetCursorPosition(startPos, currLineCursor);
             }
-            WinttCallStack.RegisterReturn();
         }
 
         public static void MoveCursorUp(int steps = 1)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Sys.ShellUtils.MoveCursorUp()",
-                "void(int)", "ShellUtils.cs", 40));
             if (Sys.IsTty)
                 Sys.Tty.Y = Sys.Tty.Y - 1;
             else
                 Console.SetCursorPosition(0, Console.CursorTop - steps);
-            WinttCallStack.RegisterReturn();
         }
 
         /// <summary>
@@ -64,44 +58,66 @@ namespace WinttOS.Core.Utils.Sys
         /// <param name="isSuccessful">0 - OK; 1 - FAILED; 2 - WORKING; 3 - WARN</param>
         public static void PrintTaskResult(string task, ShellTaskResult isSuccessful, string detailes = "")
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Sys.ShellUtils.PrintTaskResult",
-                "void(string, ShellTaskResult, string)", "ShellUtils.cs", 53));
             if (!Sys.KernelPrint)
+            {
+                switch (isSuccessful)
+                {
+                    case ShellTaskResult.NONE:
+                        Logger.DoOSLog("[      ] " + task + ": " + detailes);
+                        break;
+                    case ShellTaskResult.OK:
+                        Logger.DoOSLog("[  OK  ] " + task + ": " + detailes);
+                        break;
+                    case ShellTaskResult.FAILED:
+                        Logger.DoOSLog("[FAILED] " + task + ": " + detailes);
+                        break;
+                    case ShellTaskResult.DOING:
+                        Logger.DoOSLog("[ **** ] " + task + ": " + detailes);
+                        break;
+                    case ShellTaskResult.WARN:
+                        Logger.DoOSLog("[ WARN ] " + task + ": " + detailes);
+                        break;
+                }
                 return;
+            }
             if(Sys.IsTty)
             {
                 ClearCurrentConsoleLine();
-                Sys.Tty.Write("[");
-
-                var originColor = Sys.Tty.ForegroundColor;
                 
                 switch(isSuccessful)
                 {
                     case ShellTaskResult.OK:
+                        Sys.Tty.Write("[");
                         Sys.Tty.ForegroundColor = Color.Green;
                         Sys.Tty.Write("  OK  ");
+                        Sys.Tty.ForegroundColor = Color.White;
+                        Sys.Tty.Write("] ");
                         break;
                     case ShellTaskResult.FAILED:
+                        Sys.Tty.Write("[");
                         Sys.Tty.ForegroundColor = Color.Red;
                         Sys.Tty.Write("FAILED");
+                        Sys.Tty.ForegroundColor = Color.White;
+                        Sys.Tty.Write("] ");
                         break;
                     case ShellTaskResult.DOING:
+                        Sys.Tty.Write("[");
                         Sys.Tty.ForegroundColor = Color.Red;
                         Sys.Tty.Write(" **** ");
+                        Sys.Tty.ForegroundColor = Color.White;
+                        Sys.Tty.Write("] ");
                         break;
                     case ShellTaskResult.WARN:
+                        Sys.Tty.Write("[");
                         Sys.Tty.ForegroundColor = Color.Yellow;
                         Sys.Tty.Write(" WARN ");
+                        Sys.Tty.ForegroundColor = Color.White;
+                        Sys.Tty.Write("] ");
                         break;
                     case ShellTaskResult.NONE:
-                        Sys.Tty.Write("      ");
+                        Sys.Tty.Write("         ");
                         break;
                 }
-
-                Sys.Tty.ForegroundColor = Color.White;
-
-                Sys.Tty.Write("] ");
-
                 Sys.Tty.ForegroundColor = Color.Gray;
 
                 Sys.Tty.Write(task + ": ");
@@ -112,46 +128,52 @@ namespace WinttOS.Core.Utils.Sys
             }
             else
             {
-                Console.SetCursorPosition(0, Console.CursorTop - 1);
+                Console.SetCursorPosition(0, Console.CursorTop);
                 ClearCurrentConsoleLine();
-                Console.Write("[");
                 if (isSuccessful == ShellTaskResult.OK)  // I wanted to make it using swich case, but I'm too lazy to rewrite it 2 times :)
                 {
+                    Console.Write("[");
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("  OK  ");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write("] ");
                 }
                 else if (isSuccessful == ShellTaskResult.FAILED)
                 {
+                    Console.Write("[");
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write("FAILED");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write("] ");
                 }
                 else if (isSuccessful == ShellTaskResult.DOING)
                 {
+                    Console.Write("[");
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.Write(" **** ");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write("] ");
                 }
                 else if (isSuccessful == ShellTaskResult.WARN)
                 {
+                    Console.Write("[");
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.Write(" WARN ");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write("] ");
                 }
                 else
-                    Console.Write("      ");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write("] ");
+                    Console.Write("         ");
                 Console.ForegroundColor = ConsoleColor.Gray;
                 Console.Write(task + ": ");
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(detailes);
-                WinttCallStack.RegisterReturn();
             }
         }
 
         //[Obsolete("This method contains not working code! Please use Console.Readline()!", true)]
         public static bool ProcessExtendedInput(ref string input)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Sys.ShellUtils.ProcessExtendedInput()",
-                "bool(ref string)", "ShellUtils.cs", 86));
             if (Console.KeyAvailable)
             {
                 ConsoleKeyInfo key = SystemIO.STDIN.GetChr(true);
@@ -165,7 +187,6 @@ namespace WinttOS.Core.Utils.Sys
                     input = _inputToDisplay;
                     _inputToDisplay = "";
                     _currentInput = null;
-                    WinttCallStack.RegisterReturn();
                     return true;
                 }
                 else if (key.Key == ConsoleKey.Backspace)
@@ -197,7 +218,6 @@ namespace WinttOS.Core.Utils.Sys
                     if (_currentRecentPos >= 0)
                     {
                         _currentRecentPos--;
-                        WinttDebugger.Trace(_currentRecentPos.ToString(), _instance);
                         if (_currentRecentPos == -1)
                         {
                             _inputToDisplay = _currentInput;
@@ -221,7 +241,6 @@ namespace WinttOS.Core.Utils.Sys
                     SystemIO.STDOUT.Put(_inputToDisplay);
                 }
             }
-            WinttCallStack.RegisterReturn();
             return false;
         }
 
@@ -229,8 +248,6 @@ namespace WinttOS.Core.Utils.Sys
 
         public static string ReadLineWithInterception()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Sys.ShellUtils.ReadLineWithInterception()",
-                "string()", "ShellUtils.cs", 165));
             string input = "";
             ConsoleKey key;
             do
@@ -249,8 +266,7 @@ namespace WinttOS.Core.Utils.Sys
                     input += keyInfo.KeyChar;
                 }
             } while (key != ConsoleKey.Enter);
-
-            WinttCallStack.RegisterReturn();
+            
             return input;
         }
 

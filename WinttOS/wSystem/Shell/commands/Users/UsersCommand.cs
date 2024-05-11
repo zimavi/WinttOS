@@ -15,18 +15,11 @@ namespace WinttOS.wSystem.Shell.Commands.Users
 
         public override ReturnInfo Execute(List<string> arguments)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.Shell._commands.UsersCommand.Execute()",
-                "string(string[])", "UsersCommand.cs", 18));
-
-            WinttDebugger.Trace("Entering _user's command execute function");
-
             if (arguments[0] == "--list" || arguments[0] == "-l")
             {
-                WinttDebugger.Trace($"Showing list with {WinttOS.UsersManager.Users.Count} users");
                 List<string> res = new();
                 foreach (var user in WinttOS.UsersManager.Users)
                 {
-                    WinttDebugger.Trace($"Working with _user '{user.Name}'");
                     if (WinttOS.UsersManager.ActiveUsers.Contains(user))
                     {
                         res.Add($"{user.Name} *");
@@ -163,13 +156,10 @@ namespace WinttOS.wSystem.Shell.Commands.Users
                                 ref u, arguments[2], arguments[3]);
                             WinttOS.UsersManager.Users[i] = u;
 
-                            WinttCallStack.RegisterReturn();
-
                             return new(this, result ? ReturnCode.OK : ReturnCode.ERROR,
                                 result ? "Done." : "Invalid password!");
                         }
                     }
-                    WinttCallStack.RegisterReturn();
                     return new(this, ReturnCode.ERROR, "Invalid user");
                 }
                 else

@@ -41,21 +41,18 @@ namespace WinttOS.wSystem.Processing
 
                     string json = "[{\"name\":\"helloworld\",\"display-name\":\"Hello World\",\"description\":\"Test Lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"},{\"name\":\"hash\",\"display-name\":\"Hash\",\"description\":\"hash with lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"}]";
 
-                    WinttDebugger.Info($"Downloaded json '{json}'", this);
+                    Logger.DoOSLog("[Info] Downloaded repo json");
                     
 
                     var root = JSONReader.ReadFromString(json);
                     
                     foreach(DataNode objects in root)
                     {
-                        WinttDebugger.Info("Handling other package!", this);
 
                         var package = new Package
                         {
                             Installed = false
                         };
-
-                        WinttDebugger.Info("Assinging variables!", this);
 
                         package.Name = objects["name"].Value;
                         package.DisplayName = objects["display-name"].Value;
@@ -74,8 +71,7 @@ namespace WinttOS.wSystem.Processing
             }
             catch (Exception e)
             {
-                WinttDebugger.Error(e.Message, true);
-                Kernel.WinttRaiseHardError(Core.Utils.Kernel.WinttStatus.SYSTEM_SERVICE_EXCEPTION, this, Core.Utils.Kernel.HardErrorResponseOption.OptionShutdownSystem);
+                Logger.DoOSLog("[Error] Cannot update repository (" + e.Message + ")");
             }
         }
 
@@ -131,7 +127,7 @@ namespace WinttOS.wSystem.Processing
 
         public void Install(string packageName)
         {
-            WinttDebugger.Trace($"Installing package '{packageName}'");
+            Logger.DoOSLog("[Info] Installing package " + packageName);
             foreach(var package in LocalRepository)
             {
                 if (package.Name == packageName)
@@ -152,7 +148,7 @@ namespace WinttOS.wSystem.Processing
 
                     sw.Stop();
 
-                    WinttDebugger.Trace("Installed!");
+                    Logger.DoOSLog("[OK] Installing package " + packageName);
 
                     SystemIO.STDOUT.PutLine($"{packageName} installed (took {sw.TimeElapsed})");
 
