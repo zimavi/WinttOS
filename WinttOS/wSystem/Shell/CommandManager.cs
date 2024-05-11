@@ -64,6 +64,9 @@ namespace WinttOS.wSystem.Shell
                 new PingCommand(new string[] { "ping" }),
                 new EnvironmentCommand(new string[] { "export" }),
                 //new RunCommand(new string[] {"run"}),
+                new HashCommand(new string[] { "hash" }),
+                new SystemInfoCommand(new string[] { "sysinfo" }),
+                new DisksCommand(new string[] { "disks" }),
 
                 new CommandAction(new string[] { "whoami" }, User.AccessLevel.Guest, () =>
                 {

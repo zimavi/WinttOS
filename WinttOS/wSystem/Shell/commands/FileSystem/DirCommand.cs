@@ -23,7 +23,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
                 {
                     if (file.mEntryType == DirectoryEntryTypeEnum.File)
                     {
-                        SystemIO.STDOUT.PutLine($"<FILE>\t{file.mName}\t{file.mSize}");
+                        SystemIO.STDOUT.PutLine($"<FILE>   {file.mName}\t{file.mSize}");
                     }
                     else if (file.mEntryType == DirectoryEntryTypeEnum.Directory)
                     {
@@ -45,7 +45,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage:");
-            SystemIO.STDOUT.PutLine("- dir");
+            SystemIO.STDOUT.PutLine("dir");
         }
     }
 }

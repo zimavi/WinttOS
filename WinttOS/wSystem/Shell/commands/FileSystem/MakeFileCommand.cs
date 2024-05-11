@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using WinttOS.Core;
@@ -24,7 +23,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage:");
-            SystemIO.STDOUT.PutLine("- mkfile {file}");
+            SystemIO.STDOUT.PutLine("mkfile {file}");
         }
     }
 }

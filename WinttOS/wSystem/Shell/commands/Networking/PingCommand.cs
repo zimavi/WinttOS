@@ -98,8 +98,8 @@ namespace WinttOS.wSystem.Shell.commands.Networking
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage:");
-            SystemIO.STDOUT.PutLine("- ping {ip}");
-            SystemIO.STDOUT.PutLine("- ping {domain_name}");
+            SystemIO.STDOUT.PutLine("ping [ip]");
+            SystemIO.STDOUT.PutLine("ping [domain_name]");
         }
     }
 }

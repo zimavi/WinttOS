@@ -109,9 +109,11 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                     {
                         SystemIO.STDOUT.Put(commandsList[idx].CommandValues[0]);
                     }
-                    SystemIO.STDOUT.PutLine(" (" + commandsList[idx++].Description + ")");
+                    SystemIO.STDOUT.PutLine(" (" + commandsList[idx].Description + ")");
 
-                    if (idx < commandsList.Count)
+                    idx++;
+
+                    if (idx < commandsList.Count - 1)
                         SystemIO.STDOUT.Put($"Press Enter to continue list ({idx + 1}/{commandsList.Count})");
                 }
                 yield return null;

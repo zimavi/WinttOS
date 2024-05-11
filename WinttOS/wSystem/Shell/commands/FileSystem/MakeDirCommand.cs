@@ -22,7 +22,6 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
         {
             SystemIO.STDOUT.Put("Enter new dir name: ");
             string dir = Console.ReadLine();
-            // Added replacment of spaces in names into _ for preventing unopenable folders
             GlobalData.FileSystem.CreateDirectory(GlobalData.CurrentDirectory + string.Join('_', dir.Split(' ')));
             return new(this, ReturnCode.OK);
         }
@@ -30,7 +29,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage:");
-            SystemIO.STDOUT.PutLine("- mkdir {directory}");
+            SystemIO.STDOUT.PutLine("mkdir [directory]");
         }
     }
 }

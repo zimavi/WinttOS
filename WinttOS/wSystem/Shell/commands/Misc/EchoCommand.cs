@@ -8,14 +8,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
     public sealed class EchoCommand : Command
     {
         public EchoCommand(string[] name) : base(name, User.AccessLevel.Guest)
-        {
-            CommandManual = new List<string>()
-            {
-                "Echo command return all text that was gave after 'echo'",
-                "For example:",
-                "Console input 'echo Hello World!' will return 'Hello World!' message"
-            };
-        }
+        { }
 
         public override ReturnInfo Execute(List<string> arguments)
         {
@@ -75,7 +68,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
         public override void PrintHelp()
         {
             Console.WriteLine("Usage:");
-            Console.WriteLine("- echo {message}");
+            Console.WriteLine("echo [message]");
         }
     }
 }

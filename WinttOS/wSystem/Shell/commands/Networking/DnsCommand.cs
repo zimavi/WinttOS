@@ -1,7 +1,6 @@
 ﻿using Cosmos.System.Network.Config;
-using Cosmos.System.Network.IPv4.UDP.DNS;
 using Cosmos.System.Network.IPv4;
-using System;
+using Cosmos.System.Network.IPv4.UDP.DNS;
 using System.Collections.Generic;
 using WinttOS.wSystem.IO;
 
@@ -54,8 +53,8 @@ namespace WinttOS.wSystem.Shell.commands.Networking
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage:");
-            SystemIO.STDOUT.PutLine("- dns {domain_name}");
-            SystemIO.STDOUT.PutLine("- dns {dns_server_ip} {domain_name}");
+            SystemIO.STDOUT.PutLine("dns {domain_name}");
+            SystemIO.STDOUT.PutLine("dns {dns_server_ip} {domain_name}");
         }
     }
 }

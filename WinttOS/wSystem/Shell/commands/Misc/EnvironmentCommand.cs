@@ -29,7 +29,7 @@ namespace WinttOS.wSystem.Shell.commands.Misc
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage:");
-            SystemIO.STDOUT.PutLine("- export {var_name} {var_value}");
+            SystemIO.STDOUT.PutLine("export [var_name]=[var_value]");
         }
     }
 }
