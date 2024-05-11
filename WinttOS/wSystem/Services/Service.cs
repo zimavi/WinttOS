@@ -21,6 +21,8 @@ namespace WinttOS.wSystem.Services
         {
             base.Stop();
 
+            Logger.DoOSLog("[Info] Stopping service " + ServiceName + " (PID" + ProcessID + ")");
+
             OnServiceStop();
 
             IsServiceRunning = false;
@@ -31,6 +33,8 @@ namespace WinttOS.wSystem.Services
         public override void Start()
         {
             base.Start();
+
+            Logger.DoOSLog("[Info] Starting service " + ServiceName + " (PID " + ProcessID + ")");
 
             OnServiceStart();
 
@@ -48,14 +52,11 @@ namespace WinttOS.wSystem.Services
         {
             base.Update();
 
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.Services.Service.OnServiceTick()",
-                "void()", "Service.cs", 29));
             ServiceStatus = ServiceStatus.PENDING;
 
             OnServiceTick();
 
             ServiceStatus = ServiceStatus.OK;
-            WinttCallStack.RegisterReturn();
         }
     }
 }

@@ -112,7 +112,6 @@ namespace WinttOS.wSystem.Shell.bash
 
         public void Execute()
         {
-            WinttDebugger.Trace("Begin to execute BASH", this);
 
             BashFunction current = null;
             BashCallFrame frame;
@@ -122,7 +121,6 @@ namespace WinttOS.wSystem.Shell.bash
 
             while (true)
             {
-                WinttDebugger.Trace("New call handle", this);
 
                 _executionPtr++;
 
@@ -130,14 +128,12 @@ namespace WinttOS.wSystem.Shell.bash
                 {
                     if (_callStack.Count == 0)
                     {
-                        WinttDebugger.Trace("Call stack is 0", this);
 
                         isInFunc = false;
                         continue;
                     }
                     else if (current.LineEnd == _executionPtr)
                     {
-                        WinttDebugger.Trace("Reached end of function, poping call stack", this);
 
                         frame = _callStack.Pop();
                         _executionPtr = frame.CallLine;
@@ -148,19 +144,16 @@ namespace WinttOS.wSystem.Shell.bash
                 if (_executionPtr > _endOfFile)
                     break;
 
-                WinttDebugger.Trace("Going thorugh commands", this);
 
                 foreach (var cmd in _commands)
                 {
                     if (cmd.Line == _executionPtr)
                     {
-                        WinttDebugger.Trace("Found one with same line, checking if it's a function", this);
 
                         foreach (var func in _functions)
                         {
                             if (func.Name == cmd.Name)
                             {
-                                WinttDebugger.Trace("Executing function", this);
 
                                 _callStack.Push(new(_executionPtr, func));
                                 _executionPtr = func.LineStart;
@@ -169,8 +162,6 @@ namespace WinttOS.wSystem.Shell.bash
                                 continue;
                             }
                         }
-
-                        WinttDebugger.Trace("Execution command", this);
 
                         if (cmd.Args.Count == 0)
                         {
@@ -184,7 +175,6 @@ namespace WinttOS.wSystem.Shell.bash
                     }
                 }
             }
-            WinttDebugger.Trace("Execution ended!", this);
         }
     }
 }

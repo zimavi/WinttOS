@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using WinttOS.Core;
-using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Services;
 using WinttOS.wSystem.Shell.bash;
+using WinttOS.wSystem.Shell.commands.FileSystem;
 using WinttOS.wSystem.Shell.commands.Misc;
 using WinttOS.wSystem.Shell.commands.Networking;
 using WinttOS.wSystem.Shell.Commands.FileSystem;
@@ -80,8 +80,7 @@ namespace WinttOS.wSystem.Shell
                 }),
                 new CommandAction(new string[] { "crash" }, User.AccessLevel.Administrator, () =>
                 {
-                    Kernel.WinttRaiseHardError(Core.Utils.Kernel.WinttStatus.MANUALLY_INITIATED_CRASH1,
-                        this, Core.Utils.Kernel.HardErrorResponseOption.OptionShutdownSystem);
+                    Kernel.WinttRaiseHardError("Crash command was executed", this);
                 }),
                 new CommandAction(new string[] { "memory", "mem" }, User.AccessLevel.Guest, () =>
                 {
@@ -100,25 +99,19 @@ namespace WinttOS.wSystem.Shell
         /// <returns>true if successful</returns>
         public bool RegisterCommand(Command command)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.Shell.CommandManager.RegisterCommand()",
-                "bool()", "WinttOS.cs", 60));
             try
             {
                 this._commands.Add(command);
-                WinttCallStack.RegisterReturn();
                 return true;
             }
             catch (Exception)
             {
-                WinttCallStack.RegisterReturn();
                 return false;
             }
         }
 
         public void ProcessInput(string input)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.Shell.CommandManager.ProcessInput()",
-                "string(string)", "WinttOS.cs", 77));
 
             if (input.Length <= 0)
             {
@@ -243,8 +236,6 @@ namespace WinttOS.wSystem.Shell
 
         public void ProcessInput(ref TempUser user, string input)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.Shell.CommandManager.ProcessInput()",
-                "string(string)", "WinttOS.cs", 77));
 
             if (input.Length <= 0)
             {
@@ -421,13 +412,10 @@ namespace WinttOS.wSystem.Shell
 
         public override void OnServiceTick()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.Shell.CommandManager.ServiceTick()",
-                "void()", "WinttOS.cs", 184));
             try
             {
                 if (Kernel.IsFinishingKernel)
                 {
-                    WinttCallStack.RegisterReturn();
                     return;
                 }
                 if (WinttOS.IsTty)
@@ -500,7 +488,6 @@ namespace WinttOS.wSystem.Shell
             }
             #endregion
 
-            WinttCallStack.RegisterReturn();
         }
     }
 }

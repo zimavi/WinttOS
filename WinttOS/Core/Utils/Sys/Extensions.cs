@@ -25,21 +25,15 @@ namespace WinttOS.Core.Utils.Sys
         /// <exception cref="ArgumentException"/>
         public static T[] SubArray<T>(this T[] array, int offset, int length)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Sys.Extensions.SubArray()",
-                "T[](this T[], int, int)", "Extensions.cs", 29));
             T[] result = new T[length];
             Array.Copy(array, offset, result, 0, length);
-            WinttCallStack.RegisterReturn();
             return result;
         }
 
         public static List<T> SubList<T>(this List<T> list, int offset, int length)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Core.Utils.Sys.Extensions.SubList()",
-                "List<T>(this List<T>, int, int)", "Extensions.cs", 39));
             List<T> result;
             result = list.GetRange(offset, length);
-            WinttCallStack.RegisterReturn();
             return result;
         }    
 

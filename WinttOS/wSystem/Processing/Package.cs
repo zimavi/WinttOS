@@ -16,7 +16,6 @@ namespace WinttOS.wSystem.Processing
 
         public void Download()
         {
-            WinttDebugger.Trace("Downloading file");
 
             byte[] executable = Http.DownloadRawFile(Link);
             if (executable == null)

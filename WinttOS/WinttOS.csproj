@@ -17,7 +17,7 @@
         <Profile>VMware</Profile>
         <Description>Use VMware Player or Workstation to deploy and debug.</Description>
         <PxeInterface>192.168.0.8</PxeInterface>
-        <DebugEnabled>True</DebugEnabled>
+        <DebugEnabled>False</DebugEnabled>
         <VMWareEdition>Workstation</VMWareEdition>
         <TraceMode>User</TraceMode>
         <Timeout></Timeout>
@@ -65,30 +65,6 @@
 	</ItemGroup>
 
     <ItemGroup>
-      <None Remove="Core\resources\button_power_off.bmp" />
-      <None Remove="Core\resources\cur.bmp" />
-      <None Remove="Core\resources\os_install_bg.bmp" />
-      <None Remove="Core\resources\os_next_inst_img.bmp" />
-      <None Remove="Core\resources\startup.wav" />
-      <None Remove="Core\resources\zap-ext-light18.psf" />
-      <None Remove="wSystem\Resources\bg0.bmp" />
-      <None Remove="wSystem\Resources\bg1.bmp" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="Core\resources\button_power_off.bmp" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="Core\resources\cur.bmp" />
-      <EmbeddedResource Include="Core\resources\os_install_bg.bmp" />
-      <EmbeddedResource Include="Core\resources\os_next_inst_img.bmp" />
-      <EmbeddedResource Include="Core\resources\zap-ext-light18.psf" />
-      <EmbeddedResource Include="wSystem\Resources\bg0.bmp" />
-      <EmbeddedResource Include="wSystem\Resources\bg1.bmp" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="acryptohashnet" Version="3.0.0" />
         <PackageReference Include="Cosmos.Build" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="Cosmos.Coroutines" Version="1.0.1" />
@@ -114,10 +90,6 @@
 
     <ItemGroup>
       <None Include="C:\Users\Anton\source\repos\zimavi\WinttOS\WinttOS\.editorconfig" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Include="Core\resources\startup.wav" />
     </ItemGroup>
 
 	<Target Name="PreBuild" BeforeTargets="PreBuildEvent">

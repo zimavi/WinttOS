@@ -1,5 +1,4 @@
-﻿using System.Text;
-using WinttOS.Core.Utils.Cryptography;
+﻿using WinttOS.Core.Utils.Cryptography;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.wAPI.PrivilegesSystem;
@@ -92,16 +91,12 @@ namespace WinttOS.wSystem.Users
 
         public static bool ChangePassword(ref User user, string OldPassword, string NewPassword)
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.Users.User.ChangePassword()",
-                "bool(ref User, string, string)", "User.cs", 86));
-            if (user.PasswordHash == MD5.Calculate(Encoding.UTF8.GetBytes(OldPassword)) ||
+            if (user.PasswordHash == Sha256.hash(OldPassword) ||
                 !user.HasPassword)
             {
-                user.PasswordHash = MD5.Calculate(Encoding.UTF8.GetBytes(NewPassword));
-                WinttCallStack.RegisterReturn();
+                user.PasswordHash = Sha256.hash(NewPassword);
                 return true;
             }
-            WinttCallStack.RegisterReturn();
             return false;
         }
 
@@ -138,12 +133,9 @@ namespace WinttOS.wSystem.Users
             /// <param name="RawPassword">Raw password string</param>
             public UserBuilder SetPassword(string RawPassword)
             {
-                WinttCallStack.RegisterCall(new("WinttOS.Sys.Users.User.UserBuilder.SetPassword()",
-                    "UserBuilder(string)", "User.cs", 132));
 
-                _user.PasswordHash = MD5.Calculate(Encoding.UTF8.GetBytes(RawPassword));
+                _user.PasswordHash = Sha256.hash(RawPassword);
 
-                WinttCallStack.RegisterReturn();
                 return this;
             }
 
@@ -173,7 +165,8 @@ namespace WinttOS.wSystem.Users
             /// <returns><see cref="User"/> object , or <see langword="null"/> if incorrect <see cref="User"/> was built</returns>
             public User? Build()
             {
-                if(string.IsNullOrEmpty(_user.Name))
+                Logger.DoOSLog("[Info] Creating new user " + _user.Name);
+                if (string.IsNullOrEmpty(_user.Name))
                     return null;
                 return _user;
             }

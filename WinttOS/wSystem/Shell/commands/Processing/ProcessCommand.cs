@@ -31,7 +31,7 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
                     {
                         if (arguments.Count > 2 && (arguments[2] == "-f" || arguments[2] == "--force"))
                         {
-                            WinttDebugger.Trace($"TryStopProcess() => {WinttOS.ProcessManager.TryStopProcess(num)}");
+                            Logger.DoOSLog("[Info] Doing force stop of process " + process.ProcessName + "(PID " + process.ProcessID + ")");
                             SystemIO.STDOUT.PutLine("Done.");
                             return new(this, ReturnCode.OK);
                         }

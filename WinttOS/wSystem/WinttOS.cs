@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using WinttOS.Core;
 using WinttOS.Core.Utils.Debugging;
-using WinttOS.Core.Utils.Kernel;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.GUI;
 using WinttOS.wSystem.IO;
@@ -19,6 +18,7 @@ using WinttOS.wSystem.Services;
 using WinttOS.wSystem.Shell;
 using WinttOS.wSystem.Shell.Commands.Misc;
 using WinttOS.wSystem.Users;
+using WinttOS.wSystem.wAPI;
 using WinttOS.wSystem.wAPI.Events;
 using WinttOS.wSystem.wAPI.PrivilegesSystem;
 using Sys = Cosmos.System;
@@ -51,6 +51,9 @@ namespace WinttOS.wSystem
         public static Tty Tty { get; set; }
         public static bool IsSleeping { get; set; } = false;
         public static bool KernelPrint { get; internal set; } = true;
+
+        public static string BootTime { get; private set; }
+
         private static List<Action> OnSystemSleep;
 
 
@@ -68,45 +71,60 @@ namespace WinttOS.wSystem
 
         public static void InitializeSystem()
         {
-            
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.InitializeSystem()",
-                "void()", "WinttOS.cs", 40));
             try
             {
+                BootTime = Time.DayString() + "/" + Time.MonthString() + "/" + Time.YearString() + ", " + Time.TimeString(true, true, true);
+
                 ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "Standard IO");
+
+                Logger.DoOSLog("[Info] Initializing standard IO");
 
                 SystemIO.STDOUT = new TtyIO();
                 SystemIO.STDERR = new TtyIO();
                 SystemIO.STDIN = new TtyIO();
+
+                Logger.DoOSLog("[OK] STDOUT, STDIN, STDERR initalized");
+                Logger.DoOSLog("[Info] Starting TTY");
 
                 ShellUtils.PrintTaskResult("Starting", ShellTaskResult.NONE, "TTY");
 
                 Tty = new(1920, 1080);
                 IsTty = true;
 
+                Logger.DoOSLog("[OK] TTY started");
+
+                Logger.DoOSLog("[Info] Initializing task schedular");
                 SystemTaskScheduler = new TaskScheduler();
+                Logger.DoOSLog("[Info] Initializing user manager");
                 UsersManager = new UsersManager(null);
+                Logger.DoOSLog("[Info] Initializing process manager");
                 ProcessManager = new ProcessManager();
                 serviceManager = new WinttServiceManager();
+                Logger.DoOSLog("[Info] Initializing command manager");
                 CommandManager = new CommandManager();
                 PackageManager = new PackageManager();
+                Logger.DoOSLog("[Info] Initializing memory manager");
                 MemoryManager = new Memory();
 
+                Logger.DoOSLog("[Info] Initializing service manager");
                 serviceManager.Initialize();
+                Logger.DoOSLog("[Info] Initializing package manager");
                 PackageManager.Initialize();
 
                 OnSystemSleep = new List<Action>();
 
                 Kernel.OnKernelFinish.Add(SystemFinish);
+                Logger.DoOSLog("[Info] Initalizing network");
                 InitNetwork();
+                Logger.DoOSLog("[Info] Trying to load user data");
                 InitUsers();
 
+                Logger.DoOSLog("[Info] Registering service manager -> process manager");
                 ProcessManager.TryRegisterProcess(serviceManager, out serviceProviderProcessID);
 
-                Process srv;
-                if(!ProcessManager.TryGetProcessInstance(out srv, serviceProviderProcessID))
+                if (!ProcessManager.TryGetProcessInstance(out Process srv, serviceProviderProcessID))
                 {
-                    Kernel.WinttRaiseHardError(WinttStatus.PHASE1_INITIALIZATION_FAILED, instance, HardErrorResponseOption.OptionShutdownSystem);
+                    Kernel.WinttRaiseHardError("Cannot start service manager", instance);
                 }
 
                 ServiceManager = (WinttServiceManager)srv;
@@ -116,21 +134,18 @@ namespace WinttOS.wSystem
                     GCImplementation.DecRootCount((ushort*)&srv);
                 }
 
+                Logger.DoOSLog("[Info] Registering command manager -> service manager");
                 ServiceManager.AddService(CommandManager);
 
                 CommandManager.RegisterCommand(new DevModeCommand(new string[] { "dev-mode" }));
                 CommandManager.RegisterCommand(new CommandAction(new string[] { "crash" }, User.AccessLevel.Administrator, () =>
                 {
-                    WinttCallStack.RegisterCall(new("WinttOS.wSystem.WinttOS.Execute()"));
 
-                    Kernel.WinttRaiseHardError(WinttStatus.MANUALLY_INITIATED_CRASH, instance,
-                        HardErrorResponseOption.OptionShutdownSystem);
+                    Kernel.WinttRaiseHardError("Manually initiated crash", instance);
 
-                    WinttCallStack.RegisterReturn();
                 }));
                 CommandManager.RegisterCommand(new CommandAction(new string[] { "tty" }, User.AccessLevel.Administrator, () =>
                 {
-                    WinttCallStack.RegisterCall(new("WinttOS.wSystem.WinttOS.Execute()"));
 
                     if (IsTty)
                     {
@@ -154,20 +169,21 @@ namespace WinttOS.wSystem
                         IsTty = true;
                     }
 
-                    WinttCallStack.RegisterReturn();
                 }));
 
+                Logger.DoOSLog("[Info] Starting service manager");
                 ProcessManager.TryStartProcess(serviceProviderProcessID);
             }
             catch(Exception e)
             {
-                WinttDebugger.Error(e.Message, true, instance);
-                Kernel.WinttRaiseHardError(WinttStatus.PHASE1_INITIALIZATION_FAILED, instance, HardErrorResponseOption.OptionShutdownSystem);
+                Kernel.WinttRaiseHardError("Exception accured during system init: " + e.Message, instance);
             }
 
             Heap.Collect();
 
-            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "Threads");
+            ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "Coroutines");
+
+            Logger.DoOSLog("[Info] Initializing coroutine pool");
 
             CoroutinePool.Main.PerformHeapCollection = false;
 
@@ -180,7 +196,7 @@ namespace WinttOS.wSystem
             Console.Clear();
             try
             {
-                ShellUtils.PrintTaskResult("Starting", ShellTaskResult.NONE, "ThreadPool");
+                ShellUtils.PrintTaskResult("Starting", ShellTaskResult.NONE, "Coroutine pool");
 
                 KernelPrint = false;
 
@@ -190,22 +206,18 @@ namespace WinttOS.wSystem
                 SystemIO.STDOUT.PutLine("To switch to VGA console type 'tty'");
                 SystemIO.STDOUT.PutLine("BEWARE: All text on screen will be erased on switch");
 
+                Logger.DoOSLog("[OK] Initialize finished!");
+                Logger.DoOSLog("[Info] Starting pool");
                 CoroutinePool.Main.StartPool();
             }
             catch(Exception e)
             {
-                WinttDebugger.Error(e.Message, true);
-                Kernel.WinttRaiseHardError(WinttStatus.TRAP_CAUSE_UNKNOWN, instance, 
-                    HardErrorResponseOption.OptionShutdownSystem);
+                Kernel.WinttRaiseHardError(e.Message, instance);
             }
-
-            WinttCallStack.RegisterReturn();
         }
 
         private static void InitUsers()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.InitUSers()",
-                "void()", "WinttOS.cs", 86));
 
             if (!UsersManager.TryLoadUsersData())
             {
@@ -222,14 +234,10 @@ namespace WinttOS.wSystem
                     goto tryMore;
 
             }
-
-            WinttCallStack.RegisterReturn();
         }
 
         private static void InitNetwork()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.InitNetwork()",
-                "void()", "WinttOS.cs", 100));
             Console.WriteLine("NOTE! If you have more then one network adapters, please remove all except one!\n");
 
             ShellUtils.PrintTaskResult("Discovering IP address", ShellTaskResult.DOING);
@@ -249,13 +257,12 @@ namespace WinttOS.wSystem
                 }
                 catch (Exception e)
                 {
-                    WinttDebugger.Error(e.Message, true, instance);
+                    Logger.DoOSLog("[Error] Network init -> " + e.Message);
                     throw;
                 }
             }
             else
                 ShellUtils.PrintTaskResult("Discovering IP address", ShellTaskResult.FAILED);
-            WinttCallStack.RegisterReturn();
         }
 
         public static void SystemSleep()
@@ -269,29 +276,21 @@ namespace WinttOS.wSystem
         public static IEventBus GetGlobalEventBus() => _globalEventBus;
         public static void SystemFinish()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.SystemFinish()",
-                "void()", "WinttOS.cs", 131));
             CoroutinePool.Main.AddCoroutine(new(FinishOS()));
-            WinttCallStack.RegisterReturn();
         }
 
         private static IEnumerator<CoroutineControlPoint> FinishOS()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.FinishOS()",
-                "IEnumerator<CoroutineControlPoint>()", "WinttOS.cs", 139));
 
-            WinttDebugger.Trace("FinishOS coroutine executed! Waiting 3 seconds!", instance);
+            Logger.DoOSLog("[Info] Stop thread started!");
 
             ShellUtils.PrintTaskResult("Running", ShellTaskResult.DOING, "System finish");
 
-            WinttCallStack.RegisterReturn();
+            Logger.DoOSLog("[Info] Doing 3 seconds cooldown");
 
             yield return WaitFor.Seconds(3);
 
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.FinishOS()",
-                "IEnumerator<CoroutineControlPoint>()", "WinttOS.cs", 148));
-
-            WinttDebugger.Trace("3 seconds elapsed, running shutdown tasks, and finishing running coroutines!", instance);
+            Logger.DoOSLog("[Info] Continue shutdown sequence");
 
             ShellUtils.MoveCursorUp();
 
@@ -309,7 +308,7 @@ namespace WinttOS.wSystem
             ShellUtils.MoveCursorUp();
             ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.OK, "Running threads");
 
-            WinttDebugger.Info("Finishing Kernel!", instance);
+            Logger.DoOSLog("[Info] Goodbye!");
 
             SystemIO.STDOUT.PutLine("Is now safe to turn off your computer!");
 
@@ -321,8 +320,6 @@ namespace WinttOS.wSystem
 
         public static IEnumerator<CoroutineControlPoint> SystemThread()
         {
-            WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.SystemThread()",
-                "void()", "WinttOS.cs", 165));
             if(File.Exists(@"0:\startup.sh"))
             {
                 
@@ -335,19 +332,14 @@ namespace WinttOS.wSystem
                     {
                         if (process.CurrentSet == PrivilegesSet.NONE || process.HasOwnerProcess)
                             continue;
-                        WinttDebugger.Error($"Critical process died => {process.ProcessName}", true, instance);
-                        Kernel.WinttRaiseHardError(WinttStatus.CRITICAL_PROCESS_DIED, instance, HardErrorResponseOption.OptionShutdownSystem);
+                        Logger.DoOSLog("[Error] Critical system process died -> " + process.ProcessName + " (PID " + process.ProcessID + ")");
+                        Kernel.WinttRaiseHardError("Critical system process died (" + process.ProcessName + ")", instance);
                     }
                 }
 
                 MemoryManager.Monitor();
 
-                WinttCallStack.RegisterReturn();
-
                 yield return WaitFor.Seconds(3);
-
-                WinttCallStack.RegisterCall(new("WinttOS.Sys.WinttOS.SystemThread()",
-                "void()", "WinttOS.cs", 165));
             }
 
             yield return WaitFor.Seconds(2);
@@ -357,8 +349,6 @@ namespace WinttOS.wSystem
         { 
             ProcessManager.RunProcessGC();
             ServiceManager.RunServiceGC();
-
-            WinttDebugger.Trace("Heap -> Collected: " + Heap.Collect() + " objects");
 
             yield return WaitFor.Milliseconds(1000);
 

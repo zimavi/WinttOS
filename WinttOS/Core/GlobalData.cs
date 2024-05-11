@@ -5,13 +5,10 @@ namespace WinttOS.Core
 {
     public sealed class GlobalData
     {
-        [ManifestResourceStream(ResourceName = "WinttOS.Core.resources.zap-ext-light18.psf")]
-        private static byte[] _fallbackFont;
         public static string CurrentVolume = @"0:\";
         public static string CurrentDirectory = @"0:\";
         public static Cosmos.System.FileSystem.CosmosVFS FileSystem;
         public static string FileToEdit;
-        public static readonly PCScreenFont FallbackFont = PCScreenFont.LoadFont(_fallbackFont);
         public static int ShellClearStartPos
         {
             get
