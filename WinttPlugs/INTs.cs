@@ -28,7 +28,7 @@ namespace WinttPlugs
                 lastKnownAddress = lastKnownAddress + xHex[(int)(lastKnownAddressValue & 0xF)];
             }
 
-            WinttOS.Kernel.WinttRaiseHardError("Unknows excpetion accured!", new WinttOS.Core.Utils.Kernel.HALException(aName, aDescription, lastKnownAddress, ctxInterrupt));
+            WinttOS.Kernel.WinttRaiseHardError("Unknown excpetion accured!", new WinttOS.Core.Utils.Kernel.HALException(aName, aDescription, lastKnownAddress, ctxInterrupt));
         }
     }
 }
