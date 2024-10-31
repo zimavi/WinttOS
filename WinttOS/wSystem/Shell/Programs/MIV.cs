@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Cosmos.Core;
+using Cosmos.Core.Memory;
+using System;
 using System.IO;
 using WinttOS.Core;
 using WinttOS.wSystem.IO;
@@ -255,6 +257,8 @@ namespace WinttOS.wSystem.Shell.Programs
                     chars[pos++] = keyInfo.KeyChar;
                     printMIVScreen(chars, pos, infoBar, editMode);
                 }
+
+                Heap.Collect();
 
             } while (true);
         }

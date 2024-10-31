@@ -1,9 +1,8 @@
-﻿using System;
-using WinttOS.Core.Utils.Sys;
-using WinttOS.wSystem.Users;
-using System.Collections.Generic;
-using Cosmos.System.Coroutines;
+﻿using System.Collections.Generic;
+using WinttOS.Core.Utils.Cryptography;
+using WinttOS.Core.Utils.Debugging;
 using WinttOS.wSystem.IO;
+using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.Commands.Users
 {
@@ -12,49 +11,23 @@ namespace WinttOS.wSystem.Shell.Commands.Users
         public SudoCommand(string[] name) : base(name)
         { }
 
-        private string _passwrd;
 
         public override ReturnInfo Execute(List<string> arguments)
         {
             SystemIO.STDOUT.Put("Enter password: ");
-            string pass = SystemIO.STDIN.Get();
-            TempUser u = WinttOS.UsersManager.RequestAdminAccount("root", pass);
+            string pass = SystemIO.STDIN.Get(true);
 
-            if (u.IsNull())
-                goto WrongPasswordMsg;
+            if (!UsersManager.GetUser("user:root").Contains(Sha256.hash(pass)))
+                return new(this, ReturnCode.ERROR, "Invalid password. Try again");
 
-            WinttOS.CommandManager.ProcessInput(ref u, string.Join(' ', arguments));
-            return new(this, ReturnCode.OK);
+            AccessLevel level = UsersManager.LoggedLevel;
+            UsersManager.LoggedLevel = AccessLevel.SuperUser;
+            WinttOS.CommandManager.ProcessInput(string.Join(' ', arguments.ToArray()));
+            UsersManager.LoggedLevel = level;
 
-        WrongPasswordMsg:
-            return new(this, ReturnCode.ERROR, "Wrong password!");
+            return new(this, ReturnCode.OK);            
         }
 
-        public IEnumerator<CoroutineControlPoint> HandleSudoShellAsync()
-        {
-            /*  TODO: Make input as it works with shell
-            while (true)
-            {
-                TempUser u = WinttOS.UsersManager.RequestAdminAccount("root", _passwrd);
-
-                if (u.IsNull())
-                    yield break;
-
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write($"root$0:\\{GlobalData.CurrentDirectory}: ");
-                string input = Console.ReadLine();
-                Console.ForegroundColor = ConsoleColor.Gray;
-
-                if (input == "exit")
-                    break;
-                else if (input == "whoami")
-                    Console.WriteLine("root");
-
-                Console.WriteLine(WinttOS.CommandManager.ProcessInput(ref u, input));
-            }
-            */
-            yield break;
-        }
 
         public override void PrintHelp()
         {

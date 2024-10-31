@@ -1,7 +1,9 @@
-﻿using Cosmos.System.Coroutines;
+﻿using Cosmos.System;
+using Cosmos.System.Coroutines;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
@@ -10,8 +12,42 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
 {
     public sealed class ManCommand : Command
     {
-        public ManCommand(string[] name) : base(name, User.AccessLevel.Guest)
-        { }
+        public ManCommand(string[] name) : base(name, AccessLevel.Default)
+        {
+            CommandManual = new List<string>()
+            {
+                "NAME",
+                "   man - Display the manual for commands",
+                "",
+                "SINOPSIS",
+                "   man [COMMAND]",
+                "",
+                "DESCRIPTION",
+                "   The man command displays the manual for the specified command, providing",
+                "   detailed information about its usage, options, and functionality. If no",
+                "   manual exists for the specified command, an error message will be displayed.",
+                "",
+                "OPTIONS",
+                "",
+                "   COMMAND",
+                "       The name of the command for which you want to see the manual. If the",
+                "       command has a manual, it will be printed to the terminal.",
+                "",
+                "EXAMPLES",
+                "   Display the manual for a command:",
+                "       man user",
+                "",
+                "NOTES",
+                "    - The man command relies on the command's registered manuals.",
+                "      Ensure that the command has an associated manual for proper usage.",
+                "    - If the terminal height is less than the manual content, the",
+                "      user will be prompted to scroll through the content.",
+                "    - When in scrolling mode, use 'B' to scroll back and 'Q' to exit view.",
+                "",
+                "AUTHOR",
+                "   zimavi"
+            }
+        }
 
         public override ReturnInfo Execute(List<string> arguments)
         {

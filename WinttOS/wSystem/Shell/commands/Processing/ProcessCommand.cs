@@ -8,7 +8,7 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
 {
     public sealed class ProcessCommand : Command
     {
-        public ProcessCommand(string[] name) : base(name, User.AccessLevel.Administrator)
+        public ProcessCommand(string[] name) : base(name, AccessLevel.Administrator)
         { }
 
         public override ReturnInfo Execute(List<string> arguments)
@@ -32,15 +32,11 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
                         if (arguments.Count > 2 && (arguments[2] == "-f" || arguments[2] == "--force"))
                         {
                             Logger.DoOSLog("[Info] Doing force stop of process " + process.ProcessName + "(PID " + process.ProcessID + ")");
+                            WinttOS.ProcessManager.TryStopProcess(num);
                             SystemIO.STDOUT.PutLine("Done.");
                             return new(this, ReturnCode.OK);
                         }
-                        if (!process.IsProcessCritical)
-                            WinttOS.ProcessManager.TryStopProcess(num);
-                        else
-                        {
-                            return new(this, ReturnCode.ERROR, "Permission denied");
-                        }
+                        WinttOS.ProcessManager.TryStopProcess(num);
                         SystemIO.STDOUT.PutLine("Done.");
                         return new(this, ReturnCode.OK);
                     }

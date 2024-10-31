@@ -8,7 +8,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
 {
     public sealed class MakeFileCommand : Command
     {
-        public MakeFileCommand(string[] name) : base(name, User.AccessLevel.Guest)
+        public MakeFileCommand(string[] name) : base(name, AccessLevel.Default)
         { }
 
         public override ReturnInfo Execute(List<string> arguments)

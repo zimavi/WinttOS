@@ -4,10 +4,9 @@ namespace WinttOS.wSystem.wAPI
 {
     public static class Environment
     {
-        private static Dictionary<string, string> _envVars = new()
+        internal static Dictionary<string, string> _envVars = new()
         {
-            { "WINTT_DEBUG", "false" },
-            { "HAS_NETWORK_CONNECTION", "false" }
+            
         };
 
         /// <summary>

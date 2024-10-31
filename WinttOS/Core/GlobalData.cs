@@ -1,5 +1,4 @@
-﻿using Cosmos.System.Graphics.Fonts;
-using IL2CPU.API.Attribs;
+﻿using WinttOS.wSystem.Users;
 
 namespace WinttOS.Core
 {
@@ -13,7 +12,7 @@ namespace WinttOS.Core
         {
             get
             {
-                return 2 + CurrentDirectory.Length + wSystem.WinttOS.UsersManager.CurrentUser.Name.Length;
+                return 3 + CurrentDirectory.Length + UsersManager.userLogged.Length;
             }
         }
     }

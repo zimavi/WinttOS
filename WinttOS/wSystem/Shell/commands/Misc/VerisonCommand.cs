@@ -6,7 +6,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
 {
     public sealed class VerisonCommand : Command
     {
-        public VerisonCommand(string[] name) : base(name, User.AccessLevel.Guest)
+        public VerisonCommand(string[] name) : base(name, AccessLevel.Default)
         { }
 
         public override ReturnInfo Execute()

@@ -8,7 +8,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
     public sealed class ShutdownCommand : Command
     {
 
-        public ShutdownCommand(string[] name) : base(name, User.AccessLevel.Guest)
+        public ShutdownCommand(string[] name) : base(name, AccessLevel.Default)
         { }
 
         public override ReturnInfo Execute(List<string> arguments)

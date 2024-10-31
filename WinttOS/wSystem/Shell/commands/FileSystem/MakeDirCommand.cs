@@ -8,7 +8,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
 {
     public sealed class MakeDirCommand : Command
     {
-        public MakeDirCommand(string[] name) : base(name, User.AccessLevel.Guest)
+        public MakeDirCommand(string[] name) : base(name, AccessLevel.Default)
         { }
 
         public override ReturnInfo Execute(List<string> arguments)

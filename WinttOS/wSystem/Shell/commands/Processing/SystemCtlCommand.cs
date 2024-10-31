@@ -8,7 +8,7 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
 {
     public sealed class SystemCtlCommand : Command
     {
-        public SystemCtlCommand(string[] name) : base(name, User.AccessLevel.Administrator) 
+        public SystemCtlCommand(string[] name) : base(name, AccessLevel.Administrator) 
         {
             CommandManual = new()
             {

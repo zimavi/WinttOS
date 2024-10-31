@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using WinttOS.wSystem.IO;
+using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
 {
     public sealed class PackageRepository : Command
     {
-        public PackageRepository(string[] commandValues) : base(commandValues, Users.User.AccessLevel.Administrator)
+        public PackageRepository(string[] commandValues) : base(commandValues, AccessLevel.Administrator)
         { }
 
 

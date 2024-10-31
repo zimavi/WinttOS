@@ -5,7 +5,7 @@ namespace WinttOS.wSystem.Shell.Commands.Screen
 {
     public sealed class ClearScreenCommand : Command
     {
-        public ClearScreenCommand(string[] name) : base(name, User.AccessLevel.Guest)
+        public ClearScreenCommand(string[] name) : base(name, AccessLevel.Default)
         { }
         public override ReturnInfo Execute()
         {

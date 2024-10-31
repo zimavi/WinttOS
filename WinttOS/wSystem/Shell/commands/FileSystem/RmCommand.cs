@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cosmos.Debug.Kernel;
+using System;
 using System.Collections.Generic;
 using WinttOS.Core;
 using WinttOS.wSystem.Filesystem;
@@ -9,7 +10,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
 {
     public sealed class RmCommand : Command
     {
-        public RmCommand(string[] name) : base(name, User.AccessLevel.Guest)
+        public RmCommand(string[] name) : base(name, AccessLevel.Default)
         { }
         public override ReturnInfo Execute(List<string> arguments)
         {

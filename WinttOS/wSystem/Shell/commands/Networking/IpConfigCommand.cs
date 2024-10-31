@@ -13,7 +13,7 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
     public sealed class IpConfigCommand : Command
     {
 
-        public IpConfigCommand(string[] name) : base(name, User.AccessLevel.Guest)
+        public IpConfigCommand(string[] name) : base(name, AccessLevel.Default)
         {
             CommandManual = new()
             {
@@ -130,7 +130,7 @@ namespace WinttOS.wSystem.Shell.Commands.Networking
                 "              $ ipconfig --nameserver --remove 8.8.8.8",
                 "",
                 "AUTHOR",
-                "       Written by zimavi",
+                "       ZImaVI",
                 ""
             };
         }

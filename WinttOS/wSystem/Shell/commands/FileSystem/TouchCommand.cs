@@ -9,7 +9,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
 {
     public sealed class TouchCommand : Command
     {
-        public TouchCommand(string[] name) : base(name, User.AccessLevel.Guest)
+        public TouchCommand(string[] name) : base(name, AccessLevel.Default)
         { }
 
         public override ReturnInfo Execute(List<string> arguments)

@@ -7,24 +7,16 @@ namespace WinttOS.wSystem.GUI
     {
         public Bitmap Cursor;
 
-        public bool IsMouseVisible;
+        public bool IsMouseVisible = true;
 
-        public Mouse() : this(new(Files.RawCursorImage)) { }
+        public Mouse() : this(Files.CursorImage) { }
 
         public Mouse(Bitmap cursor)
         {
             Cursor = cursor;
         }
-        
-        public void DrawCursor()
-        {
-            if (!IsMouseVisible)
-                return;
 
-            uint x = MouseManager.X;
-            uint y = MouseManager.Y;
-
-            WinttOS.SystemCanvas.DrawImageAlpha(Cursor, (int)x, (int)y);
-        }
+        public uint X { get { return MouseManager.X; } }
+        public uint Y { get { return MouseManager.Y; } }
     }
 }

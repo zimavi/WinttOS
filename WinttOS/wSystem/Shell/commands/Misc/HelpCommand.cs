@@ -9,7 +9,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
 {
     public sealed class HelpCommand : Command
     {
-        public HelpCommand(string[] name) : base(name, User.AccessLevel.Guest)
+        public HelpCommand(string[] name) : base(name, AccessLevel.Default)
         {
 
         }

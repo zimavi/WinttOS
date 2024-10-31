@@ -8,7 +8,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
     public sealed class DevModeCommand : Command
     {
         public static bool IsInDebugMode { get; private set; }
-        public DevModeCommand(string[] name) : base(name, User.AccessLevel.Administrator)
+        public DevModeCommand(string[] name) : base(name, AccessLevel.Administrator)
         { }
 
         public override ReturnInfo Execute(List<string> arguments)

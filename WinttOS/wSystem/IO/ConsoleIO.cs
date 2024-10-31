@@ -27,21 +27,25 @@ namespace WinttOS.wSystem.IO
         public void Put(char chr)
         {
             Console.Write(chr);
+            WinttOS.CommandManager._commandOutput += chr;
         }
 
         public void Put(string str)
         {
             Console.Write(str);
+            WinttOS.CommandManager._commandOutput += str;
         }
 
         public void PutLine(string str)
         {
             Console.WriteLine(str);
+            WinttOS.CommandManager._commandOutput += str + '\n';
         }
 
         public void PutLine(char chr)
         {
             Console.WriteLine(chr);
+            WinttOS.CommandManager._commandOutput += chr + '\n';
         }
     }
 }

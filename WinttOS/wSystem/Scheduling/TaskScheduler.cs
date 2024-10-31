@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Scheduling
 {
@@ -38,7 +39,7 @@ namespace WinttOS.wSystem.Scheduling
 
             ShellUtils.PrintTaskResult("Running", ShellTaskResult.DOING, "Shutdown schedule");
 
-            var currSet = WinttOS.UsersManager.CurrentUser.UserAccess.PrivilegeSet;
+            var currSet = UsersManager.LoggedLevel.PrivilegeSet;
             WinttOS.CurrentExecutionSet = currSet;
 
             foreach(sTask task in _shutdownTasks)

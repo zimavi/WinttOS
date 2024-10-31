@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using WinttOS.Core;
+using WinttOS.Core.Utils.Debugging;
 
 namespace WinttOS.wSystem.Filesystem
 {
@@ -36,6 +37,7 @@ namespace WinttOS.wSystem.Filesystem
                 }
                 else
                 {
+                    Logger.DoOSLog("[Warn] Change dir -> Directory '" + GlobalData.CurrentDirectory + dir + "' does not exists!");
                     error = "This directory doesn't exist!";
                     return false;
                 }

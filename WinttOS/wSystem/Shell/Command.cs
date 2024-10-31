@@ -48,18 +48,18 @@ namespace WinttOS.wSystem.Shell
 
         public readonly bool IsHiddenCommand;
 
-        public readonly User.AccessLevel RequiredAccessLevel;
+        public readonly AccessLevel RequiredAccessLevel;
 
-        public Command(string[] commandValues) : this(commandValues, false, User.AccessLevel.Default)
+        public Command(string[] commandValues) : this(commandValues, false, AccessLevel.Default)
         { }
 
-        public Command(string[] commandValues, User.AccessLevel requiredAccessLevel) : this(commandValues, false, requiredAccessLevel)
+        public Command(string[] commandValues, AccessLevel requiredAccessLevel) : this(commandValues, false, requiredAccessLevel)
         { }
 
-        public Command(string[] commandValues, bool hidden) : this(commandValues, hidden, User.AccessLevel.Default)
+        public Command(string[] commandValues, bool hidden) : this(commandValues, hidden, AccessLevel.Default)
         { }
 
-        public Command(string[] commandValues, bool hidden, User.AccessLevel requiredAccessLevel)
+        public Command(string[] commandValues, bool hidden, AccessLevel requiredAccessLevel)
         {
             RequiredAccessLevel = requiredAccessLevel;
             CommandValues = commandValues;

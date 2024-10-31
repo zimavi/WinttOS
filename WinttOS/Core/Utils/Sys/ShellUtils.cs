@@ -63,19 +63,19 @@ namespace WinttOS.Core.Utils.Sys
                 switch (isSuccessful)
                 {
                     case ShellTaskResult.NONE:
-                        Logger.DoOSLog("[      ] " + task + ": " + detailes);
+                        Logger.DoOSLog("[      ] " + task + detailes);
                         break;
                     case ShellTaskResult.OK:
-                        Logger.DoOSLog("[  OK  ] " + task + ": " + detailes);
+                        Logger.DoOSLog("[  OK  ] " + task + detailes);
                         break;
                     case ShellTaskResult.FAILED:
-                        Logger.DoOSLog("[FAILED] " + task + ": " + detailes);
+                        Logger.DoOSLog("[FAILED] " + task + detailes);
                         break;
                     case ShellTaskResult.DOING:
-                        Logger.DoOSLog("[ **** ] " + task + ": " + detailes);
+                        Logger.DoOSLog("[ **** ] " + task + detailes);
                         break;
                     case ShellTaskResult.WARN:
-                        Logger.DoOSLog("[ WARN ] " + task + ": " + detailes);
+                        Logger.DoOSLog("[ WARN ] " + task + detailes);
                         break;
                 }
                 return;
@@ -102,8 +102,12 @@ namespace WinttOS.Core.Utils.Sys
                         break;
                     case ShellTaskResult.DOING:
                         Sys.Tty.Write("[");
+                        Sys.Tty.ForegroundColor = Color.DarkRed;
+                        Sys.Tty.Write(" *");
                         Sys.Tty.ForegroundColor = Color.Red;
-                        Sys.Tty.Write(" **** ");
+                        Sys.Tty.Write("**");
+                        Sys.Tty.ForegroundColor = Color.DarkRed;
+                        Sys.Tty.Write("* ");
                         Sys.Tty.ForegroundColor = Color.White;
                         Sys.Tty.Write("] ");
                         break;
@@ -120,7 +124,7 @@ namespace WinttOS.Core.Utils.Sys
                 }
                 Sys.Tty.ForegroundColor = Color.Gray;
 
-                Sys.Tty.Write(task + ": ");
+                Sys.Tty.Write(task + " ");
 
                 Sys.Tty.ForegroundColor = Color.White;
 
@@ -149,8 +153,12 @@ namespace WinttOS.Core.Utils.Sys
                 else if (isSuccessful == ShellTaskResult.DOING)
                 {
                     Console.Write("[");
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.Write(" *");
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Write(" **** ");
+                    Console.Write("**");
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
+                    Console.Write("* ");
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.Write("] ");
                 }
@@ -165,13 +173,12 @@ namespace WinttOS.Core.Utils.Sys
                 else
                     Console.Write("         ");
                 Console.ForegroundColor = ConsoleColor.Gray;
-                Console.Write(task + ": ");
+                Console.Write(task + " ");
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(detailes);
             }
         }
 
-        //[Obsolete("This method contains not working code! Please use Console.Readline()!", true)]
         public static bool ProcessExtendedInput(ref string input)
         {
             if (Console.KeyAvailable)

@@ -6,7 +6,7 @@ namespace WinttOS.wSystem.Shell.Commands.Processing
 {
     internal sealed class SandboxCommand : Command
     {
-        public SandboxCommand(string[] name) : base(name, User.AccessLevel.Guest)
+        public SandboxCommand(string[] name) : base(name, AccessLevel.Default)
         { }
 
         public override ReturnInfo Execute(List<string> arguments)

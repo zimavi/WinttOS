@@ -97,8 +97,8 @@ namespace WinttOS.wSystem.Processing
         /// <returns><see langword="true"/> if privileges raised, otherwise, <see langword="false"/></returns>
         protected bool TryRisePrivileges(PrivilegesSet requested_type)
         {
-            if (WinttOS.UsersManager.CurrentUser.UserAccess.Value >= User.AccessLevel.Guest.Value &&
-                WinttOS.UsersManager.CurrentUser.UserAccess.PrivilegeSet.Privileges <= requested_type.Privileges && 
+            if (UsersManager.LoggedLevel.Value >= AccessLevel.Default.Value &&
+                UsersManager.LoggedLevel.PrivilegeSet.Privileges <= requested_type.Privileges && 
                 !HasOwnerProcess)
             {
                 CurrentSet = requested_type;

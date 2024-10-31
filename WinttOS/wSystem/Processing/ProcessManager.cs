@@ -1,8 +1,11 @@
 ﻿using Cosmos.System.Coroutines;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Shell.Utils;
+using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Processing
 {
@@ -36,7 +39,7 @@ namespace WinttOS.wSystem.Processing
             }
             _processes.Add(process);
             _processes[_processes.Count - 1].SetProcessID((uint)_processes.Count - 1);
-            _processes[_processes.Count - 1].CurrentSet = WinttOS.UsersManager.CurrentUser.UserAccess.PrivilegeSet;
+            _processes[_processes.Count - 1].CurrentSet = UsersManager.LoggedLevel.PrivilegeSet;
             _processes[_processes.Count - 1].Initialize();
 
             ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.OK, process.ProcessName);
@@ -60,7 +63,7 @@ namespace WinttOS.wSystem.Processing
             }
             _processes.Add(process);
             _processes[_processes.Count - 1].SetProcessID((uint)_processes.Count - 1);
-            _processes[_processes.Count - 1].CurrentSet = WinttOS.UsersManager.CurrentUser.UserAccess.PrivilegeSet;
+            _processes[_processes.Count - 1].CurrentSet = UsersManager.LoggedLevel.PrivilegeSet;
             _processes[_processes.Count - 1].Initialize();
             newProcessID = (uint)_processes.Count - 1;
             ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.OK, process.ProcessName);
@@ -69,50 +72,12 @@ namespace WinttOS.wSystem.Processing
 
         public bool TryStartProcess(string processName)
         {
-
-            ShellUtils.PrintTaskResult("Starting", ShellTaskResult.DOING, processName);
-            ShellUtils.MoveCursorUp();
-
-            foreach (var process in _processes)
-            {
-                if (process.ProcessName.Equals(processName)) 
-                {
-                    if (process.IsProcessRunning)
-                    {
-                        ShellUtils.PrintTaskResult("Starting", ShellTaskResult.FAILED, processName);
-                        return false;
-                    }
-                    ShellUtils.PrintTaskResult("Starting", ShellTaskResult.OK, processName);
-                    process.Start();
-                    return true; 
-                }
-            }
-            ShellUtils.PrintTaskResult("Starting", ShellTaskResult.FAILED, processName);
-            return false;
+            return TryStartProcess(_processes.Find(p => p.ProcessName == processName).ProcessID);
         }
 
         public bool TryStopProcess(string processName)
         {
-
-            ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.DOING, processName);
-            ShellUtils.MoveCursorUp();
-
-            foreach (var process in _processes)
-            {
-                if(process.ProcessName == processName)
-                {
-                    if (!process.IsProcessRunning)
-                    {
-                        ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.FAILED, processName);
-                        return false;
-                    }
-                    process.Stop();
-                    ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.OK, processName);
-                    return true;
-                }    
-            }
-            ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.FAILED, processName);
-            return false;
+            return TryStopProcess(_processes.Find(p => p.ProcessName == processName).ProcessID);
         }
 
         public void RunProcessGC()
@@ -154,25 +119,45 @@ namespace WinttOS.wSystem.Processing
 
         public bool TryStartProcess(uint processID)
         {
+            ShellUtils.PrintTaskResult("Starting", ShellTaskResult.DOING, "PID " + processID.ToString());
+            ShellUtils.MoveCursorUp();
+
             foreach (var process in _processes)
             {
                 if (process.ProcessID == processID)
                 {
-                    return TryStartProcess(process.ProcessName);
+                    if (process.IsProcessRunning)
+                    {
+                        ShellUtils.PrintTaskResult("Starting", ShellTaskResult.FAILED, process.ProcessName);
+                        return false;
+                    }
+                    ShellUtils.PrintTaskResult("Starting", ShellTaskResult.OK, process.ProcessName);
+                    process.Start();
+                    return true;
                 }
             }
+            ShellUtils.PrintTaskResult("Starting", ShellTaskResult.FAILED, "PID " + processID.ToString() + " not found");
             return false;
         }
         public bool TryStopProcess(uint processID)
         {
+            ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.DOING, "PID " + processID.ToString());
+            ShellUtils.MoveCursorUp();
             foreach (var process in _processes)
             {
                 if (process.ProcessID == processID)
                 {
-                    bool isStopped = TryStopProcess(process.ProcessName);
-                    return isStopped;
+                    if (!process.IsProcessRunning)
+                    {
+                        ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.FAILED, process.ProcessName);
+                        return false;
+                    }
+                    process.Stop();
+                    ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.OK, process.ProcessName);
+                    return true;
                 }
             }
+            ShellUtils.PrintTaskResult("Stopping", ShellTaskResult.FAILED, "PID " + processID.ToString() + " not found");
             return false;
         }
 
@@ -214,6 +199,7 @@ namespace WinttOS.wSystem.Processing
                         }
                         catch(Exception e)
                         {
+                            Logger.DoOSLog("[Warn] Process '" + process.ProcessName + "' (PID " + process.ProcessID + ") threw excpetion: " + e.Message);
                             process.Stop();
                         }
                     }

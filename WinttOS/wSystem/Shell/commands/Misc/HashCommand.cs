@@ -129,7 +129,7 @@ namespace WinttOS.wSystem.Shell.commands.Misc
 
                 string contents = File.ReadAllText(GlobalData.CurrentDirectory + arguments[2]);
 
-                string checksum = MD5.Calculate(Encoding.ASCII.GetBytes(contents));
+                string checksum = MD5.hash(contents);
 
                 SystemIO.STDOUT.PutLine("File checksum:\n" + checksum);
 
@@ -137,7 +137,7 @@ namespace WinttOS.wSystem.Shell.commands.Misc
             }
 
             data = arguments.SubList(3, arguments.Count - 3);
-            hash = MD5.Calculate(Encoding.ASCII.GetBytes(string.Join(' ', data.ToArray())));
+            hash = MD5.hash(string.Join(' ', data.ToArray()));
 
             SystemIO.STDOUT.PutLine("Hash:\n" + hash);
             return new(this, ReturnCode.OK);

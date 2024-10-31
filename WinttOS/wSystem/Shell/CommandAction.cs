@@ -6,7 +6,7 @@ namespace WinttOS.wSystem.Shell
     public sealed class CommandAction : Command
     {
         private Action _action;
-        public CommandAction(string[] commandValues, User.AccessLevel requiredAccess, Action action) : base(commandValues, requiredAccess)
+        public CommandAction(string[] commandValues, AccessLevel requiredAccess, Action action) : base(commandValues, requiredAccess)
         {
             _action = action;
         }

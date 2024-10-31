@@ -13,7 +13,7 @@ namespace WinttOS.wSystem.Services
 
         private List<Service> _services = new();
 
-        public WinttServiceManager() : base("service.d", ProcessType.KernelComponent)
+        public WinttServiceManager() : base("Serviced", ProcessType.KernelComponent)
         { }
 
         public List<Service> Services => _services;
@@ -29,10 +29,26 @@ namespace WinttOS.wSystem.Services
                 ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, service.ServiceName);
 
                 _services.Add(service);
+                SetChild(service);
 
                 service.IsProcessCritical = true;
                 WinttOS.ProcessManager.TryRegisterProcess(service);
             }
+        }
+
+        public void AddService(Service service, out uint processId)
+        {
+            if (!_services.Contains(service))
+            {
+                ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, service.ServiceName);
+
+                _services.Add(service);
+                SetChild(service);
+
+                service.IsProcessCritical = true;
+                WinttOS.ProcessManager.TryRegisterProcess(service, out processId);
+            }
+            processId = uint.MaxValue;
         }
 
         public override void Start()

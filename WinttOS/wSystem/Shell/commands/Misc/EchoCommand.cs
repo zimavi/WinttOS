@@ -7,7 +7,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
 {
     public sealed class EchoCommand : Command
     {
-        public EchoCommand(string[] name) : base(name, User.AccessLevel.Guest)
+        public EchoCommand(string[] name) : base(name, AccessLevel.Default)
         { }
 
         public override ReturnInfo Execute(List<string> arguments)

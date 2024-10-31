@@ -1,10 +1,10 @@
-﻿using IL2CPU.API.Attribs;
+﻿using Cosmos.System.Graphics;
 
 namespace WinttOS.wSystem.GUI
 {
     public static class Files
     {
-        //[ManifestResourceStream(ResourceName = "WinttOS.Core.resources.cur.bmp")]
-        public static readonly byte[] RawCursorImage;
+        public static Bitmap CursorImage;
+        public static Bitmap Bg0;
     }
 }

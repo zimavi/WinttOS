@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.wSystem.Shell.Programs;
 
@@ -59,6 +60,19 @@ namespace WinttOS.Core.Utils.Sys
                 }
             }
             return true;
+        }
+
+        #endregion
+
+        #region Char
+
+        public static char ToLower(this char chr)
+        {
+            if (chr >= 'A' && chr <= 'Z')
+            {
+                return (char)(chr + 32);
+            }
+            return chr;
         }
 
         #endregion

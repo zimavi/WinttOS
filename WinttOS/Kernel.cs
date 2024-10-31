@@ -1,4 +1,5 @@
-﻿using Cosmos.System.FileSystem;
+﻿using Cosmos.Core;
+using Cosmos.System.FileSystem;
 using Cosmos.System.FileSystem.VFS;
 using Cosmos.System.Graphics;
 using Cosmos.System.Graphics.Fonts;
@@ -10,6 +11,7 @@ using WinttOS.Core;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Kernel;
 using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem.Filesystem;
 using WinttOS.wSystem.IO;
 using Sys = Cosmos.System;
 
@@ -24,6 +26,9 @@ namespace WinttOS
         public static StringCollection ReadonlyDirectories { get; internal set; } = new();
         public static bool IsFinishingKernel { get; private set; } = false;
         public static bool IsRebooting { get; private set; } = false;
+        public static string CpuBrandName { get; private set; } = "Unknown";
+        public static long CpuClockSpeed { get; private set; } = -1;
+        public static string CpuVendorName { get; private set; } = "Unknown";
 
         public static readonly List<Action> OnKernelFinish = new();
         private static Kernel _instance = null;
@@ -33,96 +38,56 @@ namespace WinttOS
         #region Methods
         protected override void BeforeRun()
         {
+            bool hasError = false;
             try
             {
+                ShellUtils.PrintTaskResult("Collecting", ShellTaskResult.DOING, "Hardware info");
+                ShellUtils.MoveCursorUp();
+                Logger.DoBootLog("[Info] Collecting CPU info");
+                try
+                {
+                    if (CPU.CanReadCPUID() != 0)
+                    {
+                        CpuBrandName = CPU.GetCPUBrandString();
+                        CpuClockSpeed = CPU.GetCPUCycleSpeed();
+                        CpuVendorName = CPU.GetCPUVendorName();
+                        Logger.DoBootLog("[OK] CPU info collected");
+                        ShellUtils.PrintTaskResult("Collecting", ShellTaskResult.OK, "Hardware info");
+                    }
+                    else
+                    {
+                        hasError = true;
+                        Logger.DoBootLog("[Error] Cannot collect CPU info -> Unable to read CPUID");
+                        ShellUtils.PrintTaskResult("Collecting", ShellTaskResult.FAILED, "Hardware info");
+
+                    }
+                }
+                catch (Exception e)
+                {
+                    hasError = true;
+                    Logger.DoBootLog("[Error] Cannot collect CPU info -> " + e.Message);
+                    ShellUtils.PrintTaskResult("Collecting", ShellTaskResult.FAILED, "Hardware info");
+
+                }
+
                 ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.DOING, "VFS Filesystem");
 
                 Logger.DoBootLog("[Info] Registering filesystem");
 
                 GlobalData.FileSystem = new CosmosVFS();
                 VFSManager.RegisterVFS(GlobalData.FileSystem);
-                GlobalData.FileSystem.Initialize(true);
 
                 ShellUtils.MoveCursorUp();
                 ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.OK, "VFS Filesystem");
 
-                Logger.DoBootLog("[Info] Mounting avaiable disks");
+                Logger.DoBootLog("[Info] Starting to mount disks");
+                ShellUtils.PrintTaskResult("Mounting disks", ShellTaskResult.NONE);
 
-                List<Disk> disks = VFSManager.GetDisks();
-
-                for (int i = 0; i < disks.Count; i++)
-                {
-                    ShellUtils.PrintTaskResult("Mounting", ShellTaskResult.DOING, "Disk" + i);
-                    ShellUtils.MoveCursorUp();
-                    try
-                    {
-                        disks[i].Mount();
-                        ShellUtils.PrintTaskResult("Mounting", ShellTaskResult.OK, "Disk" + i);
-                        Logger.DoBootLog("[Info] Disk #" + i + " mounted");
-                    }
-                    catch
-                    {
-                        ShellUtils.PrintTaskResult("Mounting", ShellTaskResult.FAILED, "Disk" + i);
-                        Logger.DoBootLog("[Info] Unable to mount disk #" + i + "!");
-                    }
-                }
+                GlobalData.FileSystem.Initialize(true);
 
                 Logger.DoBootLog("[Info] Loading system resources");
 
-                ShellUtils.PrintTaskResult("Loading", ShellTaskResult.DOING, "System Fonts");
-                
-                ShellUtils.MoveCursorUp();
-
-                bool found = false;
-
-                foreach(Disk disk in disks)
-                {
-                    foreach(var part in disk.Partitions)
-                    {
-                        if (part.HasFileSystem)
-                        {
-                            Logger.DoBootLog("[Info] Searching for 'zap-ext-light18.psf'");
-
-                            if (File.Exists(part.RootPath + @"resources\zap-ext-light18.psf"))
-                            {
-                                try
-                                {
-                                    Logger.DoBootLog("[OK] Found 'zap-ext-light18.psf'");
-                                    Logger.DoBootLog("[Info] Loading resource");
-
-                                    byte[] font = File.ReadAllBytes(part.RootPath + @"resources\zap-ext-light18.psf");
-                                    Files.Fonts.Font18 = PCScreenFont.LoadFont(font);
-                                    found = true;
-                                    ShellUtils.PrintTaskResult("Loading", ShellTaskResult.OK, "System Fonts");
-
-                                    Logger.DoBootLog("[OK] 'zap-ext-light18.psf' loaded");
-                                    break;
-                                } 
-                                catch (ArgumentException)
-                                {
-                                    ShellUtils.PrintTaskResult("Loading", ShellTaskResult.FAILED, "System Fonts: Invalid file");
-                                    _ = new KernelPanic("Kernel load failed: Invalid resource file", this);
-                                }
-                                catch (Exception e)
-                                {
-                                    ShellUtils.PrintTaskResult("Loading", ShellTaskResult.FAILED, "System Fonts: " + e.Message);
-                                    _ = new KernelPanic("Kernel load failed: Invalid resource file", this);
-                                }
-                            }
-                        }
-                    }
-                    if (found)
-                        break;
-                }
-
-                if(!found)
-                {
-                    ShellUtils.PrintTaskResult("Loading", ShellTaskResult.FAILED, "System Fonts: Not found");
-                    _ = new KernelPanic("Kernel load failed: Cannot find resource file", this);
-                }
-
-                Console.Write("Press any key to continue boot...");
-                Console.ReadKey();
+                BootResourceLoader.LoadResources();
 
                 wSystem.WinttOS.InitializeSystem();
                 
@@ -135,6 +100,8 @@ namespace WinttOS
 
         protected override void Run()
         { }
+
+        public static void SendDbg(string msg) => _instance.mDebugger.Send(msg);
 
         protected override void AfterRun()
         {

@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using WinttOS.Core;
+using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Services;
@@ -28,12 +30,12 @@ namespace WinttOS.wSystem.Shell
         private List<Command> _commands;
         private bool _didRunCycle = true;
         private bool _redirect = false;
-        private string _commandOutput = "";
+        internal string _commandOutput = "";
         private bool _hasShellFired = false;
         public bool IsInputTaken = false;
         public bool _executeNewCommand = false;
 
-        public CommandManager() : base("shelld", "shell.service")
+        public CommandManager() : base("Shelld", "shell.service")
         {
             _commands = new List<Command>
             {
@@ -67,27 +69,30 @@ namespace WinttOS.wSystem.Shell
                 new HashCommand(new string[] { "hash" }),
                 new SystemInfoCommand(new string[] { "sysinfo" }),
                 new DisksCommand(new string[] { "disks" }),
+                new LogsCommand(new string[] { "logs" }),
+                new TreeCommand(new string[] { "tree" }),
+                new PlayBadAppleCommand(new string[] { "bad_apple" }),
 
-                new CommandAction(new string[] { "whoami" }, User.AccessLevel.Guest, () =>
+                new CommandAction(new string[] { "whoami" }, AccessLevel.Default, () =>
                 {
-                    SystemIO.STDOUT.PutLine(WinttOS.UsersManager.CurrentUser.Login);
+                    SystemIO.STDOUT.PutLine(UsersManager.userLogged);
                 }),
-                new CommandAction(new string[] { "bash" }, User.AccessLevel.Default, () =>
+                new CommandAction(new string[] { "bash" }, AccessLevel.Default, () =>
                 {
                     BashInterpreter bash = new();
                     SystemIO.STDOUT.PutLine(bash.Parse(@"0:\startup.sh"));
                     bash.Execute();
                 }),
-                new CommandAction(new string[] { "crash" }, User.AccessLevel.Administrator, () =>
+                new CommandAction(new string[] { "crash" }, AccessLevel.Administrator, () =>
                 {
                     Kernel.WinttRaiseHardError("Crash command was executed", this);
                 }),
-                new CommandAction(new string[] { "memory", "mem" }, User.AccessLevel.Guest, () =>
+                new CommandAction(new string[] { "memory", "mem" }, AccessLevel.Default, () =>
                 {
-                    SystemIO.STDOUT.PutLine($"Available memory: {WinttOS.MemoryManager.FreeMemory} MB");
-                    SystemIO.STDOUT.PutLine($"Used memory: {Memory.GetUsedMemory()} MB");
+                    SystemIO.STDOUT.PutLine($"Available memory: " + Filesystem.Utils.ConvertSize(WinttOS.MemoryManager.FreeMemory * 1024 * 1024));
+                    SystemIO.STDOUT.PutLine($"Used memory: " + Filesystem.Utils.ConvertSize(Memory.GetUsedMemory() * 1024 * 1024));
                     SystemIO.STDOUT.PutLine($"Used memory (%): {100 - WinttOS.MemoryManager.FreePercentage}%");
-                    SystemIO.STDOUT.PutLine($"Total memory: {Memory.TotalMemory} MB");
+                    SystemIO.STDOUT.PutLine($"Total memory: " + Filesystem.Utils.ConvertSize(Memory.TotalMemory * 1024 * 1024));
                 })
             };
         }
@@ -112,10 +117,10 @@ namespace WinttOS.wSystem.Shell
 
         public void ProcessInput(string input)
         {
-
+            Logger.DoOSLog("CommandMan -> Processing input");
             if (input.Length <= 0)
             {
-                Console.WriteLine();
+                SystemIO.STDOUT.PutLine("");
                 return;
             }
 
@@ -130,11 +135,11 @@ namespace WinttOS.wSystem.Shell
             if (!string.IsNullOrEmpty(redirectionPart))
             {
                 _redirect = true;
-                _commandOutput = "";
             }
+            _commandOutput = "";
 
             parts = input.Split("&&");
-            if(parts.Length > 1)
+            if (parts.Length > 1)
             {
                 _executeNewCommand = true;
             }
@@ -160,7 +165,7 @@ namespace WinttOS.wSystem.Shell
                 {
                     ReturnInfo result;
 
-                    if (cmd.RequiredAccessLevel.Value > WinttOS.UsersManager.CurrentUser.UserAccess.Value)
+                    if (cmd.RequiredAccessLevel.Value > UsersManager.LoggedLevel.Value)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkRed;
                         SystemIO.STDOUT.PutLine("You do not have permission to run this command!");
@@ -197,7 +202,7 @@ namespace WinttOS.wSystem.Shell
                     {
                         _redirect = false;
 
-                        Console.WriteLine();
+                        SystemIO.STDOUT.PutLine("");
 
                         HandleRedirection(redirectionPart, _commandOutput);
 
@@ -212,7 +217,7 @@ namespace WinttOS.wSystem.Shell
             SystemIO.STDOUT.PutLine("Unknown command.");
             Console.ForegroundColor = ConsoleColor.White;
 
-            Console.WriteLine();
+            SystemIO.STDOUT.PutLine("");
 
             if (_redirect)
             {
@@ -223,7 +228,7 @@ namespace WinttOS.wSystem.Shell
                 _commandOutput = "";
             }
 
-            if(_executeNewCommand)
+            if (_executeNewCommand)
             {
                 i++;
                 if (parts.Length == i)
@@ -234,115 +239,10 @@ namespace WinttOS.wSystem.Shell
             executionEnd:;
         }
 
-        public void ProcessInput(ref TempUser user, string input)
-        {
-
-            if (input.Length <= 0)
-            {
-                Console.WriteLine();
-                return;
-            }
-
-            #region Parse command
-
-            string[] parts = input.Split(new char[] { '>' }, 2);
-            string redirectionPart = parts.Length > 1 ? parts[1].Trim() : null;
-
-            input = parts[0].Trim();
-
-            if (!string.IsNullOrEmpty(redirectionPart))
-            {
-                _redirect = true;
-                _commandOutput = "";
-            }
-
-            List<string> arguments = Misc.ParseCommandLine(input);
-
-            string firstArg = arguments[0];
-
-            if (arguments.Count > 0)
-            {
-                arguments.RemoveAt(0);
-            }
-
-            #endregion
-
-            foreach (Command cmd in _commands)
-            {
-                if (cmd.ContainsCommand(firstArg))
-                {
-                    ReturnInfo result;
-
-                    if (cmd.RequiredAccessLevel.Value > user.UserAccess.Value)
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkRed;
-                        SystemIO.STDOUT.PutLine("You do not have permission to run this command!");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        user = null;
-                        return;
-                    }
-
-                    if (arguments.Count > 0 && (arguments[0] == "--help" || arguments[0] == "-h"))
-                    {
-                        showHelp(cmd);
-                        result = new ReturnInfo(cmd, ReturnCode.OK);
-                    }
-                    else
-                    {
-                        result = CheckCommand(cmd);
-
-                        if (result.Code == ReturnCode.OK)
-                        {
-                            _hasShellFired = false;
-                            if (arguments.Count == 0)
-                            {
-                                result = cmd.Execute();
-                            }
-                            else
-                            {
-                                result = cmd.Execute(arguments);
-                            }
-                        }
-                    }
-
-                    ProcessCommandResult(result);
-
-                    if (_redirect)
-                    {
-                        _redirect = false;
-
-                        Console.WriteLine();
-
-                        HandleRedirection(redirectionPart, _commandOutput);
-
-                        _commandOutput = "";
-                    }
-                    user = null;
-
-                    return;
-                }
-            }
-
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            SystemIO.STDOUT.PutLine("Unknown command.");
-            Console.ForegroundColor = ConsoleColor.White;
-
-            Console.WriteLine();
-
-            if (_redirect)
-            {
-                _redirect = false;
-
-                HandleRedirection(redirectionPart, _commandOutput);
-
-                _commandOutput = "";
-            }
-        }
-
         private void showHelp(Command cmd)
         {
             SystemIO.STDOUT.PutLine("Description: " + cmd.Description + '.');
-            Console.WriteLine();
+            SystemIO.STDOUT.PutLine("");
             if (cmd.CommandValues.Length > 1)
             {
                 Console.Write("Aliases: ");
@@ -357,8 +257,8 @@ namespace WinttOS.wSystem.Shell
                         Console.Write(cmd.CommandValues[i]);
                     }
                 }
-                Console.WriteLine();
-                Console.WriteLine();
+                SystemIO.STDOUT.PutLine("");
+                SystemIO.STDOUT.PutLine("");
             }
             cmd.PrintHelp();
         }
@@ -402,6 +302,15 @@ namespace WinttOS.wSystem.Shell
 
         private void HandleRedirection(string filePath, string commandOutput)
         {
+            foreach(var c in _commands)
+            {
+                if(c.CommandValues.Contains(filePath))
+                {
+                    ProcessInput(filePath + " " + commandOutput);
+                    return;
+                }
+            }
+
             string fullPath = GlobalData.CurrentDirectory + filePath;
 
             File.WriteAllText(fullPath, commandOutput);
@@ -423,7 +332,7 @@ namespace WinttOS.wSystem.Shell
                     if (_didRunCycle && !IsInputTaken)
                     {
                         WinttOS.Tty.Foreground = ConsoleColor.DarkGray;
-                        WinttOS.Tty.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
+                        WinttOS.Tty.Write(@$"{UsersManager.userLogged}${GlobalData.CurrentDirectory}> ");
                         WinttOS.Tty.Foreground = ConsoleColor.White;
                         _didRunCycle = false;
                         _hasShellFired = true;
@@ -431,7 +340,7 @@ namespace WinttOS.wSystem.Shell
                     else if (!IsInputTaken && !_hasShellFired)
                     {
                         WinttOS.Tty.Foreground = ConsoleColor.DarkGray;
-                        WinttOS.Tty.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
+                        WinttOS.Tty.Write(@$"{UsersManager.userLogged}${GlobalData.CurrentDirectory}> ");
                         WinttOS.Tty.Foreground = ConsoleColor.White;
                         _didRunCycle = false;
                         _hasShellFired = true;
@@ -454,7 +363,7 @@ namespace WinttOS.wSystem.Shell
                     if (_didRunCycle && !IsInputTaken)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGray;
-                        Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
+                        Console.Write(@$"{UsersManager.userLogged}${GlobalData.CurrentDirectory}> ");
                         Console.ForegroundColor = ConsoleColor.White;
                         _didRunCycle = false;
                         _hasShellFired = true;
@@ -462,7 +371,7 @@ namespace WinttOS.wSystem.Shell
                     else if (!IsInputTaken && !_hasShellFired)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGray;
-                        Console.Write(@$"{WinttOS.UsersManager.CurrentUser.Name}${GlobalData.CurrentDirectory}> ");
+                        Console.Write(@$"{UsersManager.userLogged}${GlobalData.CurrentDirectory}> ");
                         Console.ForegroundColor = ConsoleColor.White;
                         _didRunCycle = false;
                         _hasShellFired = true;

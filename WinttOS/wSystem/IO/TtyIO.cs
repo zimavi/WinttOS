@@ -21,7 +21,8 @@ namespace WinttOS.wSystem.IO
                 switch (key.Key)
                 {
                     case ConsoleKey.Backspace:
-                        buffer = buffer[..^1]; 
+                        if (buffer.Length > 1)
+                            buffer = buffer[..^1]; 
                         break;
                     case ConsoleKey.Enter:
                         isReturning = true;
@@ -68,6 +69,7 @@ namespace WinttOS.wSystem.IO
             if(WinttOS.IsTty)
             {
                 WinttOS.Tty.Write(chr);
+                WinttOS.CommandManager._commandOutput += chr;
             }
         }
 
@@ -76,6 +78,7 @@ namespace WinttOS.wSystem.IO
             if (WinttOS.IsTty)
             {
                 WinttOS.Tty.Write(str);
+                WinttOS.CommandManager._commandOutput += str;
             }
         }
 
@@ -84,6 +87,7 @@ namespace WinttOS.wSystem.IO
             if(WinttOS.IsTty)
             {
                 WinttOS.Tty.WriteLine(str);
+                WinttOS.CommandManager._commandOutput += str + '\n';
             }
         }
 
@@ -92,6 +96,7 @@ namespace WinttOS.wSystem.IO
             if(WinttOS.IsTty)
             {
                 WinttOS.Tty.WriteLine(chr);
+                WinttOS.CommandManager._commandOutput += chr + '\n';
             }
         }
     }

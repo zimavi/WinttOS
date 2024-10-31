@@ -17,15 +17,8 @@ namespace WinttOS.wSystem.Benchmark
         /// <exception cref="InvalidOperationException"></exception>
         public void Start()
         {
-            if(_isRunning)
-            {
-                throw new InvalidOperationException("Stopwatch is already running.");
-            }
-            else
-            {
-                _startTime = DateTime.Now;
-                _isRunning = true;
-            }
+            _startTime = DateTime.Now;
+            _isRunning = true;
         }
 
         /// <summary>
@@ -34,15 +27,8 @@ namespace WinttOS.wSystem.Benchmark
         /// <exception cref="InvalidOperationException"></exception>
         public void Stop()
         {
-            if (!_isRunning)
-            {
-                throw new InvalidOperationException("Stopwatch is not running.");
-            }
-            else
-            {
-                _stopTime = DateTime.Now;
-                _isRunning = false;
-            }
+            _stopTime = DateTime.Now;
+            _isRunning = false;
         }
 
         public TimeSpan TimeElapsed
