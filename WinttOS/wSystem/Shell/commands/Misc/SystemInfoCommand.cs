@@ -22,7 +22,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                 string info =
                     "                          =@                         " + "\n" +
                     "                          @@@                        " + "\n" +
-                    "                  =@@@*. @@@@% =#@@@                 " + "root@localhost" + "\n" +
+                    "                  =@@@*. @@@@% =#@@@                 " + UsersManager.userLogged + "@localhost" + "\n" +
                     "              +%   -@@@@  @@+ @@@@@    #.            " + "Computer name:               wintt-pc" + "\n" +
                     "              @@@   =@@@@*=*.@@@@@    @@@            " + "Operation system name:       WinttOS" + "\n" +
                     "             #@@@@%-@#  :@@@@@   @@:=@@@@:           " + "Kernel name:                 Cosmos-devkit" + "\n" +
