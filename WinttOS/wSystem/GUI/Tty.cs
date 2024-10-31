@@ -19,6 +19,7 @@ namespace WinttOS.wSystem.GUI
         private const char _newLine = '\n';
         private const char _carriage = '\r';
         private const char _tab = '\t';
+        private const char _back = '\b';
         private const char _space = ' ';
 
         #endregion
@@ -253,6 +254,18 @@ namespace WinttOS.wSystem.GUI
             Write(_space);
         }
 
+        private void DoBack()
+        {
+
+            if (X == 0)
+            {
+                Y--;
+                X = Cols - 1;
+            }
+            else
+                X--;
+        }
+
         public void Write(char @char)
         {
             int idx = GetIndex(Y, X);
@@ -299,6 +312,9 @@ namespace WinttOS.wSystem.GUI
                         break;
                     case _tab:
                         DoTab();
+                        break;
+                    case _back:
+                        DoBack();
                         break;
 
                     default:

@@ -36,6 +36,7 @@ namespace WinttOS.wSystem.Processing
         public Process OwnerProcess { get; private set; }
         public bool HasOwnerProcess => !OwnerProcess.IsNull();
         public Queue<Task> TaskQueue { get; private set; } = new Queue<Task>();
+        public List<Process> ChildProcesses { get; private set; } = new List<Process>();
 
         protected Process(string name, ProcessType type)
         {
@@ -107,11 +108,12 @@ namespace WinttOS.wSystem.Processing
             return false;
         }
 
-        protected void SetChild(Process ChildOwner)
+        protected void SetChild(Process child)
         {
-            if (OwnerProcess == ChildOwner)
+            if (OwnerProcess == child || child.HasOwnerProcess)
                 return;
-            ChildOwner.OwnerProcess = this;
+            child.OwnerProcess = this;
+            ChildProcesses.Add(child);
         }
 
         protected bool TrySetChildPrivileges(Process child, PrivilegesSet requested_type)

@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using WinttOS.Core;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Shell.Utils;
 using WinttOS.wSystem.Users;
 
@@ -233,6 +235,33 @@ namespace WinttOS.wSystem.Processing
                 formatter.Write(process.ProcessName);
                 formatter.Write(process.ProcessID.ToString());
             }
+        }
+
+        public void PrintProcessTree(Process presentProcess, string indent = "", bool isLastChild = true)
+        {
+            SystemIO.STDOUT.PutLine(indent + (isLastChild ? GlobalData.TREE_PART1 : GlobalData.TREE_PART3) + presentProcess.ProcessName + " (PID: " + presentProcess.ProcessID + ")");
+
+            indent += isLastChild ? "    " : GlobalData.TREE_PART2;
+
+            var children = presentProcess.ChildProcesses;
+            for(int i = 0; i < children.Count; i++)
+            {
+                PrintProcessTree(children[i], indent, i == children.Count - 1);
+            }
+        }
+        public List<Process> GetRootProcesses()
+        {
+            List<Process> rootProcesses = new();
+
+            foreach (var process in _processes)
+            {
+                if (!process.HasOwnerProcess)
+                {
+                    rootProcesses.Add(process);
+                }
+            }
+
+            return rootProcesses;
         }
     }
 }

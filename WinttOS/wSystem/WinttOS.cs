@@ -168,6 +168,9 @@ namespace WinttOS.wSystem
                 KernelPrint = false;
 
                 // All after-init code which only runs once goes here.
+                TestService service = new();
+                ServiceManager.AddService(service);
+                ServiceManager.StartService(service.ProcessName);
 
                 SystemIO.STDOUT.PutLine("\n\nWelcome to WinttOS!\n"); // welcome message
                 SystemIO.STDOUT.PutLine("To switch to VGA console type 'tty'");

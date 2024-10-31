@@ -132,8 +132,7 @@ namespace WinttOS.wSystem.Services
                 if (service.ProcessName == serviceName && !service.IsServiceRunning && !service.IsProcessRunning)
                 {
                     Logger.DoOSLog("[Info] Starting service " + service.ServiceName + " (PID " + service.ProcessID + ")");
-                    service.OnServiceStart();
-                    WinttOS.ProcessManager.TryStopProcess(service.ProcessName);
+                    WinttOS.ProcessManager.TryStartProcess(service.ProcessName);
                 }
             });
         }

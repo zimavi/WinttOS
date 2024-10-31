@@ -46,7 +46,7 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                 "",
                 "AUTHOR",
                 "   zimavi"
-            }
+            };
         }
 
         public override ReturnInfo Execute(List<string> arguments)
@@ -96,9 +96,9 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
 
             while(true) 
             {
-                if (Console.KeyAvailable)
+                if (System.Console.KeyAvailable)
                 {
-                    ConsoleKeyInfo key = Console.ReadKey(true);
+                    ConsoleKeyInfo key = System.Console.ReadKey(true);
                     if (key.Key != ConsoleKey.Spacebar && key.Key != ConsoleKey.Enter 
                         && key.Key != ConsoleKey.B && key.Key != ConsoleKey.Q)
                         continue;
@@ -116,14 +116,6 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
                     }
                     else if(key.Key == ConsoleKey.Q)
                     {
-                        if (WinttOS.IsTty)
-                        {
-                            WinttOS.Tty.ClearText();
-                        }
-                        else
-                        {
-                            Console.Clear();
-                        }
                         yield break;
                     }
                     if(idx >= manual.Count - 1)
