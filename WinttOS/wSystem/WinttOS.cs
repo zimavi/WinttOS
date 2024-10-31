@@ -35,7 +35,7 @@ namespace WinttOS.wSystem
 
         public static PrivilegesSet CurrentExecutionSet { get; internal set; } = PrivilegesSet.HIGHEST;
 
-        public static readonly string WinttVersion = "WinttOS v1.3.0 dev.";
+        public static readonly string WinttVersion = "WinttOS v1.4.0 dev.";
         public static readonly string WinttRevision = VersionInfo.revision;
 
         public static WinttServiceManager ServiceManager { get; internal set; }

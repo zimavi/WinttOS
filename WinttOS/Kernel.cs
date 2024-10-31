@@ -21,7 +21,7 @@ namespace WinttOS
     {
         #region Fields
 
-        public const string KernelVersion = "WinttCore v0.1.0";
+        public const string KernelVersion = "WinttCore v0.2.0";
         public static StringCollection ReadonlyFiles { get; internal set; } = new();
         public static StringCollection ReadonlyDirectories { get; internal set; } = new();
         public static bool IsFinishingKernel { get; private set; } = false;
