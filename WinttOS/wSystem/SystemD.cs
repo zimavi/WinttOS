@@ -66,7 +66,6 @@ namespace WinttOS.wSystem
             
             Logger.DoOSLog("[Info] Registering command manager -> service manager");
             WinttOS.ServiceManager.AddService(WinttOS.CommandManager);
-            SetChild(WinttOS.CommandManager);
             commandManagerProcessID = WinttOS.CommandManager.ProcessID;
 
             WinttOS.CommandManager.RegisterCommand(new DevModeCommand(new string[] { "dev-mode" }));

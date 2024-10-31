@@ -21,8 +21,13 @@ namespace WinttOS.wSystem.IO
                 switch (key.Key)
                 {
                     case ConsoleKey.Backspace:
-                        if (buffer.Length > 1)
-                            buffer = buffer[..^1]; 
+                        if (buffer.Length > 0)
+                        {
+                            buffer = buffer[..^1];
+
+                            if (!hide)
+                                WinttOS.Tty.Write("\b ");
+                        }
                         break;
                     case ConsoleKey.Enter:
                         isReturning = true;
