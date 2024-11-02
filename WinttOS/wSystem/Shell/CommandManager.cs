@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using WinttOS.Core;
-using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Services;
@@ -42,7 +41,9 @@ namespace WinttOS.wSystem.Shell
                 new ClearScreenCommand(new string[] { "clear", "cls" }),
                 new EchoCommand(new string[] { "echo" }),
                 new VerisonCommand(new string[] { "version", "ver" }),
-                new ShutdownCommand(new string[] { "shutdown", "power" }),
+                new ShutdownCommand(new string[] { "shutdown" }),
+                new RebootCommand(new string[] { "reboot" }),
+                new HaltCommand(new string[] { "halt" }),
                 new IpConfigCommand(new string[] { "ipconfig" }),
                 new MakeFileCommand(new string[] { "mkfile" }),
                 new MakeDirCommand(new string[] { "mkdir" }),
