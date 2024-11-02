@@ -28,8 +28,12 @@ namespace WinttOS.Core.Utils.Debugging
     {
         public static List<LogEntry> LogList = new();
 
+        public static bool DoLogCosmos = true;
+
         public static void DoKernelLog(string log)
         {
+            if (!DoLogCosmos)
+                return;
             LogList.Add(new LogEntry(LogLevel.Kernel, log, DateTime.Now));
         }
 

@@ -94,6 +94,14 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="Core\Embaded\zap_light18.psf" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Core\Embaded\zap_light18.psf" />
+    </ItemGroup>
+
+    <ItemGroup>
       <None Include="C:\Users\Anton\source\repos\zimavi\WinttOS\WinttOS\.editorconfig" />
       <None Include="isoFiles\boot\.resources\zap-ext-light18.psf" />
     </ItemGroup>

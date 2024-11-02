@@ -6,6 +6,7 @@ using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Processing;
 using WinttOS.wSystem.Services;
 using WinttOS.wSystem.Shell;
+using WinttOS.wSystem.Shell.commands.Misc;
 using WinttOS.wSystem.Shell.Commands.Misc;
 using WinttOS.wSystem.Users;
 
@@ -19,6 +20,8 @@ namespace WinttOS.wSystem
         private uint serviceProviderProcessID;
         private uint commandManagerProcessID;
         private uint windowManagerProcessID;
+
+        public static bool isWinMonRunning = false;
 
         public SystemD() : base("Systemd", ProcessType.KernelComponent)
         {
@@ -34,7 +37,7 @@ namespace WinttOS.wSystem
             Logger.DoOSLog("[Info] Initializing command manager");
 
             WinttOS.CommandManager = new CommandManager();
-            WinttOS.WindowManager = new(new(1920, 1080, ColorDepth.ColorDepth32));
+            WinttOS.WindowManager = new();
 
             Logger.DoOSLog("[Info] Initializing service manager");
 
@@ -69,6 +72,7 @@ namespace WinttOS.wSystem
             commandManagerProcessID = WinttOS.CommandManager.ProcessID;
 
             WinttOS.CommandManager.RegisterCommand(new DevModeCommand(new string[] { "dev-mode" }));
+            WinttOS.CommandManager.RegisterCommand(new WinManStartCommand(new string[] { "winstart" }));
             WinttOS.CommandManager.RegisterCommand(new CommandAction(new string[] { "crash" }, AccessLevel.Administrator, () =>
             {
 
@@ -129,14 +133,17 @@ namespace WinttOS.wSystem
             {
                 TryToRestart(serviceProviderProcessID);
             }
-            
-            if (!WinttOS.ProcessManager.TryGetProcessInstance(out proc, commandManagerProcessID))
+
+            if (!isWinMonRunning)
             {
-                Kernel.WinttRaiseHardError("Systemd -> Process instance not available", this);
-            }
-            if (!proc.IsProcessRunning)
-            {
-                TryToRestart(commandManagerProcessID);
+                if (!WinttOS.ProcessManager.TryGetProcessInstance(out proc, commandManagerProcessID))
+                {
+                    Kernel.WinttRaiseHardError("Systemd -> Process instance not available", this);
+                }
+                if (!proc.IsProcessRunning)
+                {
+                    TryToRestart(commandManagerProcessID);
+                }
             }
             
             if (!WinttOS.ProcessManager.TryGetProcessInstance(out proc, windowManagerProcessID))

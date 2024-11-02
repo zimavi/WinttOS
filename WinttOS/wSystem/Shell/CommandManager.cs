@@ -117,7 +117,6 @@ namespace WinttOS.wSystem.Shell
 
         public void ProcessInput(string input)
         {
-            Logger.DoOSLog("CommandMan -> Processing input");
             if (input.Length <= 0)
             {
                 SystemIO.STDOUT.PutLine("");

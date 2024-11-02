@@ -1,6 +1,5 @@
 ﻿using Cosmos.Core;
-using Cosmos.System;
-using Cosmos.System.Coroutines;
+using Cosmos.System.Graphics;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 
@@ -20,6 +19,14 @@ namespace WinttOS.Core.Utils.Kernel
         }
         private static void panic(string message, object sender)
         {
+
+            if(!wSystem.WinttOS.IsTty)
+            {
+                FullScreenCanvas.Disable();
+                wSystem.WinttOS.Tty = new(1920, 1080, true);
+                wSystem.WinttOS.IsTty = true;
+            }
+
             wSystem.WinttOS.KernelPrint = true;
 
             ShellUtils.PrintTaskResult("Fatal", ShellTaskResult.FAILED, "Kernel panic!");
@@ -43,6 +50,12 @@ namespace WinttOS.Core.Utils.Kernel
         }
         private static void panic(string message, HALException exception)
         {
+            if (!wSystem.WinttOS.IsTty)
+            {
+                FullScreenCanvas.Disable();
+                wSystem.WinttOS.Tty = new(1920, 1080, true);
+                wSystem.WinttOS.IsTty = true;
+            }
 
             wSystem.WinttOS.KernelPrint = true;
 

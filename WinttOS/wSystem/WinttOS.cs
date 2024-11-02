@@ -144,8 +144,6 @@ namespace WinttOS.wSystem
                 Kernel.WinttRaiseHardError("Exception accured during system init: " + e.Message, instance);
             }
 
-            Login();
-
             Heap.Collect();
 
             ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "Coroutines");
@@ -167,6 +165,8 @@ namespace WinttOS.wSystem
 
                 KernelPrint = false;
 
+                Login();
+
                 // All after-init code which only runs once goes here.
                 TestService service = new();
                 ServiceManager.AddService(service);
@@ -187,6 +187,7 @@ namespace WinttOS.wSystem
 
                 Logger.DoOSLog("[OK] Initialize finished!");
                 Logger.DoOSLog("[Info] Starting pool");
+                Logger.DoLogCosmos = false;
                 CoroutinePool.Main.StartPool();
             }
             catch(Exception e)
@@ -311,23 +312,8 @@ namespace WinttOS.wSystem
 
         public static IEnumerator<CoroutineControlPoint> SystemThread()
         {
-            if(File.Exists(@"0:\startup.sh"))
-            {
-                
-            }
             while (!Kernel.IsFinishingKernel)
             {
-                foreach (var process in ProcessManager.Processes)
-                {
-                    if (process.IsProcessCritical && !process.IsProcessRunning)
-                    {
-                        if (process.CurrentSet == PrivilegesSet.NONE || process.HasOwnerProcess)
-                            continue;
-                        Logger.DoOSLog("[Error] Critical system process died -> " + process.ProcessName + " (PID " + process.ProcessID + ")");
-                        Kernel.WinttRaiseHardError("Critical system process died (" + process.ProcessName + ")", instance);
-                    }
-                }
-
                 MemoryManager.Monitor();
 
                 yield return WaitFor.Seconds(3);
@@ -337,13 +323,13 @@ namespace WinttOS.wSystem
         }
 
         public static IEnumerator<CoroutineControlPoint> GarbageCollector()
-        { 
+        {
             ProcessManager.RunProcessGC();
             ServiceManager.RunServiceGC();
 
             Heap.Collect();
 
-            yield return WaitFor.Milliseconds(1000);
+            yield return WaitFor.Milliseconds(10000);
 
         }
 

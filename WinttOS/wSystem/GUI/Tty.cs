@@ -36,6 +36,8 @@ namespace WinttOS.wSystem.GUI
 
         private Canvas _canvas;
 
+        private Cosmos.System.Graphics.Fonts.Font _font;
+
         #endregion
 
         #region Public Members & Fields
@@ -103,9 +105,9 @@ namespace WinttOS.wSystem.GUI
                     if (_text[idx].Char == '\n')
                         break;
 
-                    _canvas.DrawChar(_text[idx].Char, Core.Utils.Sys.Files.Fonts.Font18,
-                        Color.FromArgb((int)_text[idx].Foreground), 0 + j * Core.Utils.Sys.Files.Fonts.Font18.Width,
-                        0 + i * Core.Utils.Sys.Files.Fonts.Font18.Height);
+                    _canvas.DrawChar(_text[idx].Char, _font,
+                        Color.FromArgb((int)_text[idx].Foreground), 0 + j * _font.Width,
+                        0 + i * _font.Height);
                 }
             }
 
@@ -113,7 +115,7 @@ namespace WinttOS.wSystem.GUI
             _canvas.Display();
         }
 
-        public Tty(uint x, uint y)
+        public Tty(uint x, uint y, bool doUseBackupFont = false)
         {
             _canvas = FullScreenCanvas.GetFullScreenCanvas(new Mode(x, y, ColorDepth.ColorDepth32));
 
@@ -136,8 +138,13 @@ namespace WinttOS.wSystem.GUI
 
             // Init
 
-            Cols = (int)x / Core.Utils.Sys.Files.Fonts.Font18.Width - 1;
-            Rows = (int)y / Core.Utils.Sys.Files.Fonts.Font18.Height - 1;
+            if (doUseBackupFont)
+                _font = Core.Utils.Sys.Files.Fonts.Backup18;
+            else
+                _font = Core.Utils.Sys.Files.Fonts.Font18;
+
+            Cols = (int)x / _font.Width - 1;
+            Rows = (int)y / _font.Height - 1;
 
             _text = new Cell[Cols * Rows];
 
@@ -156,8 +163,8 @@ namespace WinttOS.wSystem.GUI
         {
             if (CursorVisible)
             {
-                _canvas.DrawFilledRectangle(ForegroundColor, 0 + x * Core.Utils.Sys.Files.Fonts.Font18.Width,
-                    0 + y * Core.Utils.Sys.Files.Fonts.Font18.Height + Core.Utils.Sys.Files.Fonts.Font18.Height, 8, 4);
+                _canvas.DrawFilledRectangle(ForegroundColor, 0 + x * _font.Width,
+                    0 + y * _font.Height + _font.Height, 8, 4);
             }
         }
 

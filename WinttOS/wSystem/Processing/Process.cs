@@ -77,7 +77,11 @@ namespace WinttOS.wSystem.Processing
             IsProcessRunning = false; 
 
         }
-        public virtual void Update() { if (!IsProcessInitialized) return; }
+        public virtual void Update() 
+        { 
+            if (!IsProcessInitialized) return; 
+            if (!IsProcessRunning) return; 
+        }
 
         public void SetName(string name) => 
             ProcessName = name;
