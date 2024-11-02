@@ -14,19 +14,6 @@ namespace WinttOS.wSystem.Services
             //WinttOS.OnSystemSleep.Add(HandleSystemSleepEvent); 
         }
 
-        public void HandleSystemSleepEvent()
-        {
-            Canvas blackCanvas = FullScreenCanvas.GetFullScreenCanvas();
-            blackCanvas.Clear(Color.Black);
-
-            Console.ReadKey();
-            blackCanvas.Disable();
-            FullScreenCanvas.Disable();
-            WinttOS.IsSleeping = false;
-            isIdling = false;
-
-        }
-
         public override void OnServiceTick()
         {
 

@@ -11,6 +11,7 @@ using WinttOS.wSystem.Shell.bash;
 using WinttOS.wSystem.Shell.commands.FileSystem;
 using WinttOS.wSystem.Shell.commands.Misc;
 using WinttOS.wSystem.Shell.commands.Networking;
+using WinttOS.wSystem.Shell.commands.Processing;
 using WinttOS.wSystem.Shell.Commands.FileSystem;
 using WinttOS.wSystem.Shell.Commands.Misc;
 using WinttOS.wSystem.Shell.Commands.Networking;
@@ -61,12 +62,12 @@ namespace WinttOS.wSystem.Shell
                 new UsersCommand(new string[] { "user" }),
                 new ProcessCommand(new string[] { "process" }),
                 new WgetCommand(new string[] { "wget" }),
-                //new PackageCommand(new string[] { "apt-get", "apt" }),
-                //new PackageRepository(new string [] { "apt-get-repository", "apt-get-repo"}),
+                new PackageCommand(new string[] { "packos", "pack", "pkg" }),
+                new PackageRepository(new string [] { "packos-repo", "pack-repo", "pkg-repo"}),
                 new DnsCommand(new string[] { "dns" }),
                 new PingCommand(new string[] { "ping" }),
                 new EnvironmentCommand(new string[] { "export" }),
-                //new RunCommand(new string[] {"run"}),
+                new RunCommand(new string[] {"run"}),
                 new HashCommand(new string[] { "hash" }),
                 new SystemInfoCommand(new string[] { "sysinfo" }),
                 new DisksCommand(new string[] { "disks" }),

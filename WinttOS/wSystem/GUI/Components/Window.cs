@@ -14,8 +14,6 @@ namespace WinttOS.wSystem.GUI.Components
         public List<Component> Components { get; private set; }
         public Color BackgroundColor { get; set; }
 
-        public Action OnWindowClosed { get; set; }
-
         public const int TITLEBAR_HIGHT = 32;
         public const int WINDOW_BUTTONS_WIDTH = 32;
 

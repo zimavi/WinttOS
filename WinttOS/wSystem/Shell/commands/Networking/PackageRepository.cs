@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using UniLua;
 using WinttOS.wSystem.IO;
+using WinttOS.wSystem.Processing;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
@@ -29,13 +31,21 @@ namespace WinttOS.wSystem.Shell.commands.Networking
                         return new(this, ReturnCode.ERROR_ARG, "Expected 2 values!");
                     }
 
-                    WinttOS.PackageManager.AddRepo(arguments[1]);
+                    if (arguments[1].StartsWith("https://"))
+                    {
+                        SystemIO.STDOUT.PutLine("HTTPS is not supported yet, please use HTTP");
+                        return new(this, ReturnCode.ERROR);
+                    }
+
+                    PackageManager.Repositories.Add(arguments[1]);
+
+                    SystemIO.STDOUT.PutLine("Done.");
                     return new ReturnInfo(this, ReturnCode.OK);
                 }
                 else if(command == "list")
                 {
                     SystemIO.STDOUT.PutLine("List of packages repositories:");
-                    foreach(string repoLink in WinttOS.PackageManager.Repositories)
+                    foreach(string repoLink in PackageManager.Repositories)
                     {
                         SystemIO.STDOUT.PutLine("- " + repoLink);
                     }
@@ -50,7 +60,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
                     }
                     if (int.TryParse(arguments[1], out int id))
                     {
-                        WinttOS.PackageManager.RemoveRepo(id);
+                        PackageManager.RemoveRepo(id - 1);
                     }
                     else
                     {

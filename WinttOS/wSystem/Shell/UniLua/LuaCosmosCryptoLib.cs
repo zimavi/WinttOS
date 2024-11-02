@@ -1,10 +1,8 @@
-
 using acryptohashnet;
 using System.IO;
 using System.Text;
 using WinttOS.Core;
 using WinttOS.Core.Utils.Cryptography;
-using WinttOS.Core.Utils.Sys;
 
 namespace UniLua
 {

@@ -35,7 +35,7 @@ namespace WinttOS.wSystem
 
         public static PrivilegesSet CurrentExecutionSet { get; internal set; } = PrivilegesSet.HIGHEST;
 
-        public static readonly string WinttVersion = "WinttOS v1.4.0 dev.";
+        public static readonly string WinttVersion = "WinttOS v1.4.1 dev.";
         public static readonly string WinttRevision = VersionInfo.revision;
 
         public static WinttServiceManager ServiceManager { get; internal set; }
@@ -43,21 +43,15 @@ namespace WinttOS.wSystem
         public static UsersManager UsersManager { get; /*private */set; }
         public static ProcessManager ProcessManager { get; private set; }
         public static CommandManager CommandManager { get; internal set; }
-        public static PackageManager PackageManager { get; private set; }
+        //public static PackageManager PackageManager { get; private set; }
         public static WindowManager WindowManager { get; internal set; }
         public static Memory MemoryManager { get; private set; }
 
         public static bool IsTty { get; set; } = false;
         public static Tty Tty { get; set; }
-        public static bool IsSleeping { get; set; } = false;
         public static bool KernelPrint { get; internal set; } = true;
 
         public static string BootTime { get; private set; }
-
-        private static List<Action> OnSystemSleep;
-
-
-        private static WinttServiceManager serviceManager;
 
         private static EventBus _globalEventBus;
 
@@ -123,12 +117,6 @@ namespace WinttOS.wSystem
 
                 ProcessManager.TryStartProcess(systemdId);
 
-                Logger.DoOSLog("[Info] Initializing package manager");
-
-                PackageManager.Initialize();
-
-                OnSystemSleep = new List<Action>();
-
                 Kernel.OnKernelFinish.Add(SystemFinish);
 
                 Logger.DoOSLog("[Info] Initalizing network");
@@ -171,6 +159,10 @@ namespace WinttOS.wSystem
                 TestService service = new();
                 ServiceManager.AddService(service);
                 ServiceManager.StartService(service.ProcessName);
+
+                Logger.DoOSLog("[Info] Initializing package manager");
+
+                PackageManager.Initialize();
 
                 SystemIO.STDOUT.PutLine("\n\nWelcome to WinttOS!\n"); // welcome message
                 SystemIO.STDOUT.PutLine("To switch to VGA console type 'tty'");
@@ -255,14 +247,6 @@ namespace WinttOS.wSystem
             }
             else
                 ShellUtils.PrintTaskResult("Discovering IP address", ShellTaskResult.FAILED);
-        }
-
-        public static void SystemSleep()
-        {
-            foreach(Action eventHandler in OnSystemSleep)
-            {
-                eventHandler();
-            }
         }
 
         public static IEventBus GetGlobalEventBus() => _globalEventBus;

@@ -1,32 +1,38 @@
-﻿using LunarLabs.Parser;
+﻿using Cosmos.Core;
+using LunarLabs.Parser;
 using LunarLabs.Parser.JSON;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Benchmark;
 using WinttOS.wSystem.IO;
+using WinttOS.wSystem.Networking;
 
 namespace WinttOS.wSystem.Processing
 {
-    public sealed class PackageManager
+    public static class PackageManager
     {
-        public List<string> Repositories;
-        public List<Package> LocalRepository;
-        public List<Package> Packages;
+        public static List<string> Repositories { get; set; }
+        public static List<Package> LocalRepository { get; set; }
+        public static List<Package> Packages { get; set; }
 
-        public void Initialize()
+        public static void Initialize()
         {
-            Repositories = new()
+            Logger.DoOSLog("[Info] Initializing PackageManager");
+            Repositories = new List<string>
             {
                 "http://winttos.localto.net/repository.json"
             };
+            Logger.DoOSLog("[Info] Repository initialized: " + string.Join(", ", Repositories.ToArray()));
+
             LocalRepository = new();
             Packages = new();
             ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "PackageManager");
         }
 
-        public void Update()
+        public static void Update()
         {
             try
             {
@@ -37,12 +43,9 @@ namespace WinttOS.wSystem.Processing
                     Stopwatch sw = new();
 
                     sw.Start();
-                    //string json = Http.DownloadFile(repoUrl);
-
-                    string json = "[{\"name\":\"helloworld\",\"display-name\":\"Hello World\",\"description\":\"Test Lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"},{\"name\":\"hash\",\"display-name\":\"Hash\",\"description\":\"hash with lua\",\"author\":\"valentinbreiz\",\"link\":\"nope :)\",\"version\":\"1.0\"}]";
+                    string json = Http.DownloadFile(repoUrl);
 
                     Logger.DoOSLog("[Info] Downloaded repo json");
-                    
 
                     var root = JSONReader.ReadFromString(json);
                     
@@ -51,15 +54,19 @@ namespace WinttOS.wSystem.Processing
 
                         var package = new Package
                         {
-                            Installed = false
+                            Installed = false,
+                            Name = objects["name"].Value,
+                            DisplayName = objects["display-name"].Value,
+                            Description = objects["description"].Value,
+                            Author = objects["author"].Value,
+                            Link = objects["link"].Value,
+                            Version = objects["version"].Value
                         };
 
-                        package.Name = objects["name"].Value;
-                        package.DisplayName = objects["display-name"].Value;
-                        package.Description = objects["description"].Value;
-                        package.Author = objects["author"].Value;
-                        package.Link = objects["link"].Value;
-                        package.Version = objects["version"].Value;
+                        string installPath = @"0:\usr\bin" + package.Name + ".cexe";
+
+                        if (File.Exists(installPath))
+                            package.Installed = true;
 
                         LocalRepository.Add(package);
                     }
@@ -75,7 +82,7 @@ namespace WinttOS.wSystem.Processing
             }
         }
 
-        public void Upgrade()
+        public static void Upgrade()
         {
             SystemIO.STDOUT.PutLine("Upgrading packages...");
 
@@ -101,7 +108,7 @@ namespace WinttOS.wSystem.Processing
             }
         }
 
-        public void AddRepo(string url)
+        public static void AddRepo(string url)
         {
             if (url.StartsWith("https://"))
             {
@@ -113,7 +120,7 @@ namespace WinttOS.wSystem.Processing
             SystemIO.STDOUT.PutLine("Done.");
         }
 
-        public void RemoveRepo(int id)
+        public static void RemoveRepo(int id)
         {
             if(id < 0 || id > Repositories.Count - 1)
             {
@@ -125,7 +132,7 @@ namespace WinttOS.wSystem.Processing
             SystemIO.STDOUT.PutLine("Done.");
         }
 
-        public void Install(string packageName)
+        public static void Install(string packageName)
         {
             Logger.DoOSLog("[Info] Installing package " + packageName);
             foreach(var package in LocalRepository)
@@ -135,22 +142,23 @@ namespace WinttOS.wSystem.Processing
                     Stopwatch sw = new();
                     sw.Start();
 
+                    package.Installed = true;
+                    Packages.Add(package);
                     package.Download();
 
-                    if(package.Executable == null)
+                    if(Directory.Exists(@"0:\usr\bin"))
                     {
-                        return;
+                        Logger.DoOSLog("[OK] Installing package " + packageName);
+
+                        File.WriteAllBytes(@"0:\usr\bin\" + package.Name + ".cexe", package.Executable.RawData);
+
+                        sw.Stop();
+                        SystemIO.STDOUT.PutLine($"{packageName} installed (took {sw.TimeElapsed})");
                     }
-
-                    package.Installed = true;
-
-                    Packages.Add(package);
-
-                    sw.Stop();
-
-                    Logger.DoOSLog("[OK] Installing package " + packageName);
-
-                    SystemIO.STDOUT.PutLine($"{packageName} installed (took {sw.TimeElapsed})");
+                    else
+                    {
+                        SystemIO.STDOUT.PutLine(packageName + " added");
+                    }
 
                     return;
                 }
@@ -158,7 +166,7 @@ namespace WinttOS.wSystem.Processing
             SystemIO.STDOUT.PutLine($"{packageName} not found!");
         }
 
-        public void Remove(string packageName)
+        public static void Remove(string packageName)
         {
             foreach (var package in LocalRepository)
             {

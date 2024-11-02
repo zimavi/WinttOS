@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using WinttOS.wSystem.IO;
+using WinttOS.wSystem.Processing;
 using WinttOS.wSystem.Users;
 
 namespace WinttOS.wSystem.Shell.commands.Networking
@@ -29,19 +30,19 @@ namespace WinttOS.wSystem.Shell.commands.Networking
 
                 if (command == "update")
                 {
-                    WinttOS.PackageManager.Update();
+                    PackageManager.Update();
 
                     return new ReturnInfo(this, ReturnCode.OK);
                 }
                 else if (command == "upgrade")
                 {
-                    WinttOS.PackageManager.Upgrade();
+                    PackageManager.Upgrade();
 
                     return new ReturnInfo(this, ReturnCode.OK);
                 }
                 else if (command == "list")
                 {
-                    if (WinttOS.PackageManager.LocalRepository.Count == 0)
+                    if (PackageManager.LocalRepository.Count == 0)
                     {
                         SystemIO.STDOUT.PutLine("No package found! Please make 'apt-get update' to update the package list.");
                         return new ReturnInfo(this, ReturnCode.OK);
@@ -50,7 +51,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
                     {
                         SystemIO.STDOUT.PutLine("Package list:");
 
-                        foreach (var package in WinttOS.PackageManager.LocalRepository)
+                        foreach (var package in PackageManager.LocalRepository)
                         {
                             SystemIO.STDOUT.PutLine("- " + package.Name + " v" + package.Version + " (by " + package.Author + "), " + (package.Installed ? "installed." : "not installed."));
                             SystemIO.STDOUT.PutLine("\t" + package.Description);
@@ -68,7 +69,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
 
                     var packageName = arguments[1];
 
-                    WinttOS.PackageManager.Install(packageName);
+                    PackageManager.Install(packageName);
 
                     return new ReturnInfo(this, ReturnCode.OK);
                 }
@@ -81,7 +82,7 @@ namespace WinttOS.wSystem.Shell.commands.Networking
 
                     var packageName = arguments[1];
 
-                    WinttOS.PackageManager.Remove(packageName);
+                    PackageManager.Remove(packageName);
 
                     return new ReturnInfo(this, ReturnCode.OK);
                 }

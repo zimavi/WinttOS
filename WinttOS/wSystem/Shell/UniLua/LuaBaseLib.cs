@@ -7,6 +7,7 @@ namespace UniLua
 	using Char = System.Char;
 	using Int32 = System.Int32;
     using System;
+    using WinttOS.wSystem.IO;
 
     internal static class LuaBaseLib
 	{
@@ -424,7 +425,7 @@ namespace UniLua
 				sb.Append( s );
 				lua.Pop( 1 );
 			}
-			Console.WriteLine( sb.ToString() );
+			SystemIO.STDOUT.PutLine( sb.ToString() );
 			return 0;
 		}
 

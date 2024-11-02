@@ -32,7 +32,7 @@ namespace WinttOS.wSystem.Shell.commands.Processing
 
                 if (fileExtension == string.Empty)
                 {
-                    foreach (var package in WinttOS.PackageManager.Packages)
+                    foreach (var package in PackageManager.Packages)
                     {
                         if (package.Name == arguments[0])
                         {
@@ -113,8 +113,7 @@ namespace WinttOS.wSystem.Shell.commands.Processing
                 // ensuare the value returned by 'main.lua' is a Lua table
                 if (!Lua.IsTable(-1))
                 {
-                    throw new Exception(
-                          "start's return value is not a table");
+                    throw new Exception("start's return value is not a table");
                 }
 
                 var AwakeRef = StoreMethod("main");
@@ -128,8 +127,7 @@ namespace WinttOS.wSystem.Shell.commands.Processing
                     Lua.GetField(-1, name);
                     if (!Lua.IsFunction(-1))
                     {
-                        throw new Exception(string.Format(
-                            "method {0} not found!", name));
+                        throw new Exception(string.Format("method {0} not found!", name));
                     }
                     return Lua.L_Ref(LuaDef.LUA_REGISTRYINDEX);
                 }

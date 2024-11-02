@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using WinttOS.wSystem.GUI.Components;
 using static System.Net.Mime.MediaTypeNames;
+using WinttOS.wSystem.GUI.Events;
+using WinttOS.wSystem.wAPI.Events;
 
 namespace WinttOS.wSystem.GUI
 {
@@ -110,7 +112,6 @@ namespace WinttOS.wSystem.GUI
 
         public void RemoveWindow(Window window)
         {
-            window.OnWindowClosed?.Invoke();
             _windows.Remove(window);
             if(_focusedWindow == window)
                 _focusedWindow = null;

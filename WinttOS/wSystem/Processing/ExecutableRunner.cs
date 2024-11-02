@@ -19,6 +19,7 @@ namespace WinttOS.wSystem.Processing
                 // load base libraries
                 Lua.L_OpenLibs();
 
+                // args
                 Lua.NewTable();
                 Lua.PushValue(-1);
                 Lua.SetGlobal("arg");
