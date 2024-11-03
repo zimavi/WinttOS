@@ -74,7 +74,6 @@ namespace WinttOS.wSystem.Shell
                 new LogsCommand(new string[] { "logs" }),
                 new TreeCommand(new string[] { "tree" }),
                 new PlayBadAppleCommand(new string[] { "bad_apple" }),
-                new CosmosEditorCommand(new string[] { "cosmoedit", "cosmo" }),
 
                 new CommandAction(new string[] { "whoami" }, AccessLevel.Default, () =>
                 {
