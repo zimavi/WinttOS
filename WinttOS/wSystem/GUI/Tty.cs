@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using WinttOS.Core;
 
 namespace WinttOS.wSystem.GUI
 {
@@ -50,6 +49,8 @@ namespace WinttOS.wSystem.GUI
 
         public int Cols = 0;
         public int Rows = 0;
+
+        public Mode ScreenMode => _canvas.Mode;
 
         public Color ForegroundColor = Color.White;
         public ConsoleColor Foreground
@@ -104,6 +105,9 @@ namespace WinttOS.wSystem.GUI
 
                     if (_text[idx].Char == '\n')
                         break;
+
+                    _canvas.DrawFilledRectangle(Color.FromArgb((int)_text[idx].Background), 0 + j * _font.Width, 0 + i * _font.Height,
+                        _font.Width, _font.Height);
 
                     _canvas.DrawChar(_text[idx].Char, _font,
                         Color.FromArgb((int)_text[idx].Foreground), 0 + j * _font.Width,
@@ -290,7 +294,7 @@ namespace WinttOS.wSystem.GUI
             Update();
         }
 
-        private void WriteNoUpdate(char @char)
+        public void WriteNoUpdate(char @char)
         {
             int idx = GetIndex(Y, X);
             _text[idx] = new Cell()
@@ -307,9 +311,9 @@ namespace WinttOS.wSystem.GUI
 
         public void Write(string text)
         {
-            for(int i = 0; i < text.Length; i++)
+            for (int i = 0; i < text.Length; i++)
             {
-                switch(text[i])
+                switch (text[i])
                 {
                     case _newLine:
                         NextLine();
@@ -325,12 +329,38 @@ namespace WinttOS.wSystem.GUI
                         break;
 
                     default:
-                        WriteNoUpdate(text[i]); 
+                        WriteNoUpdate(text[i]);
                         break;
                 }
             }
 
             Update();
+        }
+
+        public void WriteNoUpdate(string text)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                switch (text[i])
+                {
+                    case _newLine:
+                        NextLine();
+                        break;
+                    case _carriage:
+                        DoCarriage();
+                        break;
+                    case _tab:
+                        DoTab();
+                        break;
+                    case _back:
+                        DoBack();
+                        break;
+
+                    default:
+                        WriteNoUpdate(text[i]);
+                        break;
+                }
+            }
         }
 
         public void Write(uint value) => Write(value.ToString());

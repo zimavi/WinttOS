@@ -86,7 +86,6 @@
     <ItemGroup>
       <Folder Include="isoFiles\bad_apple\frames\" />
       <Folder Include="wSystem\Registry\" />
-      <Folder Include="wSystem\Shell\bash\" />
     </ItemGroup>
 
     <ItemGroup>
