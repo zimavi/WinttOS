@@ -81,6 +81,8 @@ namespace WinttOS.wSystem.Processing
         {
             try
             {
+                LocalRepository.Clear();
+
                 foreach (string repoUrl in Repositories)
                 {
                     SystemIO.STDOUT.PutLine($"Updating from '{repoUrl}'...");
