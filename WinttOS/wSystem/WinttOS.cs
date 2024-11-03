@@ -179,7 +179,7 @@ namespace WinttOS.wSystem
 
                 Logger.DoOSLog("[OK] Initialize finished!");
                 Logger.DoOSLog("[Info] Starting pool");
-                Logger.DoLogCosmos = false;
+                //Logger.DoLogCosmos = false;
                 CoroutinePool.Main.StartPool();
             }
             catch(Exception e)

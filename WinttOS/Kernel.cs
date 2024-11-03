@@ -2,11 +2,9 @@
 using Cosmos.System.FileSystem;
 using Cosmos.System.FileSystem.VFS;
 using Cosmos.System.Graphics;
-using Cosmos.System.Graphics.Fonts;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
 using WinttOS.Core;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Kernel;
@@ -38,12 +36,12 @@ namespace WinttOS
         #region Methods
         protected override void BeforeRun()
         {
-            bool hasError = false;
             try
             {
                 ShellUtils.PrintTaskResult("Collecting", ShellTaskResult.DOING, "Hardware info");
                 ShellUtils.MoveCursorUp();
                 Logger.DoBootLog("[Info] Collecting CPU info");
+                bool hasError;
                 try
                 {
                     if (CPU.CanReadCPUID() != 0)
@@ -90,9 +88,10 @@ namespace WinttOS
                 BootResourceLoader.LoadResources();
 
                 wSystem.WinttOS.InitializeSystem();
-                
 
-            } catch (Exception ex)
+
+            }
+            catch (Exception ex)
             {
                 WinttRaiseHardError(ex.Message, this);
             }
