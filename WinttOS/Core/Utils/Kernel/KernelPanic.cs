@@ -19,7 +19,7 @@ namespace WinttOS.Core.Utils.Kernel
         }
         private static void panic(string message, object sender)
         {
-
+            Logger.DoLogCosmos = false;
             if(!wSystem.WinttOS.IsTty)
             {
                 FullScreenCanvas.Disable();
@@ -50,6 +50,7 @@ namespace WinttOS.Core.Utils.Kernel
         }
         private static void panic(string message, HALException exception)
         {
+            Logger.DoLogCosmos = false;
             if (!wSystem.WinttOS.IsTty)
             {
                 FullScreenCanvas.Disable();
