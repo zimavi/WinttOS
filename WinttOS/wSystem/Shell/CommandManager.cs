@@ -40,7 +40,7 @@ namespace WinttOS.wSystem.Shell
             _commands = new List<Command>
             {
                 new ClearScreenCommand(new string[] { "clear", "cls" }),
-                new EchoCommand(new string[] { "echo" }),
+                new EchoCommand(new string[] { "echo", "print" }),
                 new VerisonCommand(new string[] { "version", "ver" }),
                 new ShutdownCommand(new string[] { "shutdown" }),
                 new RebootCommand(new string[] { "reboot" }),
