@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.ConstrainedExecution;
 
 namespace WinttOS.wSystem.IO
 {

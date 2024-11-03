@@ -15,6 +15,12 @@ namespace WinttOS.wSystem.Shell.Programs.RunCommands
             return new(this, ReturnCode.OK);
         }
 
+        public override ReturnInfo Execute()
+        {
+            MIV.StartMIV(null);
+            return new(this, ReturnCode.OK);
+        }
+
         public override void PrintHelp()
         {
             SystemIO.STDOUT.PutLine("Usage:");

@@ -9,41 +9,65 @@ namespace WinttOS.wSystem.Shell.Programs
 {
     public sealed class MIV
     {
+        private static int _width;
+        private static int _height;
         public static void printMIVStartScreen()
         {
             if (WinttOS.IsTty)
                 WinttOS.Tty.ClearText();
             else
                 Console.Clear();
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~                               MIV - MInimalistic Vi");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~                                  version 1.2");
-            SystemIO.STDOUT.PutLine("~                             by Denis Bartashevich");
-            SystemIO.STDOUT.PutLine("~                            Minor additions by CaveSponge");
-            SystemIO.STDOUT.PutLine("~                    MIV is open source and freely distributable");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~                     type :help<Enter>          for information");
-            SystemIO.STDOUT.PutLine("~                     type :q<Enter>             to exit");
-            SystemIO.STDOUT.PutLine("~                     type :wq<Enter>            save to file and exit");
-            SystemIO.STDOUT.PutLine("~                     press i                    to write");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.PutLine("~");
-            SystemIO.STDOUT.Put("~");
+
+            string[] lines = {
+                "MIV - Minimalistic Vi",
+                "",
+                "version 1.3",
+                "by Denis Bartashevich and zimavi",
+                "Minor additions by CaveSponge",
+                "MIV is open source and freely distributable",
+                "",
+                "type :help<Enter>          for information",
+                "type :q<Enter>                     to exit",
+                "type :wq<Enter       save to file and exit",
+                "press i                           to write"
+            };
+
+            PrintCentered(lines);
         }
-        public static String stringCopy(String value)
+
+        public static void PrintCentered(string[] lines)
         {
-            String newString = String.Empty;
+
+            int startingRow = (_height / 2) - (lines.Length / 2);
+
+            if (WinttOS.IsTty)
+                WinttOS.Tty.ClearText();
+            else
+                Console.Clear();
+
+            for(int i = 0; i < lines.Length; i++)
+            {
+                string line = lines[i];
+                int padding = (_width - lines[i].Length) / 2;
+                if(WinttOS.IsTty)
+                {
+                    WinttOS.Tty.X = padding;
+                    WinttOS.Tty.Y = startingRow + i;
+                    WinttOS.Tty.WriteNoUpdate(line + '\n');
+                }
+                else
+                {
+                    Console.SetCursorPosition(padding, startingRow + i);
+                    Console.WriteLine(line);
+                }
+            }
+
+            if (WinttOS.IsTty)
+                WinttOS.Tty.Update();
+        }
+        public static string stringCopy(string value)
+        {
+            string newString = string.Empty;
 
             for (int i = 0; i < value.Length - 1; i++)
             {
@@ -53,7 +77,7 @@ namespace WinttOS.wSystem.Shell.Programs
             return newString;
         }
 
-        public static void printMIVScreen(char[] chars, int pos, String infoBar, Boolean editMode)
+        public static void printMIVScreen(char[] chars, int pos, string infoBar, Boolean editMode)
         {
             int countNewLine = 0;
             int countChars = 0;
@@ -67,56 +91,90 @@ namespace WinttOS.wSystem.Shell.Programs
             {
                 if (chars[i] == '\n')
                 {
-                    SystemIO.STDOUT.PutLine("");
+                    if (WinttOS.IsTty)
+                        WinttOS.Tty.WriteNoUpdate("\n");
+                    else
+                        Console.WriteLine();
                     countNewLine++;
                     countChars = 0;
                 }
                 else
                 {
-                    SystemIO.STDOUT.Put(chars[i]);
+                    if (WinttOS.IsTty)
+                        WinttOS.Tty.WriteNoUpdate(chars[i]);
+                    else
+                        Console.Write(chars[i]);
                     countChars++;
-                    if (countChars % 80 == 79)
+                    if (countChars % _width == _width - 1)
                     {
+                        if (WinttOS.IsTty)
+                            WinttOS.Tty.WriteNoUpdate("\n");
+                        else
+                            Console.WriteLine();
                         countNewLine++;
+                        countChars = 0;
                     }
                 }
             }
 
-            SystemIO.STDOUT.Put("/");
+            if (WinttOS.IsTty)
+                WinttOS.Tty.WriteNoUpdate("/");
+            else
+                Console.Write("/");
 
-            for (int i = 0; i < 23 - countNewLine; i++)
+            for (int i = 0; i < _height - 2 - countNewLine; i++)
             {
-                SystemIO.STDOUT.PutLine("");
-                SystemIO.STDOUT.Put("~");
+                if (WinttOS.IsTty)
+                {
+                    WinttOS.Tty.WriteNoUpdate("\n");
+                    WinttOS.Tty.WriteNoUpdate("~");
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.Write("~");
+                }
             }
 
             //PRINT INSTRUCTION
             SystemIO.STDOUT.PutLine("");
-            for (int i = 0; i < 72; i++)
+            for (int i = 0; i < _width - 8; i++)
             {
                 if (i < infoBar.Length)
                 {
-                    SystemIO.STDOUT.Put(infoBar[i]);
+                    if (WinttOS.IsTty)
+                        WinttOS.Tty.WriteNoUpdate(infoBar[i]);
+                    else
+                        Console.Write(infoBar[i]);
                 }
                 else
                 {
-                    SystemIO.STDOUT.Put(" ");
+                    if (WinttOS.IsTty)
+                        WinttOS.Tty.WriteNoUpdate(" ");
+                    else
+                        Console.Write(" ");
                 }
             }
 
             if (editMode)
             {
-                SystemIO.STDOUT.Put(countNewLine + 1 + "," + countChars);
+                if (WinttOS.IsTty)
+                    WinttOS.Tty.WriteNoUpdate(countNewLine + 1 + "," + countChars);
+                else
+                    Console.WriteLine();
             }
+
+            if (WinttOS.IsTty)
+                WinttOS.Tty.Update();
 
         }
 
-        public static String miv(String start)
+        public static string miv(string start)
         {
             Boolean editMode = false;
             int pos = 0;
             char[] chars = new char[2000];
-            String infoBar = String.Empty;
+            string infoBar = string.Empty;
 
             if (start == null)
             {
@@ -152,7 +210,7 @@ namespace WinttOS.wSystem.Shell.Programs
                         {
                             if (infoBar == ":wq")
                             {
-                                String returnString = String.Empty;
+                                string returnString = string.Empty;
                                 for (int i = 0; i < pos; i++)
                                 {
                                     returnString += chars[i];
@@ -223,7 +281,7 @@ namespace WinttOS.wSystem.Shell.Programs
                 else if (keyInfo.Key == ConsoleKey.Escape)
                 {
                     editMode = false;
-                    infoBar = String.Empty;
+                    infoBar = string.Empty;
                     printMIVScreen(chars, pos, infoBar, editMode);
                     continue;
                 }
@@ -279,37 +337,27 @@ namespace WinttOS.wSystem.Shell.Programs
         }
         public static void StartMIV(string path)
         {
-            GlobalData.FileToEdit = path;
-            try
-            {
-                if (File.Exists(GlobalData.CurrentDirectory + GlobalData.FileToEdit))
-                {
-                    SystemIO.STDOUT.PutLine("Found file!");
-                }
-                else if (!File.Exists(GlobalData.CurrentDirectory + GlobalData.FileToEdit))
-                {
-                    SystemIO.STDOUT.PutLine("Creating file!");
-                    File.Create(GlobalData.CurrentDirectory + GlobalData.FileToEdit);
-                }
-                if (WinttOS.IsTty)
-                    WinttOS.Tty.ClearText();
-                else
-                    Console.Clear();
-            }
-            catch (Exception ex)
-            {
-                SystemIO.STDOUT.PutLine(ex.Message);
-            }
+            _width = WinttOS.IsTty ? WinttOS.Tty.Cols : 80;
+            _height = WinttOS.IsTty ? WinttOS.Tty.Rows : 25;
 
-            String text = String.Empty;
-            SystemIO.STDOUT.PutLine("Do you want to open " + GlobalData.FileToEdit + " content? (Yes/No)");
-            if (SystemIO.STDIN.Get().ToLower() == "yes" || SystemIO.STDIN.Get().ToLower() == "y")
+
+            GlobalData.FileToEdit = path;
+
+            string text = string.Empty;
+            if (path == null)
             {
-                text = miv(File.ReadAllText(GlobalData.CurrentDirectory + GlobalData.FileToEdit));
+                text = miv(null);
             }
             else
             {
-                text = miv(null);
+                if (File.Exists(GlobalData.CurrentDirectory + GlobalData.FileToEdit))
+                {
+                    text = miv(File.ReadAllText(GlobalData.CurrentDirectory + GlobalData.FileToEdit));
+                }
+                else
+                {
+                    text = miv(null);
+                }
             }
 
             if (WinttOS.IsTty)
