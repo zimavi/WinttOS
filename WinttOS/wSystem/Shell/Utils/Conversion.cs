@@ -59,6 +59,37 @@ namespace WinttOS.wSystem.Shell.Utils
             return builder.ToString();
         }
 
+        public static byte[] FromHex(this string value)
+        {
+            if(value is null) 
+                throw new ArgumentNullException(nameof(value));
+            if(value.Length % 2 != 0)
+                throw new ArgumentException("Hex string must have an even length.", nameof(value));
+
+            var bytes = new byte[value.Length / 2];
+
+            for(int i  = 0; i < value.Length; i += 2)
+            {
+                int high = ParseHexChar(value[i]);
+                int low = ParseHexChar(value[i + 1]);
+                bytes[i / 2] = (byte)((high << 4) | low);
+            }
+
+            return bytes;
+        }
+
+        private static int ParseHexChar(char c)
+        {
+            if (c >= '0' && c <= '9')
+                return c - '0';
+            if (c >= 'A' && c <= 'F')
+                return c - 'A' + 10;
+            if (c >= 'a' && c <= 'f')
+                return c - 'a' + 10;
+
+            throw new ArgumentException("Invalid hex character: " + c, nameof(c));
+        }
+
         public static string DecToHex(int x)
         {
             string result = "";

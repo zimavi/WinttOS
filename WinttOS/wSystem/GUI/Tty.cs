@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WinttOS.wSystem.GUI
 {
@@ -49,6 +50,8 @@ namespace WinttOS.wSystem.GUI
 
         public int Cols = 0;
         public int Rows = 0;
+
+        public bool StoreCommandOutput = false;
 
         public Mode ScreenMode => _canvas.Mode;
 
@@ -291,6 +294,8 @@ namespace WinttOS.wSystem.GUI
             if (X == Cols)
                 NextLine();
 
+            //WinttOS.CommandManager._commandOutput += @char;
+
             Update();
         }
 
@@ -307,6 +312,9 @@ namespace WinttOS.wSystem.GUI
             X++;
             if (X == Cols)
                 NextLine();
+
+            //if(StoreCommandOutput)
+            //    WinttOS.CommandManager._commandOutput += @char;
         }
 
         public void Write(string text)
@@ -333,6 +341,8 @@ namespace WinttOS.wSystem.GUI
                         break;
                 }
             }
+
+            
 
             Update();
         }

@@ -2,10 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using WinttOS.Core;
+using WinttOS.Core.Utils.Cryptography;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.IO;
+using WinttOS.wSystem.Registry;
 using WinttOS.wSystem.Shell.Utils;
 using WinttOS.wSystem.Users;
 
@@ -19,6 +22,8 @@ namespace WinttOS.wSystem.Processing
         public List<Process> Processes => _processes;
 
         public uint ProcessesCount => (uint) _processes.Count;
+        
+        public int CurrentProcessID { get; internal set; }
 
         public ProcessManager()
         {
@@ -63,11 +68,29 @@ namespace WinttOS.wSystem.Processing
                     return false;
                 }
             }
+
+            Logger.DoOSLog("[Info] Registering process ");
+
             _processes.Add(process);
             _processes[_processes.Count - 1].SetProcessID((uint)_processes.Count - 1);
             _processes[_processes.Count - 1].CurrentSet = UsersManager.LoggedLevel.PrivilegeSet;
             _processes[_processes.Count - 1].Initialize();
             newProcessID = (uint)_processes.Count - 1;
+            Logger.DoOSLog("[Info] Initialized process, creating environment");
+
+            List<EnvKey> env = new List<EnvKey>
+            {
+                new("USER", UsersManager.userLogged ?? "root"),
+                new("TMPDIR", @"0:\proc\" + UUID.UUIDToString(_processes[_processes.Count - 1].ProcessUUID) + "\\"),
+                new("PWD", GlobalData.CurrentDirectory),
+                new("SHELL", "ShellX")
+            };
+                
+
+            Registry.Environment.PerProcessEnvironment.Add((int)_processes[_processes.Count - 1].ProcessID, env);
+
+            Logger.DoOSLog("[Info] Initialized process '" + process.ProcessName + "' (PID: " + process.ProcessID + ", UUID: " + UUID.UUIDToString(process.ProcessUUID));
+
             ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.OK, process.ProcessName);
             return true;
         }
@@ -189,6 +212,8 @@ namespace WinttOS.wSystem.Processing
                         {
                             if (process.Type == Process.ProcessType.FromValue(i) && process.IsProcessRunning)
                             {
+                                CurrentProcessID = (int)process.ProcessID;
+
                                 WinttOS.CurrentExecutionSet = process.CurrentSet;
 
                                 process.Update();
@@ -197,6 +222,8 @@ namespace WinttOS.wSystem.Processing
                                     process.TaskQueue.Dequeue().Callback();
 
                                 WinttOS.CurrentExecutionSet = wAPI.PrivilegesSystem.PrivilegesSet.HIGHEST;
+
+                                CurrentProcessID = -1;
                             }
                         }
                         catch(Exception e)

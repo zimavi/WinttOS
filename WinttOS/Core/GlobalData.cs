@@ -1,4 +1,5 @@
-﻿using WinttOS.wSystem.Users;
+﻿using System;
+using WinttOS.wSystem.Users;
 
 namespace WinttOS.Core
 {
@@ -17,6 +18,17 @@ namespace WinttOS.Core
             get
             {
                 return 3 + CurrentDirectory.Length + UsersManager.userLogged.Length;
+            }
+        }
+
+        public static ulong EPOCH
+        {
+            get
+            {
+                DateTime today = DateTime.Now;
+                DateTime epoch = new DateTime(1970, 1, 1);
+
+                return (ulong)(today - epoch).TotalSeconds;
             }
         }
     }

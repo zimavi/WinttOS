@@ -1,6 +1,7 @@
 ﻿using Cosmos.Core;
 using Cosmos.System.Graphics;
 using System;
+using System.Drawing;
 using WinttOS.Core;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.wSystem.IO;
@@ -19,34 +20,77 @@ namespace WinttOS.wSystem.Shell.Commands.Misc
             try
             {
 
-                string info =
-                    "                          =@                         " + "\n" +
-                    "                          @@@                        " + "\n" +
-                    "                  =@@@*. @@@@% =#@@@                 " + UsersManager.userLogged + "@localhost" + "\n" +
-                    "              +%   -@@@@  @@+ @@@@@    #.            " + "Computer name:               wintt-pc" + "\n" +
-                    "              @@@   =@@@@*=*.@@@@@    @@@            " + "Operation system name:       WinttOS" + "\n" +
-                    "             #@@@@%-@#  :@@@@@   @@:=@@@@:           " + "Kernel name:                 Cosmos-devkit" + "\n" +
-                    "       =@@@@# @@@ -@@@@+  *@  :@@@@% %@@% -+*%@-     " + ".NET version:                6.0" + "\n" +
-                    "        -@@@@+ @@  @@@@@  :+  @@@@@% =@+ #@@@@+      " + "Operation system version:    " + WinttOS.WinttVersion + "\n" +
-                    "          **+*@@@=  %@#.@=-+ @+:@@.  @@%@@@@@.       " + "Operation system revision:   " + WinttOS.WinttRevision + "\n" +
-                    "        .@@@%@@@@@=  +-   @@*   @   #@@@@+:#@:       " + "Date and time:               " + Time.DayString() + "/" + Time.MonthString() + "/" + Time.YearString() + ", " + Time.TimeString(true, true, true) + "\n" +
-                    "       @@@@@@      +@%@   :+   -##@-    :@@@@@@      " + "System boot time:            " + WinttOS.BootTime + "\n" +
-                    "      =#@@@*  @@#-:+%@@@- :+  *@@%+::*@@  -@@@@@:    " + "Total memory:                " + Filesystem.Utils.ConvertSize(Memory.TotalMemory * 1024 * 1024) + "\n" +
-                    "           :@@@@@@       +@@@.      @@@@@@@          " + "Used memory:                 " + Filesystem.Utils.ConvertSize(Memory.GetUsedMemory() * 1024 * 1024) + " (" + WinttOS.MemoryManager.UsedPercentage + "%)" + "\n" +
-                    "        .:-==*@@@@@@+. =@+*%-@*  .+@@@@@@#=          " + "Free memory:                 " + Filesystem.Utils.ConvertSize(Memory.GetFreeMemory() * 1024 * 1024) + " (" + WinttOS.MemoryManager.FreePercentage + "%)" + "\n" +
-                    "      -@@@@@-       *@@   -*   %@%        @@@@@@     " + "Processor:                   " + Kernel.CpuBrandName + (Kernel.CpuClockSpeed > 0 ? "@" + Kernel.CpuClockSpeed.ToString() : "")  + "\n" +
-                    "        #@@@@@@@@%@= ==   +@   .# :@+-#@@@@@@@-      " + "Screen mode:                 " + (FullScreenCanvas.IsInUse ? FullScreenCanvas.GetCurrentFullScreenCanvas().Name() : "VGA") + "\n" +
-                    "          .   @@@=   @   @@%@*  @=  -@@@:            " + "Resolution:                  " + (FullScreenCanvas.IsInUse ? FullScreenCanvas.GetCurrentFullScreenCanvas().Mode.ToString() : "640x480@8") + "\n" +
-                    "        *@@@@+ @@  #@@@@# -*  @@@@@. @@.+@@@@.       " + "\n" +
-                    "       @@@@@* *@@  @@@@@  -*  :@@@@+ *@# #@@@@-      " + "\n" +
-                    "             @@@@+@@@@:  +@@@   @@@@@@@@@.   :=      " + "\n" +
-                    "             #@@@   @  -@@@@@@@  %   @@@%            " + "\n" +
-                    "              @@    @@@@# *@  @@@@+   @@.            " + "\n" +
-                    "                   @@@@@ @@@@ -@@@@+                 " + "\n" +
-                    "                   .     @@@@      .                 " + "\n" +
-                    "                          @@                         ";
+                string[] infoLines = new string[]
+                    {
+                        "                          =@                         ",
+                        "                          @@@                        ",
+                        "                  =@@@*. @@@@% =#@@@                 ",
+                        "              +%   -@@@@  @@+ @@@@@    #.            ",
+                        "              @@@   =@@@@*=*.@@@@@    @@@            " + UsersManager.userLogged + "@wintt-pc",
+                        "             #@@@@%-@#  :@@@@@   @@:=@@@@:           " + "-------------",
+                        "       =@@@@# @@@ -@@@@+  *@  :@@@@% %@@% -+*%@-     " + "OS:                      WinttOS",
+                        "        -@@@@+ @@  @@@@@  :+  @@@@@% =@+ #@@@@+      " + "Kernel:                  Cosmos-devkit",
+                        "          **+*@@@=  %@#.@=-+ @+:@@.  @@%@@@@@.       " + ".NET version:            6.0",
+                        "        .@@@%@@@@@=  +-   @@*   @   #@@@@+:#@:       " + "OS version:              " + WinttOS.WinttVersion,
+                        "       @@@@@@      +@%@   :+   -##@-    :@@@@@@      " + "OS build:                " + WinttOS.WinttRevision,
+                        "      =#@@@*  @@#-:+%@@@- :+  *@@%+::*@@  -@@@@@:    " + "Date and time:           " + Time.DayString() + "/" + Time.MonthString() + "/" + Time.YearString() + ", " + Time.TimeString(true, true, true),
+                        "           :@@@@@@       +@@@.      @@@@@@@          " + "Uptime:                  " + WinttOS.Uptime.ToString(),
+                        "        .:-==*@@@@@@+. =@+*%-@*  .+@@@@@@#=          " + "Total memory:            " + Filesystem.Utils.ConvertSize(Memory.TotalMemory * 1024 * 1024),
+                        "      -@@@@@-       *@@   -*   %@%        @@@@@@     " + "Used memory:             " + Filesystem.Utils.ConvertSize(Memory.GetUsedMemory() * 1024 * 1024) + " (" + WinttOS.MemoryManager.UsedPercentage + "%)",
+                        "        #@@@@@@@@%@= ==   +@   .# :@+-#@@@@@@@-      " + "Free memory:             " + Filesystem.Utils.ConvertSize(Memory.GetFreeMemory() * 1024 * 1024) + " (" + WinttOS.MemoryManager.FreePercentage + "%)",
+                        "          .   @@@=   @   @@%@*  @=  -@@@:            " + "Processor:               " + Kernel.CpuBrandName + (Kernel.CpuClockSpeed > 0 ? "@" + Kernel.CpuClockSpeed.ToString() : ""),
+                        "        *@@@@+ @@  #@@@@# -*  @@@@@. @@.+@@@@.       " + "Screen mode:             " + (FullScreenCanvas.IsInUse ? FullScreenCanvas.GetCurrentFullScreenCanvas().Name() : "VGA"),
+                        "       @@@@@* *@@  @@@@@  -*  :@@@@+ *@# #@@@@-      " + "Resolution:              " + (FullScreenCanvas.IsInUse ? FullScreenCanvas.GetCurrentFullScreenCanvas().Mode.ToString() : "640x480@8"),
+                        "             @@@@+@@@@:  +@@@   @@@@@@@@@.   :=      ",
+                        "             #@@@   @  -@@@@@@@  %   @@@%            ",
+                        "              @@    @@@@# *@  @@@@+   @@.            ",
+                        "                   @@@@@ @@@@ -@@@@+                 ",
+                        "                   .     @@@@      .                 ",
+                        "                          @@                         "
+                    };
 
-                SystemIO.STDOUT.PutLine(info);
+                if (WinttOS.IsTty)
+                {
+                    foreach (string line in infoLines)
+                    {
+                        if (line.Contains("-------------") || line.Contains("OS:") || line.Contains("Kernel:") || line.Contains(".NET version:") ||
+                            line.Contains("OS version:") || line.Contains("OS build:") || line.Contains("Date and time:") || line.Contains("Uptime:") ||
+                            line.Contains("Total memory:") || line.Contains("Used memory:") || line.Contains("Free memory:") || line.Contains("Processor:") ||
+                            line.Contains("Screen mode:") || line.Contains("Resolution:"))
+                        {
+                            WinttOS.Tty.ForegroundColor = Color.Cyan;
+                        }
+                        else
+                        {
+                            WinttOS.Tty.ForegroundColor = Color.White;
+                        }
+
+                        WinttOS.Tty.WriteNoUpdate(line + "\n");
+                    }
+
+                    WinttOS.Tty.Update();
+                }
+                else
+                {
+                    foreach (string line in infoLines)
+                    {
+                        if (line.Contains("-------------") || line.Contains("OS:") || line.Contains("Kernel:") || line.Contains(".NET version:") ||
+                            line.Contains("OS version:") || line.Contains("OS build:") || line.Contains("Date and time:") || line.Contains("Uptime:") ||
+                            line.Contains("Total memory:") || line.Contains("Used memory:") || line.Contains("Free memory:") || line.Contains("Processor:") ||
+                            line.Contains("Screen mode:") || line.Contains("Resolution:"))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                        }
+                        else
+                        {
+                            Console.ForegroundColor = ConsoleColor.White;
+                        }
+
+                        Console.WriteLine(line);
+                    }
+
+                    Console.ResetColor();
+                }
                 return new(this, ReturnCode.OK);
 
             } 

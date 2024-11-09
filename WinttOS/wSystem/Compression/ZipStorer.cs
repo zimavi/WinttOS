@@ -231,7 +231,8 @@ namespace WinttOS.wSystem.Compression
 
             using (var stream = new FileStream(_pathname, FileMode.Open, FileAccess.Read))
             {
-                return this.AddStream(_method, _filenameInZip, stream, File.GetLastWriteTime(_pathname), _comment);
+                // File attributes not pluged.
+                return this.AddStream(_method, _filenameInZip, stream, /*File.GetLastWriteTime(_pathname)*/ DateTime.Now, _comment);
             }
         }
 

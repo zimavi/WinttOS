@@ -14,9 +14,12 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
         { }
         public override ReturnInfo Execute(List<string> arguments)
         {
-            string path = GlobalData.CurrentDirectory + arguments[0];
+            string path = arguments[0];
 
-            if(!Entries.ForceRemove(path))
+            if (!path.StartsWith("/") && !path.StartsWith("\\"))
+                path = GlobalData.CurrentDirectory + path;
+
+            if (!Entries.ForceRemove(path))
             {
                 return new(this, ReturnCode.ERROR);
             }

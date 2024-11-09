@@ -39,14 +39,10 @@ namespace WinttOS.wSystem
             WinttOS.CommandManager = new CommandManager();
             WinttOS.WindowManager = new();
 
-            Logger.DoOSLog("[Info] Initializing service manager");
-
-            serviceManager.Initialize();
-            SetChild(serviceManager);
-
             Logger.DoOSLog("[Info] Registering service manager -> process manager");
 
             WinttOS.ProcessManager.TryRegisterProcess(serviceManager, out serviceProviderProcessID);
+            SetChild(serviceManager);
 
             if (!WinttOS.ProcessManager.TryGetProcessInstance(out Process srv, serviceProviderProcessID))
             {

@@ -81,7 +81,7 @@ namespace WinttOS.wSystem.Shell.Programs
         {
             int countNewLine = 0;
             int countChars = 0;
-            delay(10000000);
+            //delay(10000000);
             if (WinttOS.IsTty)
                 WinttOS.Tty.ClearText();
             else

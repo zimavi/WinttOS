@@ -27,6 +27,8 @@ namespace WinttOS.Core.Utils.Kernel
                 wSystem.WinttOS.IsTty = true;
             }
 
+            wSystem.WinttOS.Tty.StoreCommandOutput = false;
+
             wSystem.WinttOS.KernelPrint = true;
 
             ShellUtils.PrintTaskResult("Fatal", ShellTaskResult.FAILED, "Kernel panic!");
@@ -58,6 +60,7 @@ namespace WinttOS.Core.Utils.Kernel
                 wSystem.WinttOS.IsTty = true;
             }
 
+            wSystem.WinttOS.Tty.StoreCommandOutput = false;
             wSystem.WinttOS.KernelPrint = true;
 
             ShellUtils.PrintTaskResult("Fatal", ShellTaskResult.FAILED, "Kernel panic!");

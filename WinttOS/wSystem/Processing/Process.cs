@@ -4,6 +4,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using WinttOS.Core.Utils.Cryptography;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Users;
@@ -26,6 +28,7 @@ namespace WinttOS.wSystem.Processing
 
         public string ProcessName { get; protected set; }
         public uint ProcessID { get; private set; }
+        public byte[] ProcessUUID { get; private set; }
         public ProcessType Type { get; private set; }
             = ProcessType.Program;
         public PrivilegesSet CurrentSet { get; internal set; } 
@@ -49,6 +52,7 @@ namespace WinttOS.wSystem.Processing
                 IsProcessRunning = false;
                 if (type == ProcessType.KernelComponent || type == ProcessType.Driver)
                     IsProcessCritical = true;
+                ProcessUUID = UUID.GenerateUUID();
             }
             catch (Exception ex)
             {
@@ -129,6 +133,48 @@ namespace WinttOS.wSystem.Processing
             }
 
             return false;
+        }
+
+        protected bool HasEnvironmentValue(string name)
+        {
+            return Registry.Environment.HasProcessEnvValue((int)ProcessID, name);
+        }
+
+        protected void SetEnvironmentValue(string name, string value)
+        {
+            Registry.Environment.SetProcessEnvValue((int)ProcessID, name, value);
+        }
+
+        protected string GetEnvironmentValue(string name)
+        {
+            return Registry.Environment.GetProcessEnvValue((int)ProcessID, name);
+        }
+
+        protected void Exit(int exitCode)
+        {
+            if(exitCode != 0)
+            {
+                if (WinttOS.IsTty)
+                {
+                    Color bg = WinttOS.Tty.BackgroundColor;
+                    WinttOS.Tty.BackgroundColor = Color.Red;
+
+                    WinttOS.Tty.WriteLine(ProcessID + " PID -> Error!");
+
+                    WinttOS.Tty.BackgroundColor = bg;
+                }
+                else
+                {
+                    ConsoleColor bg = Console.BackgroundColor;
+                    Console.BackgroundColor = ConsoleColor.Red;
+
+                    Console.WriteLine(ProcessID + " PID -> Error!");
+
+                    Console.BackgroundColor = bg;
+                }
+            }
+
+            WinttOS.ProcessManager.TryStopProcess(ProcessID);
         }
     }
 }

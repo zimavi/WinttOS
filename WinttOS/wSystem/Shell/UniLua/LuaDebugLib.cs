@@ -1,4 +1,6 @@
- 
+
+using WinttOS.Core.Utils.Debugging;
+
 namespace UniLua
 {
 	internal class LuaDebugLib
@@ -18,7 +20,8 @@ namespace UniLua
 
 		private static int DBG_Traceback( ILuaState lua )
 		{
-			return 0;
+			Logger.DoOSLog("Lua -> " + lua.L_CheckString(1));
+			return 1;
 		}
 	}
 }

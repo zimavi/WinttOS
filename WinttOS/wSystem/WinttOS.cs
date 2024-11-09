@@ -13,6 +13,7 @@ using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.GUI;
 using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Processing;
+using WinttOS.wSystem.Registry;
 using WinttOS.wSystem.Scheduling;
 using WinttOS.wSystem.Services;
 using WinttOS.wSystem.Shell;
@@ -35,7 +36,7 @@ namespace WinttOS.wSystem
 
         public static PrivilegesSet CurrentExecutionSet { get; internal set; } = PrivilegesSet.HIGHEST;
 
-        public static readonly string WinttVersion = "WinttOS v1.4.1 dev.";
+        public static readonly string WinttVersion = "WinttOS v1.5.0 dev.";
         public static readonly string WinttRevision = VersionInfo.revision;
 
         public static WinttServiceManager ServiceManager { get; internal set; }
@@ -53,6 +54,16 @@ namespace WinttOS.wSystem
 
         public static string BootTime { get; private set; }
 
+        public static TimeSpan Uptime
+        {
+            get
+            {
+                return DateTime.Now - bootTime;
+            }
+        }
+
+        private static DateTime bootTime;
+
         private static EventBus _globalEventBus;
 
         private static SystemD systemd;
@@ -68,6 +79,7 @@ namespace WinttOS.wSystem
             try
             {
                 BootTime = Time.DayString() + "/" + Time.MonthString() + "/" + Time.YearString() + ", " + Time.TimeString(true, true, true);
+                bootTime = DateTime.Now;
 
                 ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.NONE, "Standard IO");
 
@@ -89,6 +101,9 @@ namespace WinttOS.wSystem
 
                 Logger.DoOSLog("[OK] TTY started");
 
+                Logger.DoOSLog("[Info] Initializing environment");
+
+                Registry.Environment.Initialize();
 
                 Logger.DoOSLog("[Info] Initializing task schedular");
 
@@ -105,6 +120,33 @@ namespace WinttOS.wSystem
                 Logger.DoOSLog("[Info] Initializing memory manager");
 
                 MemoryManager = new Memory();
+
+                if (!Directory.Exists(@"0:\proc"))
+                    Directory.CreateDirectory(@"0:\proc");
+                if (!Directory.Exists(@"0:\tmp"))
+                    Directory.CreateDirectory(@"0:\tmp");
+                if (!Directory.Exists(@"0:\lib"))
+                    Directory.CreateDirectory(@"0:\lib");
+                if (!Directory.Exists(@"0:\usr"))
+                    Directory.CreateDirectory(@"0:\usr");
+                if (!Directory.Exists(@"0:\usr\bin"))
+                    Directory.CreateDirectory(@"0:\usr\bin");
+                if (!Directory.Exists(@"0:\etc"))
+                    Directory.CreateDirectory(@"0:\etc");
+                if (!Directory.Exists(@"0:\home"))
+                    Directory.CreateDirectory(@"0:\home");
+
+                if (Directory.GetFiles(@"0:\tmp\").Length > 0)
+                {
+                    Directory.Delete(@"0:\tmp", true);
+                    Directory.CreateDirectory(@"0:\tmp");
+                }
+
+                if (Directory.GetFiles(@"0:\proc\").Length > 0)
+                {
+                    Directory.Delete(@"0:\proc", true);
+                    Directory.CreateDirectory(@"0:\proc");
+                }
 
                 Logger.DoOSLog("[Info] Starting Systemd");
 
@@ -190,6 +232,7 @@ namespace WinttOS.wSystem
 
         private static void Login()
         {
+            newTry:
             SystemIO.STDOUT.Put("Login prompt.\nEnter username: ");
             string username = SystemIO.STDIN.Get();
             SystemIO.STDOUT.Put("\nEnter password:\n");
@@ -219,10 +262,15 @@ namespace WinttOS.wSystem
                         Directory.CreateDirectory(@"0:\root\");
                 }
             }
+            else
+            {
+                SystemIO.STDOUT.PutLine("Invalid user or password. Try again.");
+                goto newTry;
+            }
         }
         private static void InitNetwork()
         {
-            //Console.WriteLine("NOTE! If you have more then one network adapters, please remove all except one!\n");
+            Logger.DoOSLog("NOTE! If you have more then one network adapters, please remove all except one!\n");
 
             ShellUtils.PrintTaskResult("Discovering IP address", ShellTaskResult.DOING);
             ShellUtils.MoveCursorUp();

@@ -1,32 +1,59 @@
  
 namespace UniLua
 {
-	using System.Diagnostics;
+    using System;
+    using Registry = WinttOS.wSystem.Registry;
+    using WinttOS.wSystem.Shell;
+	using Sys = WinttOS.wSystem.WinttOS;
 
-	internal class LuaOSLib
-	{
+    internal class LuaOSLib
+    {
 		public const string LIB_NAME = "os";
 
 		public static int OpenLib( ILuaState lua )
 		{
 			NameFuncPair[] define = new NameFuncPair[]
 			{
-#if !UNITY_WEBPLAYER
 				new NameFuncPair("clock", 	OS_Clock),
-#endif
+				new NameFuncPair("execute", OS_Execute),
+				new NameFuncPair("getenv",  OS_Getenv),
 			};
 
 			lua.L_NewLib( define );
 			return 1;
 		}
 
-#if !UNITY_WEBPLAYER
 		private static int OS_Clock( ILuaState lua )
 		{
-			lua.PushNumber(0); //TO PLUG
+			lua.PushNumber((DateTime.Now - CommandManager.LastLuaStart).TotalSeconds);
 			return 1;
 		}
-#endif
+
+		private static int OS_Execute( ILuaState lua )
+		{
+			var input = lua.L_CheckString(1);
+			Sys.CommandManager.ProcessInput( input );
+			return 1;
+		}
+
+		private static int OS_Getenv( ILuaState lua )
+		{
+			string key = lua.L_CheckString(1);
+
+			if(Registry.Environment.HasProcessEnvValue(-1, key))
+			{
+				lua.PushString(Registry.Environment.GetProcessEnvValue(-1, key));
+			}
+			else if(Registry.Environment.HasValue(key))
+			{
+				lua.PushString(Registry.Environment.GetValue(key));
+			}
+            else
+            {
+				lua.PushNil();
+            }
+            return 1;
+		}
 	}
 }
 

@@ -1,4 +1,4 @@
-﻿using WinttOS.Core.Utils.Debugging;
+﻿using System.Collections.Generic;
 using WinttOS.wSystem.Networking;
 
 namespace WinttOS.wSystem.Processing
@@ -11,8 +11,16 @@ namespace WinttOS.wSystem.Processing
         public string Author { get; set; }
         public string Link { get; set; }
         public string Version { get; set; }
+        public string Checksum { get; set; }
+        public string Type { get; set; }
         public bool Installed { get; set; }
+        public List<string> Dependencies { get; set; }
         public Executable Executable { get; set; } = null;
+
+        public Package()
+        {
+            Dependencies = new List<string>();
+        }
 
         public void Download()
         {

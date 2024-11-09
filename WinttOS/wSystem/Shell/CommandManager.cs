@@ -6,8 +6,8 @@ using System.Linq;
 using WinttOS.Core;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.IO;
+using WinttOS.wSystem.Processing;
 using WinttOS.wSystem.Services;
-using WinttOS.wSystem.Shell.bash;
 using WinttOS.wSystem.Shell.commands.FileSystem;
 using WinttOS.wSystem.Shell.commands.Misc;
 using WinttOS.wSystem.Shell.commands.Networking;
@@ -29,13 +29,15 @@ namespace WinttOS.wSystem.Shell
     {
         private List<Command> _commands;
         private bool _didRunCycle = true;
-        private bool _redirect = false;
-        internal string _commandOutput = "";
+        private bool _pipe = false;
+        //internal string _commandOutput = "";
         private bool _hasShellFired = false;
         public bool IsInputTaken = false;
         public bool _executeNewCommand = false;
 
-        public CommandManager() : base("Shelld", "shell.service")
+        public static DateTime LastLuaStart;
+
+        public CommandManager() : base("shellxd", "shellx.service")
         {
             _commands = new List<Command>
             {
@@ -67,23 +69,23 @@ namespace WinttOS.wSystem.Shell
                 new DnsCommand(new string[] { "dns" }),
                 new PingCommand(new string[] { "ping" }),
                 new EnvironmentCommand(new string[] { "export" }),
-                new RunCommand(new string[] {"run"}),
+                new RunCommand(new string[] { "run" }),
                 new HashCommand(new string[] { "hash" }),
-                new SystemInfoCommand(new string[] { "sysinfo" }),
+                new SystemInfoCommand(new string[] { "sysinfo" , "neofetch"}),
                 new DisksCommand(new string[] { "disks" }),
                 new LogsCommand(new string[] { "logs" }),
                 new TreeCommand(new string[] { "tree" }),
                 new PlayBadAppleCommand(new string[] { "bad_apple" }),
+                new MiniDiffCommand(),
+
+                new CreateZipCommand(),
+                new UnzipCommand(),
+                new AddFileToZipCommand(),
+                new ListZipContentsCommand(),
 
                 new CommandAction(new string[] { "whoami" }, AccessLevel.Default, () =>
                 {
                     SystemIO.STDOUT.PutLine(UsersManager.userLogged);
-                }),
-                new CommandAction(new string[] { "bash" }, AccessLevel.Default, () =>
-                {
-                    BashInterpreter bash = new();
-                    SystemIO.STDOUT.PutLine(bash.Parse(@"0:\startup.sh"));
-                    bash.Execute();
                 }),
                 new CommandAction(new string[] { "crash" }, AccessLevel.Administrator, () =>
                 {
@@ -95,6 +97,16 @@ namespace WinttOS.wSystem.Shell
                     SystemIO.STDOUT.PutLine($"Used memory: " + Filesystem.Utils.ConvertSize(Memory.GetUsedMemory() * 1024 * 1024));
                     SystemIO.STDOUT.PutLine($"Used memory (%): {100 - WinttOS.MemoryManager.FreePercentage}%");
                     SystemIO.STDOUT.PutLine($"Total memory: " + Filesystem.Utils.ConvertSize(Memory.TotalMemory * 1024 * 1024));
+                }),
+                new CommandAction(new string[] { "touch-tmp", "ttmp"}, AccessLevel.Default, () =>
+                {
+                    SystemIO.STDOUT.PutLine("Created temp file '" + Path.GetTempFileName() + "'");
+                }),
+                new CommandAction(new string[] { "get-env" }, AccessLevel.Default, () =>
+                {
+                    // Starting process to pull process specific environment variables
+                    WinttOS.ProcessManager.TryRegisterProcess(new EnvDisplayProcess(), out uint pid);
+                    WinttOS.ProcessManager.TryStartProcess(pid);
                 })
             };
         }
@@ -127,7 +139,7 @@ namespace WinttOS.wSystem.Shell
 
             #region Parse command
 
-            string[] parts = input.Split(new char[] { '>' }, 2);
+            string[] parts = input.Split(new char[] { '|' }, 2);
             string redirectionPart = parts.Length > 1 ? parts[1].Trim() : null;
 
 
@@ -135,9 +147,9 @@ namespace WinttOS.wSystem.Shell
 
             if (!string.IsNullOrEmpty(redirectionPart))
             {
-                _redirect = true;
+                _pipe = true;
             }
-            _commandOutput = "";
+            //_commandOutput = "";
 
             parts = input.Split("&&");
             if (parts.Length > 1)
@@ -199,34 +211,43 @@ namespace WinttOS.wSystem.Shell
 
                     ProcessCommandResult(result);
 
-                    if (_redirect)
+                    if (_pipe)
                     {
-                        _redirect = false;
+                        _pipe = false;
 
                         SystemIO.STDOUT.PutLine("");
 
-                        HandleRedirection(redirectionPart, _commandOutput);
+                        //HandleRedirection(redirectionPart, _commandOutput);
 
-                        _commandOutput = "";
+                        //_commandOutput = "";
                     }
 
                     return;
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.DarkRed;
-            SystemIO.STDOUT.PutLine("Unknown command.");
-            Console.ForegroundColor = ConsoleColor.White;
+            if (!WinttOS.IsTty)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkRed;
+                Console.WriteLine("Unknown command.");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else
+            {
+                WinttOS.Tty.Foreground = ConsoleColor.DarkRed;
+                WinttOS.Tty.WriteLine("Unknown command.");
+                WinttOS.Tty.Foreground = ConsoleColor.White;
+            }
 
             SystemIO.STDOUT.PutLine("");
 
-            if (_redirect)
+            if (_pipe)
             {
-                _redirect = false;
+                _pipe = false;
 
-                HandleRedirection(redirectionPart, _commandOutput);
+                //HandleRedirection(redirectionPart, _commandOutput);
 
-                _commandOutput = "";
+                //_commandOutput = "";
             }
 
             if (_executeNewCommand)
@@ -301,18 +322,28 @@ namespace WinttOS.wSystem.Shell
             SystemIO.STDOUT.PutLine("");
         }
 
-        private void HandleRedirection(string filePath, string commandOutput)
+        private void HandleRedirection(string command, string commandOutput)
         {
             foreach(var c in _commands)
             {
-                if(c.CommandValues.Contains(filePath))
+                if(c.CommandValues.Contains(command))
                 {
-                    ProcessInput(filePath + " " + commandOutput);
+                    //_commandOutput = "";
+                    ProcessInput(command + " " + commandOutput);
                     return;
                 }
             }
 
-            string fullPath = GlobalData.CurrentDirectory + filePath;
+            string fullPath;
+            if (command.StartsWith('/') || command.StartsWith('\\'))
+            {
+                fullPath = command;
+            }
+            else
+            {
+                fullPath = GlobalData.CurrentDirectory + command;
+            }    
+            
 
             File.WriteAllText(fullPath, commandOutput);
         }
@@ -398,6 +429,18 @@ namespace WinttOS.wSystem.Shell
             }
             #endregion
 
+        }
+
+        public override void OnServiceStart()
+        {
+            if(WinttOS.IsTty)
+                WinttOS.Tty.StoreCommandOutput = true;
+        }
+
+        public override void OnServiceStop()
+        {
+            if (WinttOS.IsTty)
+                WinttOS.Tty.StoreCommandOutput = false;
         }
     }
 }

@@ -14,7 +14,6 @@ namespace WinttOS.wSystem.Benchmark
         /// <summary>
         /// Starts stopwatch
         /// </summary>
-        /// <exception cref="InvalidOperationException"></exception>
         public void Start()
         {
             _startTime = DateTime.Now;
@@ -24,7 +23,6 @@ namespace WinttOS.wSystem.Benchmark
         /// <summary>
         /// Stops stopwatch
         /// </summary>
-        /// <exception cref="InvalidOperationException"></exception>
         public void Stop()
         {
             _stopTime = DateTime.Now;
