@@ -114,9 +114,6 @@ jobs:
       - name: Restore dependencies
         run: |
           dotnet restore
-      - name: Build WinttPlugs
-        run: |
-          dotnet build ".\WinttPlugs\WinttPlugs.csproj"
       - name: Build WinttOS
         run: |
-          dotnet build ".\WinttOS\WinttOS.csproj"
+          dotnet build
