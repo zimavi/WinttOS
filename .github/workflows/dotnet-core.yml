@@ -116,4 +116,4 @@ jobs:
           dotnet restore
       - name: Build WinttOS
         run: |
-          dotnet build
+          dotnet build .\WinttOS\WinttOS.csproj
