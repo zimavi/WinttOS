@@ -78,6 +78,8 @@ namespace WinttOS
                 ShellUtils.MoveCursorUp();
                 ShellUtils.PrintTaskResult("Initializing", ShellTaskResult.OK, "VFS Filesystem");
 
+                IOMapper.Initialize();
+
                 Logger.DoBootLog("[Info] Starting to mount disks");
                 ShellUtils.PrintTaskResult("Mounting disks", ShellTaskResult.NONE);
 
