@@ -88,7 +88,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <EditorConfigFiles Remove="C:\Users\Anton\source\repos\zimavi\WinttOS\WinttOS\.editorconfig" />
+      <EditorConfigFiles Remove=".editorconfig" />
     </ItemGroup>
 
     <ItemGroup>
@@ -100,7 +100,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="C:\Users\Anton\source\repos\zimavi\WinttOS\WinttOS\.editorconfig" />
+      <None Include=".editorconfig" />
       <None Include="isoFiles\boot\.resources\zap-ext-light18.psf" />
     </ItemGroup>
 
