@@ -18,6 +18,8 @@ jobs:
             target: Windows
     steps:
       - uses: action/checkout@v3
+        with:
+          token: ${{ secrets.AUTH_TOKEN }}
       - name: Setup .NET Core
         uses: actions/setup-dotnet@v3
         with:
