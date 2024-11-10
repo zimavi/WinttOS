@@ -17,7 +17,7 @@ jobs:
           - os: windows-latest
             target: Windows
     steps:
-      - uses: action/checkout@v2
+      - uses: action/checkout@v4
         with:
           token: ${{ secrets.AUTH_TOKEN }}
       - name: Setup .NET Core
