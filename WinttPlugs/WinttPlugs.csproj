@@ -8,6 +8,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\WinttOS\WinttOS.csproj" NoWarn="NU1604;1605" />
+	  <ProjectReference Include="..\WinttOS\WinttOS.csproj" />
 	</ItemGroup>
 </Project>

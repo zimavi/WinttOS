@@ -73,22 +73,17 @@
         <PackageReference Include="Cosmos.Debug.Kernel" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="Cosmos.System2" Version="0-*" NoWarn="NU1604" />
         <PackageReference Include="CosmosHttp" Version="1.0.4" />
-        <PackageReference Include="LiteDB" Version="5.0.19" />
         <PackageReference Include="LunarParser" Version="1.1.5" />
         <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
 		<PackageReference Include="Cosmos.Plugs" Version="0-*" NoWarn="NU1604" />
     </ItemGroup>
-
-	<ItemGroup>
-		<PlugsReference Include="..\WinttPlugs\bin\Debug\net6.0\WinttPlugs.dll" />
-	</ItemGroup>
-
+	
     <ItemGroup>
       <Folder Include="isoFiles\bad_apple\frames\" />
     </ItemGroup>
 
     <ItemGroup>
-      <EditorConfigFiles Remove="C:\Users\Anton\source\repos\zimavi\WinttOS\WinttOS\.editorconfig" />
+      <EditorConfigFiles Remove=".editorconfig" />
     </ItemGroup>
 
     <ItemGroup>
@@ -100,7 +95,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="C:\Users\Anton\source\repos\zimavi\WinttOS\WinttOS\.editorconfig" />
+      <None Include=".editorconfig" />
       <None Include="isoFiles\boot\.resources\zap-ext-light18.psf" />
     </ItemGroup>
 
