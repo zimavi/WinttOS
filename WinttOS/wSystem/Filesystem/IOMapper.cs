@@ -1,6 +1,5 @@
 ﻿using LunarLabs.Parser;
 using LunarLabs.Parser.JSON;
-using LunarLabs.Parser.YAML;
 using System.Collections.Generic;
 using System.IO;
 using WinttOS.Core.Utils.Debugging;
@@ -59,40 +58,36 @@ namespace WinttOS.wSystem.Filesystem
         // The best case is to place nested entries on top
         public static string MapFHSToPhysical(string path)
         {
-            string winPath = path.Replace('/', '\\');   // Cosmos uses Windows path format
-
             foreach(var mapping in _driveMappings)
             {
-                if(winPath.StartsWith(mapping.Key, System.StringComparison.OrdinalIgnoreCase))
+                if(path.StartsWith(mapping.Value, System.StringComparison.OrdinalIgnoreCase))
                 {
-                    string relativePath = winPath.Substring(mapping.Key.Length);
-                    return mapping.Value + relativePath;
+                    string relativePath = mapping.Key + path[mapping.Value.Length..].Replace('/', '\\');
+                    return relativePath;
                 }
             }
 
             Logger.DoOSLog("[Warn] Did not found mapping for '" + path + "'");
-            return winPath;
+            return path.Replace('/', '\\');
         }
 
         // The higher entry in mapping table, the more chances it will be maped
         // Example: If root map ('/') is on top, every other entry will be ignored
         // The best case is to place nested entries on top
-        public static string MapPysicalToFHS(string path)
+        public static string MapPhysicalToFHS(string path)
         {
-            string fhsPath = path.Replace("\\", "/");
-
             foreach (var mapping in _driveMappings)
             {
-                if(fhsPath.StartsWith(mapping.Value, System.StringComparison.OrdinalIgnoreCase))
+                if(path.StartsWith(mapping.Key, System.StringComparison.OrdinalIgnoreCase))
                 {
-                    string relativePath = fhsPath.Substring(mapping.Value.Length);
-                    return mapping.Key + relativePath;
+                    string relativePath = mapping.Value + path[mapping.Key.Length..].Replace('\\', '/');
+                    return relativePath;
                 }
             }
 
             Logger.DoOSLog("[Warn] Did not found mapping for '" + path + "'");
 
-            return fhsPath;
+            return path.Replace("\\", "/");
         }
 
         public static void AddMapping(string phythical, string fhs)
@@ -149,6 +144,7 @@ namespace WinttOS.wSystem.Filesystem
 
             string json = JSONWriter.WriteToString(root);
 
+            // Don't trust yourself
             File.WriteAllText(@"0:\etc\drive_mappings.conf", json);
         }
     }

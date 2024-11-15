@@ -6,11 +6,19 @@ using System.IO;
 using UniLua;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem.Filesystem;
 
 namespace WinttOS.wSystem.Registry
 {
     public static class Environment
     {
+        private const string ETC_PATH = "/etc/";
+        private const string ENV_FILE_PATH = "/etc/environment.sysenv";
+
+        // default environment
+        private const string ENV_PATH = "/usr/bin/;/lib/";
+        private const string ENV_TMP = "/tmp/";
+
         public static List<EnvKey> GlobalEnvironment;
 
         // Each PID has own Environment
@@ -24,16 +32,16 @@ namespace WinttOS.wSystem.Registry
             GlobalEnvironment = new();
             PerProcessEnvironment = new();
             
-            if (!Directory.Exists(@"0:\etc\"))
+            if (!Directory.Exists(IOMapper.MapFHSToPhysical(ETC_PATH)))
             {
-                Directory.CreateDirectory(@"0:\etc\");
+                Directory.CreateDirectory(IOMapper.MapFHSToPhysical(ETC_PATH));
             }
 
-            if (File.Exists(@"0:\etc\environment.sysenv"))
+            if (File.Exists(IOMapper.MapFHSToPhysical(ENV_FILE_PATH)))
             {
                 try
                 {
-                    string txt = File.ReadAllText(@"0:\etc\environment.sysenv");
+                    string txt = File.ReadAllText(IOMapper.MapFHSToPhysical(ENV_FILE_PATH));
                     Logger.DoOSLog(txt);
                     DataNode root = JSONReader.ReadFromString(txt);
 
@@ -53,9 +61,10 @@ namespace WinttOS.wSystem.Registry
                     ShellUtils.PrintTaskResult("Loading", ShellTaskResult.FAILED, "System environment");
 
                     GlobalEnvironment.Clear();
-                    GlobalEnvironment.Add(new EnvKey { Name = "PATH", Value = @"0:\bin\;0:\usr\bin\" });
-                    GlobalEnvironment.Add(new EnvKey { Name = "SYS_VER", Value = WinttOS.WinttVersion });
-                    GlobalEnvironment.Add(new EnvKey { Name = "TMPDIR", Value = @"0:\tmp\" });
+                    GlobalEnvironment.Add(new EnvKey { Name = "PATH",       Value = ENV_PATH });
+                    GlobalEnvironment.Add(new EnvKey { Name = "OS_VER",     Value = WinttOS.WinttVersion });
+                    GlobalEnvironment.Add(new EnvKey { Name = "OS",         Value = "WinttOS"});
+                    GlobalEnvironment.Add(new EnvKey { Name = "TMPDIR",     Value = ENV_TMP });
 
                     SaveEnvironment();
                 }
@@ -64,9 +73,10 @@ namespace WinttOS.wSystem.Registry
             {
                 ShellUtils.MoveCursorUp();
                 ShellUtils.PrintTaskResult("Loading", ShellTaskResult.WARN, "System environment: Not found");
-                GlobalEnvironment.Add(new EnvKey { Name = "PATH", Value = @"0:\bin\;0:\usr\bin\" });
-                GlobalEnvironment.Add(new EnvKey { Name = "SYS_VER", Value = WinttOS.WinttVersion });
-                GlobalEnvironment.Add(new EnvKey { Name = "TMPDIR", Value = @"0:\tmp\" });
+                GlobalEnvironment.Add(new EnvKey { Name = "PATH",       Value = ENV_PATH });
+                GlobalEnvironment.Add(new EnvKey { Name = "OS_VER",     Value = WinttOS.WinttVersion });
+                GlobalEnvironment.Add(new EnvKey { Name = "OS",         Value = "WinttOS"});
+                GlobalEnvironment.Add(new EnvKey { Name = "TMPDIR",     Value = ENV_TMP });
 
                 SaveEnvironment();
             }
@@ -81,7 +91,7 @@ namespace WinttOS.wSystem.Registry
                 root.AddField(node.Name, node.Value);
             }
 
-            File.WriteAllText(@"0:\etc\environment.sysenv", JSONWriter.WriteToString(root));
+            File.WriteAllText(IOMapper.MapFHSToPhysical(ENV_FILE_PATH), JSONWriter.WriteToString(root));
         }
 
         public static void LoadEnvironment()
@@ -90,9 +100,9 @@ namespace WinttOS.wSystem.Registry
 
             try
             {
-                if (File.Exists(@"0:\etc\environment.sysenv"))
+                if (File.Exists(IOMapper.MapFHSToPhysical(ENV_FILE_PATH)))
                 {
-                    string txt = File.ReadAllText(@"0:\etc\environment.sysenv");
+                    string txt = File.ReadAllText(IOMapper.MapFHSToPhysical(ENV_FILE_PATH));
                     Logger.DoOSLog(txt);
                     DataNode root = JSONReader.ReadFromString(txt);
 
@@ -103,16 +113,20 @@ namespace WinttOS.wSystem.Registry
                 }
                 else
                 {
-                    GlobalEnvironment.Add(new EnvKey { Name = "PATH", Value = @"0:\bin\;0:\usr\bin\" });
-                    GlobalEnvironment.Add(new EnvKey { Name = "SYS_VER", Value = WinttOS.WinttVersion });
+                    GlobalEnvironment.Add(new EnvKey { Name = "PATH",       Value = ENV_PATH });
+                    GlobalEnvironment.Add(new EnvKey { Name = "OS_VER",     Value = WinttOS.WinttVersion });
+                    GlobalEnvironment.Add(new EnvKey { Name = "OS",         Value = "WinttOS"});
+                    GlobalEnvironment.Add(new EnvKey { Name = "TMPDIR",     Value = ENV_TMP });
 
                     SaveEnvironment();
                 }
             }
             catch
             {
-                GlobalEnvironment.Add(new EnvKey { Name = "PATH", Value = @"0:\bin\;0:\usr\bin\" });
-                GlobalEnvironment.Add(new EnvKey { Name = "SYS_VER", Value = WinttOS.WinttVersion });
+                GlobalEnvironment.Add(new EnvKey { Name = "PATH",       Value = ENV_PATH });
+                GlobalEnvironment.Add(new EnvKey { Name = "OS_VER",     Value = WinttOS.WinttVersion });
+                GlobalEnvironment.Add(new EnvKey { Name = "OS",         Value = "WinttOS"});
+                GlobalEnvironment.Add(new EnvKey { Name = "TMPDIR",     Value = ENV_TMP });
 
                 SaveEnvironment();
             }

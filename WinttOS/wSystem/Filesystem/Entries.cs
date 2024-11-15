@@ -8,34 +8,36 @@ namespace WinttOS.wSystem.Filesystem
     {
         public static bool ForceRemove(string fullPath)
         {
-
-            if (File.Exists(fullPath))
+            string pFullPath = IOMapper.MapFHSToPhysical(fullPath);
+            if (File.Exists(pFullPath))
             {
-                File.Delete(fullPath);
+                File.Delete(pFullPath);
                 return true;
             }
-            else if (Directory.Exists(fullPath))
+            else if (Directory.Exists(pFullPath))
             {
-                Directory.Delete(fullPath, true);
+                Directory.Delete(pFullPath, true);
                 return true;
             }
             else
             {
-                SystemIO.STDOUT.PutLine(fullPath + " does not exist!");
+                SystemIO.STDOUT.PutLine(pFullPath + " does not exist!");
                 return false;
             }
         }
 
         public static bool ForceCopy(string sourcePath, string destPath)
         {
-            if (File.Exists(sourcePath))
+            string pSourcePath = IOMapper.MapFHSToPhysical(sourcePath);
+            string pDestPath = IOMapper.MapFHSToPhysical(destPath);
+            if (File.Exists(pSourcePath))
             {
-                File.Copy(sourcePath, destPath, overwrite: true);
+                File.Copy(pSourcePath, pDestPath, overwrite: true);
                 return true;
             }
-            else if (Directory.Exists(sourcePath))
+            else if (Directory.Exists(pSourcePath))
             {
-                Entries.CopyDirectory(sourcePath, destPath);
+                Entries.CopyDirectory(pSourcePath, pDestPath);
                 return true;
             }
             else
@@ -47,25 +49,29 @@ namespace WinttOS.wSystem.Filesystem
 
         public static void CopyFile(string sourcePath, string destPath)
         {
-            if (File.Exists(sourcePath))
+            string pSourcePath = IOMapper.MapFHSToPhysical(sourcePath);
+            string pDestPath = IOMapper.MapFHSToPhysical(destPath);
+            if (File.Exists(pSourcePath))
             {
-                File.Copy(sourcePath, destPath, overwrite: true);
+                File.Copy(pSourcePath, pDestPath, overwrite: true);
             }
         }
 
         public static void CopyDirectory(string sourceDir, string destDir)
         {
-            Directory.CreateDirectory(destDir);
+            string pSourceDir = IOMapper.MapFHSToPhysical(sourceDir);
+            string pDestDir = IOMapper.MapFHSToPhysical(destDir);
+            Directory.CreateDirectory(pDestDir);
 
-            foreach (var file in Directory.GetFiles(sourceDir))
+            foreach (var file in Directory.GetFiles(pSourceDir))
             {
-                string dest = Path.Combine(destDir, Path.GetFileName(file));
+                string dest = Path.Combine(pDestDir, Path.GetFileName(file));
                 File.Copy(file, dest);
             }
 
-            foreach (var directory in Directory.GetDirectories(sourceDir))
+            foreach (var directory in Directory.GetDirectories(pSourceDir))
             {
-                string dest = Path.Combine(destDir, Path.GetFileName(directory));
+                string dest = Path.Combine(pDestDir, Path.GetFileName(directory));
                 CopyDirectory(directory, dest);
             }
         }

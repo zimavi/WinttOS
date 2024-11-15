@@ -6,6 +6,7 @@ using System.Text;
 using WinttOS.Core;
 using WinttOS.Core.Utils.Cryptography;
 using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem.Filesystem;
 using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.commands.Misc
@@ -100,13 +101,15 @@ namespace WinttOS.wSystem.Shell.commands.Misc
             {
                 if (isFile)
                 {
-                    if (!File.Exists(GlobalData.CurrentDirectory + arguments[2]))
+                    if (!arguments[2].StartsWith('/'))
+                        arguments[2] = GlobalData.CurrentDirectory + arguments[2];
+                    if (!File.Exists(IOMapper.MapFHSToPhysical(arguments[2])))
                     {
                         return new(this, ReturnCode.ERROR, "Cannot find file.");
                     }
 
-                    string contents = File.ReadAllText(GlobalData.CurrentDirectory + arguments[2]);
-                    
+                    string contents = File.ReadAllText(IOMapper.MapFHSToPhysical(arguments[2]));
+
                     string checksum = Sha256.hash(contents);
 
                     SystemIO.STDOUT.PutLine("File checksum:\n" + checksum);
@@ -122,12 +125,14 @@ namespace WinttOS.wSystem.Shell.commands.Misc
             }
             if (isFile)
             {
-                if (!File.Exists(GlobalData.CurrentDirectory + arguments[2]))
+                if (!arguments[2].StartsWith('/'))
+                    arguments[2] = GlobalData.CurrentDirectory + arguments[2];
+                if (!File.Exists(IOMapper.MapFHSToPhysical(arguments[2])))
                 {
                     return new(this, ReturnCode.ERROR, "Cannot find file.");
                 }
 
-                string contents = File.ReadAllText(GlobalData.CurrentDirectory + arguments[2]);
+                string contents = File.ReadAllText(IOMapper.MapFHSToPhysical(arguments[2]));
 
                 string checksum = MD5.hash(contents);
 

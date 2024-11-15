@@ -11,6 +11,7 @@ namespace WinttOS.wSystem.Compression
 {
     /// <summary>
     /// Unique class for compression/decompression file. Represents a Zip file.
+    /// Note: All paths must be mapped to physical
     /// </summary>
     public class ZipStorer : IDisposable
     {

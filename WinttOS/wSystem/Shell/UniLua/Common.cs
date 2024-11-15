@@ -17,7 +17,10 @@ namespace UniLua
 
 		public const string LUA_SIGNATURE = "\u001bLua";
 		public static string LUA_DIRSEP {
-			get { return System.IO.Path.DirectorySeparatorChar.ToString(); }
+			//get { return System.IO.Path.DirectorySeparatorChar.ToString(); }
+			// The one above will return \ as it what cosmos uses
+			// IOMapper uses Unix-like path separator char / so that's what I'll use
+			get { return "/"; }
 		}
 	}
 

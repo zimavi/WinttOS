@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using WinttOS.Core;
+using WinttOS.wSystem.Filesystem;
 using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Shell.commands.FileSystem;
 using WinttOS.wSystem.Shell.Utils;
@@ -44,7 +45,7 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
         {
             try
             {
-                var di = new DirectoryInfo(GlobalData.CurrentDirectory);
+                var di = new DirectoryInfo(IOMapper.MapFHSToPhysical(GlobalData.CurrentDirectory));
                 var dir_files = di.GetFileSystemInfos();
 
                 ConsoleColor def_col;
