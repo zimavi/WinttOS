@@ -24,13 +24,13 @@ namespace WinttOS.wSystem.Shell.commands.FileSystem
 
             string zipPath = arguments[0];
 
-            if (!zipPath.StartsWith('/') && !zipPath.StartsWith('\\'))
+            if (!zipPath.StartsWith('/'))
             {
                 zipPath = GlobalData.CurrentDirectory + zipPath;
             }
             try
             {
-                ZipStorer.Create(zipPath, "Created by ZipStorer using " + WinttOS.WinttVersion);
+                ZipStorer.Create(IOMapper.MapFHSToPhysical(zipPath), "Created by ZipStorer using " + WinttOS.WinttVersion);
                 SystemIO.STDOUT.PutLine("Zip file created successfully.");
                 return new(this, ReturnCode.OK);
             }
@@ -66,23 +66,23 @@ namespace WinttOS.wSystem.Shell.commands.FileSystem
             string destination = arguments[1];
 
 
-            if (!zipFileName.StartsWith('/') && !zipFileName.StartsWith('\\'))
+            if (!zipFileName.StartsWith('/'))
             {
                 zipFileName = GlobalData.CurrentDirectory + zipFileName;
             }
-            if (!destination.StartsWith('/') && !destination.StartsWith('\\'))
+            if (!destination.StartsWith('/'))
             {
                 destination = GlobalData.CurrentDirectory + destination;
             }
 
             try
             {
-                using (var zip = ZipStorer.Open(zipFileName, FileAccess.Read))
+                using (var zip = ZipStorer.Open(IOMapper.MapFHSToPhysical(zipFileName), FileAccess.Read))
                 {
                     var dir = zip.ReadCentralDir();
                     foreach (var entry in dir)
                     {
-                        zip.ExtractFile(entry, Path.Combine(destination, entry.FilenameInZip));
+                        zip.ExtractFile(entry, Path.Combine(IOMapper.MapFHSToPhysical(destination), entry.FilenameInZip));
                     }
                     return new ReturnInfo(this, ReturnCode.OK, "Contents extracted successfully.");
                 }
@@ -115,13 +115,13 @@ namespace WinttOS.wSystem.Shell.commands.FileSystem
             }
 
             string zipFileName = arguments[0];
-            if (!zipFileName.StartsWith('/') && !zipFileName.StartsWith('\\'))
+            if (!zipFileName.StartsWith('/'))
             {
                 zipFileName = GlobalData.CurrentDirectory + zipFileName;
             }
             try
             {
-                using (var zip = ZipStorer.Open(zipFileName, FileAccess.Read))
+                using (var zip = ZipStorer.Open(IOMapper.MapFHSToPhysical(zipFileName), FileAccess.Read))
                 {
                     var dir = zip.ReadCentralDir();
                     foreach (var entry in dir)
@@ -161,18 +161,18 @@ namespace WinttOS.wSystem.Shell.commands.FileSystem
             string zipFileName = arguments[0];
             string fileToAdd = arguments[1];
 
-            if (!zipFileName.StartsWith('/') && !zipFileName.StartsWith('\\'))
+            if (!zipFileName.StartsWith('/'))
             {
                 zipFileName = GlobalData.CurrentDirectory + zipFileName;
             }
-            if (!fileToAdd.StartsWith('/') && !fileToAdd.StartsWith('\\'))
+            if (!fileToAdd.StartsWith('/'))
             {
                 fileToAdd = GlobalData.CurrentDirectory + fileToAdd;
             }
 
             try
             {
-                using (var zip = ZipStorer.Open(zipFileName, FileAccess.Write))
+                using (var zip = ZipStorer.Open(IOMapper.MapFHSToPhysical(zipFileName), FileAccess.Write))
                 {
                     zip.AddFile(ZipStorer.Compression.Store, fileToAdd, Path.GetFileName(fileToAdd), "");
                     return new ReturnInfo(this, ReturnCode.OK, "File added successfully.");

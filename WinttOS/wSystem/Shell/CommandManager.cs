@@ -77,6 +77,8 @@ namespace WinttOS.wSystem.Shell
                 new TreeCommand(new string[] { "tree" }),
                 new PlayBadAppleCommand(new string[] { "bad_apple" }),
                 new MiniDiffCommand(),
+                new InitDriveMapsCommand(new string[] { "initdrivemaps" }),
+                new MapDirectoryCommand(new string[] { "mapdir" }),
 
                 new CreateZipCommand(),
                 new UnzipCommand(),

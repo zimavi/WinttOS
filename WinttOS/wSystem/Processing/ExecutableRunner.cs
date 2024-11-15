@@ -10,6 +10,7 @@ using System.IO;
 using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Utils;
 using WinttOS.wSystem.Shell.commands.FileSystem;
+using WinttOS.wSystem.Filesystem;
 
 namespace WinttOS.wSystem.Processing
 {
@@ -57,7 +58,7 @@ namespace WinttOS.wSystem.Processing
                 {
                     List<string> loadedLibs = new();
 
-                    var di = new DirectoryInfo(@"0:\lib");
+                    var di = new DirectoryInfo(IOMapper.MapFHSToPhysical("/lib"));
                     var infos = di.GetFileSystemInfos();
                     foreach (var info in infos)
                     {
@@ -67,7 +68,7 @@ namespace WinttOS.wSystem.Processing
                         if (loadedLibs.Count >= executable.Dependencies.Count)
                             break;
 
-                        var file = @"0:\lib\" + info.Name;
+                        var file = IOMapper.MapFHSToPhysical("/lib/" + info.Name);
 
                         try
                         {
@@ -147,7 +148,7 @@ namespace WinttOS.wSystem.Processing
                 var list = new List<EnvKey>
                             {
                                 new("USER", UsersManager.userLogged ?? "root"),
-                                new("TMPDIR", @"0:\proc\" + UUID.UUIDToString(UUID.GenerateUUID()) + "\\"),
+                                new("TMPDIR", "/proc/" + UUID.UUIDToString(UUID.GenerateUUID()) + "/"),
                                 new("PWD", GlobalData.CurrentDirectory)
                             };
                 Registry.Environment.PerProcessEnvironment.Add(-1, list);

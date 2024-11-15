@@ -10,6 +10,7 @@ using WinttOS.Core;
 using WinttOS.Core.Utils.Cryptography;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
+using WinttOS.wSystem.Filesystem;
 using WinttOS.wSystem.GUI;
 using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Processing;
@@ -100,6 +101,10 @@ namespace WinttOS.wSystem
                 IsTty = true;
 
                 Logger.DoOSLog("[OK] TTY started");
+
+                Logger.DoOSLog("[Info] Initializing IOMapper");
+
+                IOMapper.Initialize();
 
                 Logger.DoOSLog("[Info] Initializing environment");
 

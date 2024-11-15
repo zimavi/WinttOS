@@ -19,6 +19,7 @@ namespace WinttOS.wSystem.Filesystem
         {
             ShellUtils.PrintTaskResult("Loading", ShellTaskResult.DOING, "System Resources");
 
+            // Keep all physical as mapping will not be available here
             var resources = new List<Resource>
             {
                 new(@"\boot\.resources\fonts\zap-ext-light18.psf", fontData => Files.Fonts.Font18 = PCScreenFont.LoadFont(fontData), "Fonts 'zap-ext-light18.psf'"),

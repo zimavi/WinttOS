@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using WinttOS.Core;
+using WinttOS.wSystem.Filesystem;
 
 namespace UniLua
 {
@@ -131,11 +132,13 @@ namespace UniLua
 
 		private static int IO_Lines( ILuaState lua )
 		{
-			var path = GetFileIdFromTable(lua, 1);
+			var path = lua.ToString(1);
+			if (path.StartsWith('/'))
+				path = GlobalData.CurrentDirectory + path;
 			try
 			{
 				// TODO: Remake when implementing fs mapping
-				var lines = File.ReadAllLines(GlobalData.CurrentVolume + path);
+				var lines = File.ReadAllLines(IOMapper.MapFHSToPhysical(path));
 				lua.NewTable();
 				int idx = 1;
 				foreach(var line in lines)
@@ -157,20 +160,22 @@ namespace UniLua
 		private static int IO_Open( ILuaState lua )
 		{
 			var path = lua.ToString(1);
-			var mode = lua.L_OptString(2, "r");
+            if (path.StartsWith('/'))
+                path = GlobalData.CurrentDirectory + path;
+            var mode = lua.L_OptString(2, "r");
 			FileStream stream;
 			try
 			{
 				switch (mode)
 				{
 					case "r":
-						stream = File.OpenRead(GlobalData.CurrentVolume + path);
+						stream = File.OpenRead(IOMapper.MapFHSToPhysical(path));
 						break;
 					case "w":
-						stream = File.OpenWrite(GlobalData.CurrentVolume + path);
+						stream = File.OpenWrite(IOMapper.MapFHSToPhysical(path));
 						break;
 					case "a":
-						stream = new FileStream(GlobalData.CurrentVolume + path, FileMode.Append);
+						stream = new FileStream(IOMapper.MapFHSToPhysical(path), FileMode.Append);
 						break;
 					default:
 						lua.PushNil();
@@ -240,7 +245,7 @@ namespace UniLua
 
 		private static int IO_Tmpfile( ILuaState lua )
 		{
-			var tempFile = Path.GetTempFileName();
+			var tempFile = IOMapper.MapFHSToPhysical(Path.GetTempFileName());
 			if(tempFile == null)
 			{
 				lua.PushNil();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using WinttOS.Core;
+using WinttOS.wSystem.Filesystem;
 using WinttOS.wSystem.IO;
 
 namespace WinttOS.wSystem.Shell.commands.FileSystem
@@ -173,7 +174,7 @@ namespace WinttOS.wSystem.Shell.commands.FileSystem
                 return;
             }
 
-            var di = new DirectoryInfo(startDir);
+            var di = new DirectoryInfo(IOMapper.MapFHSToPhysical(startDir));
             var fsItems = di.GetFileSystemInfos()
                 .Where(f => ShowHidden || !f.Name.StartsWith("."))
                 .ToList();

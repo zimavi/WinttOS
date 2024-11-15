@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using WinttOS.Core;
+using WinttOS.wSystem.Filesystem;
 using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Users;
 
@@ -13,7 +14,10 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
 
         public override ReturnInfo Execute(List<string> arguments)
         {
-            File.Create(GlobalData.CurrentDirectory + @"\" + string.Join(' ', arguments)).Close();
+            if (!arguments[0].StartsWith('/'))
+                arguments[0] = GlobalData.CurrentDirectory + arguments[0];
+
+            File.Create(IOMapper.MapFHSToPhysical(arguments[0])).Close();
 
 
             SystemIO.STDOUT.PutLine("Created file!");

@@ -16,10 +16,10 @@ namespace WinttOS.wSystem.Shell.Commands.FileSystem
         {
             string path = arguments[0];
 
-            if (!path.StartsWith("/") && !path.StartsWith("\\"))
+            if (!path.StartsWith("/"))
                 path = GlobalData.CurrentDirectory + path;
 
-            if (!Entries.ForceRemove(path))
+            if (!Entries.ForceRemove(IOMapper.MapFHSToPhysical(path)))
             {
                 return new(this, ReturnCode.ERROR);
             }

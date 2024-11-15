@@ -11,6 +11,9 @@ namespace WinttOS.wSystem.Filesystem
             {
                 return path;
             }
+
+            path = IOMapper.MapFHSToPhysical(path);
+
             if (path.EndsWith(Path.DirectorySeparatorChar.ToString()))
             {
                 path = path.TrimEnd(Path.DirectorySeparatorChar);
@@ -23,9 +26,9 @@ namespace WinttOS.wSystem.Filesystem
             }
             if (lastSeparatorIndex == 2 && path[1] == ':')
             {
-                return path.Substring(0, lastSeparatorIndex + 1);
+                return IOMapper.MapPhysicalToFHS(path.Substring(0, lastSeparatorIndex + 1));
             }
-            return path.Substring(0, lastSeparatorIndex) + "\\";
+            return IOMapper.MapPhysicalToFHS(path.Substring(0, lastSeparatorIndex) + "\\");
         }
 
         public static string GetFreeSpace()

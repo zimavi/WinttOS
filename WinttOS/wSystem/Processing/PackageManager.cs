@@ -7,6 +7,7 @@ using System.IO;
 using WinttOS.Core.Utils.Debugging;
 using WinttOS.Core.Utils.Sys;
 using WinttOS.wSystem.Benchmark;
+using WinttOS.wSystem.Filesystem;
 using WinttOS.wSystem.IO;
 using WinttOS.wSystem.Networking;
 using WinttOS.wSystem.Shell.Utils;
@@ -16,6 +17,10 @@ namespace WinttOS.wSystem.Processing
 {
     public static class PackageManager
     {
+        private const string REPOS_PATH = "/etc/packos/repositories.json";
+        private const string CFG_DIR_PATH = "/etc/packos/";
+        private const string CEXE_PATH = "/usr/bin/";
+        private const string CLIB_PATH = "/lib/";
         public static List<string> Repositories { get; set; }
         public static List<Package> LocalRepository { get; set; }
         public static List<Package> Packages { get; set; }
@@ -37,9 +42,9 @@ namespace WinttOS.wSystem.Processing
             ShellUtils.PrintTaskResult("Loading", ShellTaskResult.DOING, "Local Repository");
             try
             {
-                if (File.Exists(@"0:\etc\packos\repositories.json"))
+                if (File.Exists(IOMapper.MapFHSToPhysical(REPOS_PATH)))
                 {
-                    var root = JSONReader.ReadFromString(File.ReadAllText(@"0:\etc\packos\repositories.json"));
+                    var root = JSONReader.ReadFromString(File.ReadAllText(IOMapper.MapFHSToPhysical(REPOS_PATH)));
                     foreach (DataNode objects in root)
                     {
 
@@ -64,7 +69,7 @@ namespace WinttOS.wSystem.Processing
                             }
                         }
 
-                        string installPath = @"0:\usr\bin\" + package.Name + ".cexe";
+                        string installPath = IOMapper.MapFHSToPhysical(CEXE_PATH + package.Name + ".cexe");
 
                         if (File.Exists(installPath))
                         {
@@ -85,7 +90,7 @@ namespace WinttOS.wSystem.Processing
             {
                 ShellUtils.MoveCursorUp();
                 ShellUtils.PrintTaskResult("Loading", ShellTaskResult.FAILED, "Local Repository");
-                SystemIO.STDOUT.PutLine("Cannot load '\\etc\\packos\\repositories.json': Invalid JSON");
+                SystemIO.STDOUT.PutLine("Cannot load '" + REPOS_PATH + "': Invalid JSON");
 
             }
         }
@@ -178,9 +183,9 @@ namespace WinttOS.wSystem.Processing
                         string installPath;
 
                         if (package.Type == "application")
-                            installPath = @"0:\usr\bin\" + package.Name + ".cexe";
+                            installPath = IOMapper.MapFHSToPhysical(CEXE_PATH + package.Name + ".cexe");
                         else
-                            installPath = @"0:\lib\" + package.Name + ".lib";
+                            installPath = IOMapper.MapFHSToPhysical(CLIB_PATH + package.Name + ".lib");
 
                         if (File.Exists(installPath))
                         {
@@ -315,13 +320,13 @@ namespace WinttOS.wSystem.Processing
 
                     bool isLib = package.Executable.IsLibrary;
 
-                    if(isLib && Directory.Exists(@"0:\lib"))
+                    if(isLib && Directory.Exists(IOMapper.MapFHSToPhysical(CLIB_PATH)))
                     {
                         Logger.DoOSLog("[OK] Installing package " + packageName);
 
-                        SystemIO.STDOUT.PutLine("Downloaded package '" + package.Name + "' to '0:\\lib\\" + package.Name + ".lib'...");
+                        SystemIO.STDOUT.PutLine("Downloaded package '" + package.Name + "' to '" + CLIB_PATH + package.Name + ".lib'...");
 
-                        File.WriteAllBytes(@"0:\lib\" + package.Name + ".lib", package.Executable.RawData);
+                        File.WriteAllBytes(IOMapper.MapFHSToPhysical(CLIB_PATH + package.Name + ".lib"), package.Executable.RawData);
 
                         SystemIO.STDOUT.PutLine("Validating file integrity...");
 
@@ -345,7 +350,7 @@ namespace WinttOS.wSystem.Processing
 
                                 Packages.Remove(package);
                                 package.Installed = false;
-                                File.Delete(@"0:\lib\" + package.Name + ".lib");
+                                File.Delete(IOMapper.MapFHSToPhysical(CLIB_PATH + package.Name + ".lib"));
 
                                 return;
                             }
@@ -356,13 +361,13 @@ namespace WinttOS.wSystem.Processing
                         sw.Stop();
                         SystemIO.STDOUT.PutLine($"{packageName} installed (took {sw.TimeElapsed})");
                     }
-                    else if (Directory.Exists(@"0:\usr\bin"))
+                    else if (Directory.Exists(IOMapper.MapFHSToPhysical(CEXE_PATH)))
                     {
                         Logger.DoOSLog("[OK] Installing package " + packageName);
 
-                        SystemIO.STDOUT.PutLine("Downloaded package '" + package.Name + "' to '0:\\usr\\bin\\" + package.Name + ".cexe'...");
+                        SystemIO.STDOUT.PutLine("Downloaded package '" + package.Name + "' to '" + CEXE_PATH + package.Name + ".cexe'...");
 
-                        File.WriteAllBytes(@"0:\usr\bin\" + package.Name + ".cexe", package.Executable.RawData);
+                        File.WriteAllBytes(IOMapper.MapFHSToPhysical(CEXE_PATH + package.Name + ".cexe"), package.Executable.RawData);
 
                         SystemIO.STDOUT.PutLine("Validating file integrity...");
 
@@ -386,7 +391,7 @@ namespace WinttOS.wSystem.Processing
 
                                 Packages.Remove(package);
                                 package.Installed = false;
-                                File.Delete(@"0:\usr\bin\" + package.Name + ".cexe");
+                                File.Delete(IOMapper.MapFHSToPhysical(CEXE_PATH + package.Name + ".cexe"));
 
                                 return;
                             }
@@ -419,9 +424,9 @@ namespace WinttOS.wSystem.Processing
                     try
                     {
                         if (package.Type == "application")
-                            File.Delete(@"0:\usr\bin\" + package.Name + ".cexe");
+                            File.Delete(IOMapper.MapFHSToPhysical(CEXE_PATH + package.Name + ".cexe"));
                         else
-                            File.Delete(@"0:\lib\" + packageName + ".lib");
+                            File.Delete(IOMapper.MapFHSToPhysical(CLIB_PATH + packageName + ".lib"));
                     }
                     catch (Exception ex)
                     {
@@ -469,11 +474,11 @@ namespace WinttOS.wSystem.Processing
 
             var json = JSONWriter.WriteToString(packages);
 
-            if (!Directory.Exists(@"0:\etc\packos"))
-                Directory.CreateDirectory(@"0:\etc\packos");
+            if (!Directory.Exists(IOMapper.MapFHSToPhysical(CFG_DIR_PATH)))
+                Directory.CreateDirectory(IOMapper.MapFHSToPhysical(CFG_DIR_PATH));
             try
             {
-                File.WriteAllText(@"0:\etc\packos\repositories.json", json);
+                File.WriteAllText(IOMapper.MapFHSToPhysical(REPOS_PATH), json);
             }
             catch(Exception ex)
             {

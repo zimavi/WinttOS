@@ -10,27 +10,27 @@ namespace WinttOS.wSystem.Filesystem
         {
             if (dir == "..")
             {
-                Directory.SetCurrentDirectory(GlobalData.CurrentDirectory);
+                Directory.SetCurrentDirectory(IOMapper.MapFHSToPhysical(GlobalData.CurrentDirectory));
 
-                var root = GlobalData.FileSystem.GetDirectory(GlobalData.CurrentDirectory);
+                var root = GlobalData.FileSystem.GetDirectory(IOMapper.MapFHSToPhysical(GlobalData.CurrentDirectory));
 
-                if (GlobalData.CurrentDirectory != GlobalData.CurrentVolume)
+                if (GlobalData.CurrentDirectory != "/")
                 {
-                    GlobalData.CurrentDirectory = root.mParent.mFullPath;
+                    GlobalData.CurrentDirectory = IOMapper.MapPhysicalToFHS(root.mParent.mFullPath);
                 }
             }
-            else if (dir == GlobalData.CurrentVolume)
+            else if (dir == "/")
             {
-                GlobalData.CurrentDirectory = GlobalData.CurrentVolume;
+                GlobalData.CurrentDirectory = "/";
             }
             else
             {
-                if (Directory.Exists(GlobalData.CurrentDirectory + dir))
+                if (Directory.Exists(IOMapper.MapFHSToPhysical(GlobalData.CurrentDirectory + dir)))
                 {
                     Directory.SetCurrentDirectory(GlobalData.CurrentDirectory);
-                    GlobalData.CurrentDirectory = GlobalData.CurrentDirectory + dir + @"\";
+                    GlobalData.CurrentDirectory = IOMapper.MapPhysicalToFHS(GlobalData.CurrentDirectory + dir + @"\");
                 }
-                else if (File.Exists(GlobalData.CurrentDirectory + dir))
+                else if (File.Exists(IOMapper.MapFHSToPhysical(GlobalData.CurrentDirectory + dir)))
                 {
                     error = "This is a file.";
                     return false;
